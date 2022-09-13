@@ -2,8 +2,7 @@ const mysql = require("../db/connection").con;
 
 const login = ((req, res) => {
 
-    console.log("Login Called");
-    const selQuery = "select * from USER as u, EMPLOYEE as e,EMPLOYEE_EMPROLE as ee, EMPROLE as er where u.User_ID=e.User_ID and e.Email=? and e.Emp_id=ee.Emp_id and ee.Emp_role_id=er.Emp_role_id;";
+    const selQuery = "select * from USER as u, EMPLOYEE as e,EMPLOYEE_EMPROLE as ee, EMPROLE as er where u.user_id=e.user_id and e.email=? and e.emp_id=ee.emp_id and ee.emp_role_id=er.emp_role_id;";
     // console.log(req.body.Username);
     mysql.query(selQuery, [req.body.Email], (err, results) => {
         console.log(results);
@@ -12,7 +11,7 @@ const login = ((req, res) => {
         } else {
             if (results != "") {
 
-                if (results[0].Password == req.body.Password) {
+                if (results[0].password == req.body.Password) {
                     if (req.body.Role == 'employee' || req.body.Role == 'intern') {
                         res.status(200).json({ "msg": `${req.body.Role} Login Successful` });
                     }
