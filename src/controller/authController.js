@@ -13,10 +13,10 @@ const login = ((req, res) => {
 
                 if (results[0].password == req.body.Password) {
                     if (req.body.Role == 'employee' || req.body.Role == 'intern') {
-                        res.status(200).json({ "msg": `${req.body.Role} Login Successful` });
+                        res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name });
                     }
                     if (req.body.Role == 'admin') {
-                        res.status(200).json({ "msg": `${req.body.Role} Login Successful` });
+                        res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name });
                     }
                 }
                 else {
