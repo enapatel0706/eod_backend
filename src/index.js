@@ -14,6 +14,8 @@ const corsOpts = {
 
 app.use(cors(corsOpts));
 app.use(express.json());
+
+// Routes
 app.use(authRoute);
 app.use(eodRoute);
 
