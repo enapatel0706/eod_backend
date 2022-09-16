@@ -7,7 +7,7 @@ const fs = require("fs");
 
 
 const getProjectEmp = ((req, res) => {
-    const selQuery = "select P.Project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
+    const selQuery = "select P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
     mysql.query(selQuery, [req.query.empid], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
@@ -35,12 +35,15 @@ const setTask = ((req, res) => {
 })
 
 const getTaskEmp = ((req, res) => {
+    console.log(req.query.empid);
+    console.log(req.query.eoddate);
     const selQuery = "SELECT p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date=? AND et.project_id = p.project_id;";
     mysql.query(selQuery, [req.query.empid, req.query.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
         } else {
             if (results != "") {
+                console.log(results)
                 res.status(200).json(results)
             } else {
                 res.status(404).json({ "msg": "Data not found!" });
@@ -162,11 +165,14 @@ const setEod = ((req, res) => {
                                 transporter.sendMail(mailOptions, (err, info) => {
                                     if (err) {
                                         console.log(err);
+                                        res.status(500).json({ "msg": "Problem in Submitting EOD" });
                                         // res.status(500).json({ "msg": "Email not Sent" });
                                     }
                                     else {
-                                        console.log("Email Sent")
+                                        console.log("Email Sent");
                                         console.log(info.response);
+                                        res.status(200).json({ "msg": "EOD submitted Successfully" });
+
                                         // res.status(200).json({ "msg": "Email sent successfully" });
                                     }
                                 })
@@ -175,7 +181,7 @@ const setEod = ((req, res) => {
                         })
 
 
-                        res.status(200).json({ "msg": "Data inserted successfully" });
+                        
                     }
                 })
             } else {
