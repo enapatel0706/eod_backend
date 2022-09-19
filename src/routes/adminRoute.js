@@ -7,14 +7,11 @@ router.get("/employees", getEmployees)
 
 router.get("/employee", getEmployeeById)
 
+router.patch("/employee", updateEmployee)
+
 router.get("/employee/attendance/present", getEmpAttendancePresent)
 
 router.get("/employee/attendance/absent", getEmpAttendanceAbsent)
-
-router.get("/employee", getEmployeeById)
-
-router.patch("/employee", updateEmployee)
-
 
 router.post("/employee", addEmployee)
 
