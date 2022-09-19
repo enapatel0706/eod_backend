@@ -50,14 +50,33 @@ const updateEmployee = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
+                res.status(500).json({ "msg": "Unable to update employee data!" });
+            }
+        }
+    })
+})
+
+
+const getEmpAttendance = ((req, res) => {
+    const selQuery = `SELECT eo.eod_date,emp.emp_code,emp.emp_fname,emp.email,emp.post,eo.total_work_time, , IF(eo.eod_Date=eo.created_at,"Present","Absent")
+    FROM EMPLOYEE emp, EOD eo 
+    WHERE emp.status='ACTIVE' AND eo.emp_id=emp.emp_id AND eo.eod_date=?`;
+    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+        if (err) {
+            console.log(`Error fetching data`);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
                 res.status(404).json({ "msg": "Data not found!" });
             }
         }
     })
 })
 
+
 const getEmpAttendancePresent = ((req, res) => {
-    const selQuery = `SELECT eo.eod_date,emp.emp_code,emp.emp_fname,emp.email,emp.post,eo.total_work_time, 
+    const selQuery = `SELECT eo.eod_date,emp.emp_code,emp.emp_fname,emp.email,emp.post,eo.total_work_time, , IF(eo.eod_Date=eo.created_at,"Present","Absent")
     FROM EMPLOYEE emp, EOD eo 
     WHERE emp.status='ACTIVE' AND eo.emp_id=emp.emp_id AND eo.eod_date=?`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
@@ -74,7 +93,7 @@ const getEmpAttendancePresent = ((req, res) => {
 })
 
 const getEmpAttendanceAbsent = ((req, res) => {
-    const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.email,emp.post 
+    const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.email,emp.post, "Absent" As 'status'
     FROM EMPLOYEE emp
     WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date=?);`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
@@ -90,16 +109,4 @@ const getEmpAttendanceAbsent = ((req, res) => {
     })
 })
 
-const addEmployee = ((req, res) => {
-    //     const insQuery = "insert into EOD_TASK(Emp_id,Project_id,Task_title,Task_desc,Status,WorkTime,Created_At,Eod_date) values(?,?,?,?,?,?,?,?)";
-    //     mysql.query(insQuery, [req.body.empId, req.body.projectId, req.body.taskTitle, req.body.taskDesc, req.body.status, req.body.workTime, req.body.createdAt, req.body.eodDate], (err, results) => {
-    //         if (err) {
-    //             console.log("EOD Task insertion failed");
-    //             res.status(500).json({ "msg": "Insertion Failed" });
-    //         } else {
-    //             res.status(200).json({ "msg": "Data inserted Successfully" });
-    //         }
-    //     })
-})
-
-module.exports = { getEmployees, getEmployeeById, updateEmployee, getEmpAttendancePresent, getEmpAttendanceAbsent, addEmployee };
+module.exports = { getEmployees, getEmployeeById, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent };
