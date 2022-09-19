@@ -4,7 +4,7 @@ const getEmployees = ((req, res) => {
     const selQuery = "SELECT * FROM `ORDEX-PORTAL`.EMPLOYEE;";
     mysql.query(selQuery, (err, results) => {
         if (err) {
-            console.log(e);
+            console.log(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -23,7 +23,23 @@ const getEmployeeById = ((req, res) => {
     where e.emp_id=?;`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
-            console.log(e);
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getProject = ((req, res) => {
+    const selQuery = `SELECT * FROM PROJECT;`;
+    mysql.query(selQuery, [], (err, results) => {
+        if (err) {
+            console.log(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -58,14 +74,14 @@ const updateEmployee = ((req, res) => {
 
 
 const getEmpAttendance = ((req, res) => {
-    const selQuery = `eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.emp_type,eo.total_work_time, emp.status
+    const selQuery = `SELECT eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.emp_type,eo.total_work_time, emp.status
     FROM EMPLOYEE emp
     LEFT JOIN EOD eo
     ON emp.emp_id=eo.emp_id AND eo.eod_date=?
     WHERE emp.status="ACTIVE" AND emp.emp_type<>'admin' ;`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
-            console.log(e);
+            console.log(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -83,7 +99,7 @@ const getEmpAttendancePresent = ((req, res) => {
     WHERE emp.status='ACTIVE' AND eo.emp_id=emp.emp_id AND eo.eod_date=? AND eo.eod_date=eo.created_at;`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
-            console.log(e);
+            console.log(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -100,7 +116,7 @@ const getEmpAttendanceAbsent = ((req, res) => {
     WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date<>eo.created_at AND eo.eod_date=?);`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
-            console.log(e);
+            console.log(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -111,4 +127,4 @@ const getEmpAttendanceAbsent = ((req, res) => {
     })
 })
 
-module.exports = { getEmployees, getEmployeeById, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent };
+module.exports = { getEmployees, getEmployeeById, getProject, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent };
