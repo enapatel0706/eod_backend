@@ -36,8 +36,32 @@ const getEmployeeById = ((req, res) => {
 
 
 const getProject = ((req, res) => {
-    const selQuery = `SELECT * FROM PROJECT;`;
-    mysql.query(selQuery, [], (err, results) => {
+    const selQuery = `select p.project_id,p.project_name from PROJECT p
+    where NOT EXISTS (
+    select project_id from EMPLOYEE_PROJECT ep 
+    join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id 
+    and ep.emp_id=? ) and p.status='active';`;
+    mysql.query(selQuery, [req.query.emp_id], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getProjectByEmp = ((req, res) => {
+    const selQuery = `select p.project_id,p.project_name from PROJECT p
+    where EXISTS (
+    select project_id from EMPLOYEE_PROJECT ep 
+    join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id 
+    and ep.emp_id=? ) and p.status='active';`;
+    mysql.query(selQuery, [req.body.emp_id], (err, results) => {
         if (err) {
             console.log(err);
         } else {
@@ -127,4 +151,76 @@ const getEmpAttendanceAbsent = ((req, res) => {
     })
 })
 
-module.exports = { getEmployees, getEmployeeById, getProject, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent };
+const getEODReport = ((req, res) => {
+    const selQuery = `select et.eod_date,e.emp_fname,e.emp_midname,e.emp_lname,e.phoneno,e.email,et.eod_date, p.project_name, et.task_title, et.task_desc, et.status, et.worktime 
+    from EMPLOYEE e, EOD_TASK et, PROJECT p 
+    WHERE et.project_id=p.project_id AND et.emp_id=e.emp_id AND e.emp_id=? AND et.eod_date=?`;
+    mysql.query(selQuery, [req.query.emp_id, req.query.eod_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getEODReportDateRange = ((req, res) => {
+    const selQuery = `SELECT et.eod_date,e.emp_fname,e.emp_midname,e.emp_lname,e.phoneno,e.email,p.project_name,et.task_title, et.task_desc,et.status,et.worktime 
+    FROM EMPLOYEE e,EOD_TASK et, PROJECT p 
+    WHERE e.emp_id=? AND et.eod_date>=? AND et.eod_date<=? AND et.project_id=p.project_id AND et.emp_id=e.emp_id ORDER BY et.eod_date`;
+    mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+const getEODCompliance = ((req, res) => {
+    const selQuery = `SELECT et.eod_date,et.created_at, e.emp_code, e.emp_fname,e.emp_midname,e.emp_lname,e.email,e.emp_type 
+    FROM EMPLOYEE e, EOD_TASK et
+    WHERE e.emp_id=et.emp_id AND et.eod_date!=et.created_at AND et.eod_date=?;`;
+    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getEODComplianceDateRange = ((req, res) => {
+    const selQuery = `SELECT et.eod_date,et.created_at, e.emp_code, e.emp_fname,e.emp_midname,e.emp_lname,e.email,e.emp_type 
+    FROM EMPLOYEE e, EOD_TASK et
+    WHERE e.emp_id=et.emp_id AND et.eod_date!=et.created_at AND et.eod_date>=? AND et.eod_date<=? ORDER BY et.eod_date;`;
+    mysql.query(selQuery, [req.query.start_date, req.query.end_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+
+module.exports = { getEmployees, getEmployeeById, getProject, getProjectByEmp, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange };
