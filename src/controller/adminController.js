@@ -74,6 +74,28 @@ const getProjectByEmp = ((req, res) => {
     })
 })
 
+const setEmpProject = ((req, res) => {
+    const insertQuery = `INSERT INTO EMPLOYEE_PROJECT(emp_id,project_id,mentor_id,created_at) VALUES (?,?,?,?);`;
+    mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Insertion Failed" });
+        } else {
+            res.status(200).json({ "msg": "Data inserted successfully" });
+        }
+    })
+})
+
+const updateEmpProject = ((req, res) => {
+    const insertQuery = ``;
+    mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Updation Failed" });
+        } else {
+            res.status(200).json({ "msg": "Data updated successfully" });
+        }
+    })
+})
+
 
 const updateEmployee = ((req, res) => {
     const updateQuery = `UPDATE EMPLOYEE E 
@@ -85,13 +107,9 @@ const updateEmployee = ((req, res) => {
     mysql.query(updateQuery, [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.body.phoneno,
     req.body.post, req.body.type, req.body.status, req.body.update_at, req.body.skill_id, req.body.project_id, req.body.emp_id], (err, results) => {
         if (err) {
-            console.log(err);
+            res.status(500).json({ "msg": "Updation Failed" });
         } else {
-            if (results != "") {
-                res.status(200).json(results)
-            } else {
-                res.status(404).json({ "msg": "Data not found!" });
-            }
+            res.status(200).json({ "msg": "Data updated successfully" });
         }
     })
 })
@@ -102,7 +120,7 @@ const getEmpAttendance = ((req, res) => {
     FROM EMPLOYEE emp
     LEFT JOIN EOD eo
     ON emp.emp_id=eo.emp_id AND eo.eod_date=?
-    WHERE emp.status="ACTIVE" AND emp.emp_type<>'admin' ;`;
+    WHERE emp.status='ACTIVE' AND emp.emp_type<>'admin' ;`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
@@ -137,7 +155,7 @@ const getEmpAttendancePresent = ((req, res) => {
 const getEmpAttendanceAbsent = ((req, res) => {
     const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.email,emp.post, "Absent" As 'attendance'
     FROM EMPLOYEE emp
-    WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date<>eo.created_at AND eo.eod_date=?);`;
+    WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date=eo.created_at AND eo.eod_date=?);`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
@@ -223,4 +241,4 @@ const getEODComplianceDateRange = ((req, res) => {
 
 
 
-module.exports = { getEmployees, getEmployeeById, getProject, getProjectByEmp, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange };
+module.exports = { getEmployees, getEmployeeById, getProject, getProjectByEmp, setEmpProject, updateEmpProject, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange };

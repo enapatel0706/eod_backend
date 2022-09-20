@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getEmployees, getEmployeeById, getProject, getProjectByEmp, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange } = require("../controller/adminController");
+const { getEmployees, getEmployeeById, getProject, getProjectByEmp, setEmpProject, updateEmpProject, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange } = require("../controller/adminController");
 
 
 router.get("/employees", getEmployees)
@@ -10,6 +10,10 @@ router.get("/employee", getEmployeeById)
 router.get("/projects", getProject);
 
 router.get("/employee/project", getProjectByEmp);
+
+router.post("/employee/project", setEmpProject);
+
+router.patch("/employee/project", updateEmpProject);
 
 router.patch("/employee", updateEmployee)
 
