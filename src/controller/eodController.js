@@ -35,7 +35,7 @@ const setTask = ((req, res) => {
 })
 
 const getTaskEmp = ((req, res) => {
-    const selQuery = "SELECT p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date=? AND et.project_id = p.project_id;";
+    const selQuery = "SELECT et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date=? AND et.project_id = p.project_id;";
     mysql.query(selQuery, [req.query.empid, req.query.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
@@ -189,5 +189,21 @@ const setEod = ((req, res) => {
 })
 
 
+const getTaskEmpDateRange = ((req, res) => {
+    const selQuery = "SELECT et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date>=? AND Eod_date<=? AND et.project_id=p.project_id ORDER BY Eod_date DESC;";
+    mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
+        if (err) {
+            console.log(`Error fetching data`);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
 
-module.exports = { getProjectEmp, getTaskEmp, setEod, setTask };
+
+
+module.exports = { getProjectEmp, getTaskEmp, setEod, setTask, getTaskEmpDateRange };
