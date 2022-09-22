@@ -99,13 +99,11 @@ const updateEmpProject = ((req, res) => {
 
 const updateEmployee = ((req, res) => {
     const updateQuery = `UPDATE EMPLOYEE E 
-    JOIN EMPLOYEE_EMPSKILL EES ON EES.emp_id=E.emp_id 
-    JOIN EMPLOYEE_PROJECT EP ON EP.emp_id=E.emp_id
     set E.emp_fname=?, E.emp_midname=?, E.emp_lname=?, E.email=?, E.phoneno=?,
-    E.post=?,E.emp_type=?, E.status=?, E.updated_at=?, EES.emp_skill_id=?, EP.project_id=?
+    E.post=?,E.emp_type=?, E.status=?, E.updated_at=?
     where E.emp_id=?`;
     mysql.query(updateQuery, [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.body.phoneno,
-    req.body.post, req.body.type, req.body.status, req.body.update_at, req.body.skill_id, req.body.project_id, req.body.emp_id], (err, results) => {
+    req.body.post, req.body.type, req.body.status, req.body.update_at, req.body.emp_id], (err, results) => {
         if (err) {
             res.status(500).json({ "msg": "Updation Failed" });
         } else {
@@ -190,7 +188,7 @@ const getEODReport = ((req, res) => {
 const getEODReportDateRange = ((req, res) => {
     const selQuery = `SELECT et.eod_date,e.emp_fname,e.emp_midname,e.emp_lname,e.phoneno,e.email,p.project_name,et.task_title, et.task_desc,et.status,et.worktime 
     FROM EMPLOYEE e,EOD_TASK et, PROJECT p 
-    WHERE e.emp_id=? AND et.eod_date>=? AND et.eod_date<=? AND et.project_id=p.project_id AND et.emp_id=e.emp_id ORDER BY et.eod_date`;
+    WHERE e.emp_id=? AND et.eod_date>=? AND et.eod_date<=? AND et.project_id=p.project_id AND et.emp_id=e.emp_id ORDER BY et.eod_date DESC`;
     mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
@@ -225,7 +223,7 @@ const getEODCompliance = ((req, res) => {
 const getEODComplianceDateRange = ((req, res) => {
     const selQuery = `SELECT et.eod_date,et.created_at, e.emp_code, e.emp_fname,e.emp_midname,e.emp_lname,e.email,e.emp_type 
     FROM EMPLOYEE e, EOD_TASK et
-    WHERE e.emp_id=et.emp_id AND et.eod_date!=et.created_at AND et.eod_date>=? AND et.eod_date<=? ORDER BY et.eod_date;`;
+    WHERE e.emp_id=et.emp_id AND et.eod_date!=et.created_at AND et.eod_date>=? AND et.eod_date<=? ORDER BY et.eod_date DESC;`;
     mysql.query(selQuery, [req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
