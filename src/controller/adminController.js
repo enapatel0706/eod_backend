@@ -114,7 +114,7 @@ const updateEmployee = ((req, res) => {
 
 
 const getEmpAttendance = ((req, res) => {
-    const selQuery = `SELECT eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.emp_type,eo.total_work_time, emp.status
+    const selQuery = `SELECT emp.emp_id,eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.emp_type,eo.total_work_time, emp.status
     FROM EMPLOYEE emp
     LEFT JOIN EOD eo
     ON emp.emp_id=eo.emp_id AND eo.eod_date=?
@@ -134,7 +134,7 @@ const getEmpAttendance = ((req, res) => {
 
 
 const getEmpAttendancePresent = ((req, res) => {
-    const selQuery = `SELECT eo.eod_date,emp.emp_code,emp.emp_fname,emp.email,emp.post,eo.total_work_time, IF(eo.eod_Date=eo.created_at,"Present","Absent") AS 'attendance'
+    const selQuery = `SELECT emp.emp_id,eo.eod_date,emp.emp_code,emp.emp_fname,emp.email,emp.emp_type,emp.post,eo.total_work_time, IF(eo.eod_Date=eo.created_at,"Present","Absent") AS 'attendance'
     FROM EMPLOYEE emp, EOD eo 
     WHERE emp.status='ACTIVE' AND eo.emp_id=emp.emp_id AND eo.eod_date=? AND eo.eod_date=eo.created_at;`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
@@ -151,7 +151,7 @@ const getEmpAttendancePresent = ((req, res) => {
 })
 
 const getEmpAttendanceAbsent = ((req, res) => {
-    const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.email,emp.post, "Absent" As 'attendance'
+    const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.email,emp.emp_type,emp.post, "Absent" As 'attendance'
     FROM EMPLOYEE emp
     WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date=eo.created_at AND eo.eod_date=?);`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {

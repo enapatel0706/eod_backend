@@ -82,7 +82,7 @@ const sendEmailForgot = ((req, res) => {
                         const template = handlebars.compile(source);
                         const replacements = {
                             email: req.body.Email,
-                            link: `http://localhost:3000/resetpassword/${user_id}/${token}`
+                            link: `http://localhost:3000/resetpassword?user_id=${user_id}&token=${token}`
                         };
                         const htmlToSend = template(replacements);
 

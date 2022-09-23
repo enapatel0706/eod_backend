@@ -205,5 +205,35 @@ const getTaskEmpDateRange = ((req, res) => {
 })
 
 
+const getAdditionalMail = ((req, res) => {
+    const selQuery = "SELECT * FROM EMPLOYEE_ADDITIONAL_MAIL WHERE emp_id=?;";
+    mysql.query(selQuery, [req.query.emp_id], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
 
-module.exports = { getProjectEmp, getTaskEmp, setEod, setTask, getTaskEmpDateRange };
+const updateAdditionalMail = ((req, res) => {
+    const selQuery = "UPDATE EMPLOYEE_ADDITIONAL_MAIL SET mentor1_email=?, mentor2_email=?, mentor3_email=?, updated_at=? WHERE emp_id=?;";
+    mysql.query(selQuery, [req.body.email1, req.body.email2, req.body.email3, req.body.updated_at, req.body.emp_id], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+module.exports = { getProjectEmp, getTaskEmp, setEod, setTask, getTaskEmpDateRange, getAdditionalMail, updateAdditionalMail };
