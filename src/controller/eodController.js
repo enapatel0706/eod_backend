@@ -35,7 +35,9 @@ const setTask = ((req, res) => {
 })
 
 const getTaskEmp = ((req, res) => {
-    const selQuery = "SELECT et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date=? AND et.project_id = p.project_id;";
+    const selQuery = `SELECT e.emp_fname,e.emp_midname,e.emp_lname,et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime 
+    FROM EOD_TASK et, PROJECT p, EMPLOYEE e 
+    WHERE et.emp_id=? AND et.eod_date=? AND et.project_id = p.project_id AND et.emp_id=e.emp_id;`;
     mysql.query(selQuery, [req.query.empid, req.query.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
@@ -190,7 +192,10 @@ const setEod = ((req, res) => {
 
 
 const getTaskEmpDateRange = ((req, res) => {
-    const selQuery = "SELECT et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime FROM EOD_TASK et, PROJECT p WHERE Emp_id=? AND Eod_date>=? AND Eod_date<=? AND et.project_id=p.project_id ORDER BY Eod_date DESC;";
+    const selQuery = `SELECT e.emp_fname,e.emp_midname,e.emp_lname,et.eod_date,p.project_name,et.task_title, et.task_desc,et.status,et.worktime 
+    FROM EOD_TASK et, PROJECT p, EMPLOYEE e 
+    WHERE et.emp_id=? AND et.eod_date>=? AND et.eod_date<=? AND et.project_id=p.project_id AND et.emp_id=e.emp_id
+    ORDER BY et.eod_date DESC;`
     mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
