@@ -35,6 +35,121 @@ const getEmployeeById = ((req, res) => {
 })
 
 
+const updateEmployee = ((req, res) => {
+    const updateQuery = `UPDATE EMPLOYEE E 
+    set E.emp_fname=?, E.emp_midname=?, E.emp_lname=?, E.email=?, E.phoneno=?,
+    E.post=?,E.emp_type=?, E.status=?, E.updated_at=?
+    where E.emp_id=?`;
+    mysql.query(updateQuery, [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.body.phoneno,
+    req.body.post, req.body.type, req.body.status, req.body.update_at, req.body.emp_id], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Updation Failed" });
+        } else {
+            res.status(200).json({ "msg": "Data updated successfully" });
+        }
+    })
+})
+
+
+const getSkills = ((req, res) => {
+    const selQuery = `SELECT * FROM EMPSKILL;`;
+    mysql.query(selQuery, [], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getSkillsByEmp = ((req, res) => {
+    const selQuery = `SELECT es.emp_skill_id,es.skill_name FROM EMPLOYEE_EMPSKILL ees, EMPSKILL es where ees.emp_id = ? AND ees.emp_skill_id = es.emp_skill_id`;
+    mysql.query(selQuery, [req.query.emp_id], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const insertSkill = ((req, res, results) => {
+    const insertQuery = `INSERT INTO EMPLOYEE_EMPSKILL(emp_id, emp_skill_id,created_at) VALUES(?,?,?)`;
+    mysql.query(insertQuery, [req.body.emp_id, results[0].emp_skill_id, req.body.created_at], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Insertion Failed" });
+        } else {
+            res.status(200).json({ "msg": "Data inserted successfully" });
+        }
+    })
+})
+
+
+const setEmpSkills = ((req, res) => {
+    const selQuery = `SELECT * FROM EMPSKILL where skill_name like '${req.body.skill_name}%'`;
+    mysql.query(selQuery, [req.body.skill_name], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                if (res.status(200)) {
+                    insertSkill(req, res, results)
+                }
+            } else {
+                if (res.status(404)) {
+                    const insertQuery = `INSERT INTO EMPSKILL(skill_name,created_at) VALUES (?,?)`;
+                    mysql.query(insertQuery, [req.body.skill_name, req.body.created_at], (err, results) => {
+                        if (err) {
+                            res.status(500).json({ "msg": "Insertion Failed" });
+                        } else {
+                            if (res.status(200)) {
+                                const selQuery = `SELECT * FROM EMPSKILL where skill_name=?`;
+                                mysql.query(selQuery, [req.body.skill_name], (err, results) => {
+                                    if (err) {
+                                        res.status(500).json({ "msg": "Insertion Failed" });
+                                    } else {
+                                        if (results != "") {
+                                            if (res.status(200)) {
+                                                insertSkill(req, res, results)
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                            else {
+                                res.status(404).json({ "msg": "Data not found!" });
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    })
+})
+
+
+const deleteEmpSkills = ((req, res) => {
+    const insertQuery = `DELETE FROM EMPLOYEE_EMPSKILL WHERE emp_skill_id=? AND emp_id=?`;
+    mysql.query(insertQuery, [req.body.emp_skill_id, req.body.emp_id], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Deletion Failed" });
+        } else {
+            res.status(200).json({ "msg": "Data deleted successfully" });
+        }
+    })
+})
+
+
 const getProject = ((req, res) => {
     const selQuery = `select p.project_id,p.project_name from PROJECT p
     where NOT EXISTS (
@@ -61,7 +176,7 @@ const getProjectByEmp = ((req, res) => {
     select project_id from EMPLOYEE_PROJECT ep 
     join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id 
     and ep.emp_id=? ) and p.status='active';`;
-    mysql.query(selQuery, [req.body.emp_id], (err, results) => {
+    mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
         } else {
@@ -88,22 +203,6 @@ const setEmpProject = ((req, res) => {
 const updateEmpProject = ((req, res) => {
     const insertQuery = ``;
     mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
-        if (err) {
-            res.status(500).json({ "msg": "Updation Failed" });
-        } else {
-            res.status(200).json({ "msg": "Data updated successfully" });
-        }
-    })
-})
-
-
-const updateEmployee = ((req, res) => {
-    const updateQuery = `UPDATE EMPLOYEE E 
-    set E.emp_fname=?, E.emp_midname=?, E.emp_lname=?, E.email=?, E.phoneno=?,
-    E.post=?,E.emp_type=?, E.status=?, E.updated_at=?
-    where E.emp_id=?`;
-    mysql.query(updateQuery, [req.body.fname, req.body.mname, req.body.lname, req.body.email, req.body.phoneno,
-    req.body.post, req.body.type, req.body.status, req.body.update_at, req.body.emp_id], (err, results) => {
         if (err) {
             res.status(500).json({ "msg": "Updation Failed" });
         } else {
@@ -155,6 +254,41 @@ const getEmpAttendanceAbsent = ((req, res) => {
     FROM EMPLOYEE emp
     WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date=eo.created_at AND eo.eod_date=?);`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+const getEODReportAll = ((req, res) => {
+    const selQuery = `select et.eod_date,e.emp_fname,e.emp_midname,e.emp_lname,e.phoneno,e.email,et.eod_date, p.project_name, et.task_title, et.task_desc, et.status, et.worktime 
+    from EMPLOYEE e, EOD_TASK et, PROJECT p 
+    WHERE et.project_id=p.project_id AND et.emp_id=e.emp_id AND et.eod_date=?`;
+    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (results != "") {
+                res.status(200).json(results)
+            } else {
+                res.status(404).json({ "msg": "Data not found!" });
+            }
+        }
+    })
+})
+
+
+const getEODReportAllDateRange = ((req, res) => {
+    const selQuery = `SELECT et.eod_date,e.emp_fname,e.emp_midname,e.emp_lname,e.phoneno,e.email,p.project_name,et.task_title, et.task_desc,et.status,et.worktime 
+    FROM EMPLOYEE e,EOD_TASK et, PROJECT p 
+    WHERE et.eod_date>=? AND et.eod_date<=? AND et.project_id=p.project_id AND et.emp_id=e.emp_id ORDER BY et.eod_date DESC`;
+    mysql.query(selQuery, [req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
         } else {
@@ -239,4 +373,11 @@ const getEODComplianceDateRange = ((req, res) => {
 
 
 
-module.exports = { getEmployees, getEmployeeById, getProject, getProjectByEmp, setEmpProject, updateEmpProject, updateEmployee, getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent, getEODReport, getEODReportDateRange, getEODCompliance, getEODComplianceDateRange };
+module.exports = {
+    getEmployees, getEmployeeById, updateEmployee,
+    getSkills, getSkillsByEmp, setEmpSkills, deleteEmpSkills,
+    getProject, getProjectByEmp, setEmpProject, updateEmpProject,
+    getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent,
+    getEODReportAll, getEODReportAllDateRange, getEODReport, getEODReportDateRange,
+    getEODCompliance, getEODComplianceDateRange
+};
