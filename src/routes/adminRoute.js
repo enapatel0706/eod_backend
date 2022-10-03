@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getEmployees, getEmployeeById, updateEmployee,
     getSkills, getSkillsByEmp, setEmpSkills, deleteEmpSkills,
-    getProject, getProjectByEmp, setEmpProject, updateEmpProject,
+    getProject, getProjectByEmp, setEmpProject, statusEmpProject, updateEmpProject,
     getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent,
     getEODReportAll, getEODReportAllDateRange, getEODReport, getEODReportDateRange,
     getEODCompliance, getEODComplianceDateRange } = require("../controller/adminController");
@@ -22,13 +22,15 @@ router.post("/employee/skill", setEmpSkills);
 
 router.delete("/employee/skill", deleteEmpSkills);
 
-router.get("/projects", getProject);
+router.get("/admin/projects", getProject);
 
 router.get("/employee/project", getProjectByEmp);
 
 router.post("/employee/project", setEmpProject);
 
 router.patch("/employee/project", updateEmpProject);
+
+router.patch("/employee/project/status", statusEmpProject);
 
 router.get("/attendance", getEmpAttendance)
 
@@ -46,7 +48,7 @@ router.get("/employee/eod/daterange", getEODReportDateRange)
 
 router.get("/eod/compliance", getEODCompliance)
 
-router.get("/eod/daterange", getEODComplianceDateRange)
+router.get("/eod/compliance/daterange", getEODComplianceDateRange)
 
 
 module.exports = router;

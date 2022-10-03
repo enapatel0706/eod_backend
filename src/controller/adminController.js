@@ -52,7 +52,7 @@ const updateEmployee = ((req, res) => {
 
 
 const getSkills = ((req, res) => {
-    const selQuery = `SELECT * FROM EMPSKILL;`;
+    const selQuery = `SELECT * FROM EMPSKILL ORDER BY skill_name asc`;
     mysql.query(selQuery, [], (err, results) => {
         if (err) {
             console.log(err);
@@ -68,7 +68,7 @@ const getSkills = ((req, res) => {
 
 
 const getSkillsByEmp = ((req, res) => {
-    const selQuery = `SELECT es.emp_skill_id,es.skill_name FROM EMPLOYEE_EMPSKILL ees, EMPSKILL es where ees.emp_id = ? AND ees.emp_skill_id = es.emp_skill_id`;
+    const selQuery = `SELECT es.emp_skill_id,es.skill_name FROM EMPLOYEE_EMPSKILL ees, EMPSKILL es where ees.emp_id = ? AND ees.emp_skill_id = es.emp_skill_id ORDER BY es.skill_name asc`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
@@ -139,8 +139,9 @@ const setEmpSkills = ((req, res) => {
 
 
 const deleteEmpSkills = ((req, res) => {
-    const insertQuery = `DELETE FROM EMPLOYEE_EMPSKILL WHERE emp_skill_id=? AND emp_id=?`;
-    mysql.query(insertQuery, [req.body.emp_skill_id, req.body.emp_id], (err, results) => {
+    const deleteQuery = `DELETE FROM EMPLOYEE_EMPSKILL WHERE emp_skill_id=? AND emp_id=?`;
+    mysql.query(deleteQuery, [req.body.emp_skill_id, req.body.emp_id], (err, results) => {
+        console.log(req.body.emp_skill_id + "\n" + req.body.emp_id)
         if (err) {
             res.status(500).json({ "msg": "Deletion Failed" });
         } else {
@@ -171,11 +172,11 @@ const getProject = ((req, res) => {
 
 
 const getProjectByEmp = ((req, res) => {
-    const selQuery = `select p.project_id,p.project_name from PROJECT p
+    const selQuery = `select p.project_id,p.project_name, epp.mentor_id, epp.emp_id from PROJECT p, EMPLOYEE_PROJECT epp
     where EXISTS (
     select project_id from EMPLOYEE_PROJECT ep 
-    join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id 
-    and ep.emp_id=? ) and p.status='active';`;
+    join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id)
+	and p.status='active' and epp.emp_id=? and epp.project_id=p.project_id;`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
@@ -201,12 +202,23 @@ const setEmpProject = ((req, res) => {
 })
 
 const updateEmpProject = ((req, res) => {
-    const insertQuery = ``;
-    mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
+    const updateQuery = `UPDATE EMPLOYEE_PROJECT SET mentor_id=?, updated_at=? WHERE project_id=? AND emp_id=?;`;
+    mysql.query(updateQuery, [req.body.mentor_id, req.body.updated_at, req.body.project_id, req.body.emp_id], (err, results) => {
         if (err) {
             res.status(500).json({ "msg": "Updation Failed" });
         } else {
             res.status(200).json({ "msg": "Data updated successfully" });
+        }
+    })
+})
+
+const statusEmpProject = ((req, res) => {
+    const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=?, updated_at=? WHERE project_id=? AND emp_id=?;`;
+    mysql.query(updateQuery, [req.body.status, req.body.updated_at, req.body.project_id, req.body.emp_id], (err, results) => {
+        if (err) {
+            res.status(500).json({ "msg": "Status updation Failed" });
+        } else {
+            res.status(200).json({ "msg": "Status updated successfully" });
         }
     })
 })
@@ -376,7 +388,7 @@ const getEODComplianceDateRange = ((req, res) => {
 module.exports = {
     getEmployees, getEmployeeById, updateEmployee,
     getSkills, getSkillsByEmp, setEmpSkills, deleteEmpSkills,
-    getProject, getProjectByEmp, setEmpProject, updateEmpProject,
+    getProject, getProjectByEmp, setEmpProject, statusEmpProject, updateEmpProject,
     getEmpAttendance, getEmpAttendancePresent, getEmpAttendanceAbsent,
     getEODReportAll, getEODReportAllDateRange, getEODReport, getEODReportDateRange,
     getEODCompliance, getEODComplianceDateRange
