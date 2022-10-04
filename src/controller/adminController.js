@@ -176,7 +176,7 @@ const getProjectByEmp = ((req, res) => {
     where EXISTS (
     select project_id from EMPLOYEE_PROJECT ep 
     join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id)
-	and p.status='active' and epp.emp_id=? and epp.project_id=p.project_id;`;
+	and p.status='active' and epp.status='active' and epp.emp_id=? and epp.project_id=p.project_id;`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
