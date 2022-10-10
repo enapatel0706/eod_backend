@@ -228,9 +228,9 @@ const getEmpAttendance = ((req, res) => {
     const selQuery = `SELECT emp.emp_id,eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.phoneno,emp.emp_type,eo.total_work_time, emp.status
     FROM EMPLOYEE emp
     LEFT JOIN EOD eo
-    ON emp.emp_id=eo.emp_id AND eo.eod_date=?
+    ON emp.emp_id=eo.emp_id AND eo.eod_date=? AND eo.created_at=?
     WHERE emp.status='ACTIVE' AND emp.emp_type<>'admin' ;`;
-    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+    mysql.query(selQuery, [req.query.eod_date, req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
         } else {
