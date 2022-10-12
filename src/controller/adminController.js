@@ -349,7 +349,7 @@ const getEODReportDateRange = ((req, res) => {
 })
 
 const getEODCompliance = ((req, res) => {
-    const selQuery = `SELECT et.eod_date,et.created_at, e.emp_code, e.emp_fname,e.emp_midname,e.emp_lname,e.email,e.emp_type 
+    const selQuery = `SELECT DISTINCT et.eod_date,et.created_at, e.emp_code, e.emp_fname,e.emp_midname,e.emp_lname,e.email,e.emp_type 
     FROM EMPLOYEE e, EOD_TASK et
     WHERE e.emp_id=et.emp_id AND et.eod_date!=et.created_at AND et.eod_date=?;`;
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
