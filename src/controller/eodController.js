@@ -120,8 +120,8 @@ const setEod = ((req, res) => {
                                 let transporter = nodemailer.createTransport({
                                     service: 'gmail',
                                     auth: {
-                                        user: 'ordextechnology@gmail.com',
-                                        pass: 'dzjilbhtlkxoeknl'
+                                        user: 'xanderr127@gmail.com',
+                                        pass: 'oyvogwpmtdoioppb'
                                     }
                                 });
 
@@ -151,7 +151,7 @@ const setEod = ((req, res) => {
 
 
                                 let mailOptions = {
-                                    from: 'ordextechnology@gmail.com',
+                                    from: 'xanderr127@gmail.com',
                                     to: mentorsList,
                                     cc: ccList,
                                     subject: `EOD of ${result[0]['EMP NAME ']} for ${req.body.eoddate}`,

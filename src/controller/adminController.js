@@ -156,7 +156,7 @@ const getProject = ((req, res) => {
     where NOT EXISTS (
     select project_id from EMPLOYEE_PROJECT ep 
     join EMPLOYEE e on e.emp_id=ep.emp_id where ep.project_id=p.project_id 
-    and ep.emp_id=? ) and p.status='active';`;
+    and ep.emp_id=? and ep.status='active') and p.status='active';`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
@@ -180,6 +180,7 @@ const getProjectByEmp = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json(err);
         } else {
             if (results != "") {
                 res.status(200).json(results)
