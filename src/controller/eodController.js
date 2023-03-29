@@ -6,8 +6,9 @@ const path = require("path");
 const fs = require("fs");
 
 
+
 const getProjectEmp = ((req, res) => {
-    const selQuery = "select P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
+    const selQuery = "select DISTINCT P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
     mysql.query(selQuery, [req.query.empid], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
