@@ -118,7 +118,7 @@ const Employee_list = () => {
                                   {empData.map((data) => {
                                     return (
                                       <>
-                                        <tr className="border-start">
+                                        <tr className="border-start" key={data.emp_id}>
                                           {console.log(data)}
                                           <th scope="row">{data.emp_id}</th>
                                           <td>{data.emp_code}</td>
