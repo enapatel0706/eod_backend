@@ -80,10 +80,10 @@ const AdminHeader = () => {
                 </a>
 
                 <ul className="dropdown-menu dropdown-menu-right dropdown-menu-animated profile-dropdown" aria-labelledby="dropdownMenuLink">
-                  {/* <li><a className="dropdown-item" href="#"><i class="fas fa-right-from-bracket"></i> Log Out</a></li> */}
+                  {/* <li><a className="dropdown-item" href="#"><i className="fas fa-right-from-bracket"></i> Log Out</a></li> */}
                   <li>
                     <NavLink className="dropdown-item" to="/logout">
-                      <i class="fas fa-right-from-bracket"></i> Logout
+                      <i className="fas fa-right-from-bracket"></i> Logout
                     </NavLink>
                   </li>
                   {/* <li><a className="dropdown-item" href="#">Another action</a></li>
