@@ -77,8 +77,8 @@ const sendEmailForgot = ((req, res) => {
                         var transporter = nodemailer.createTransport({
                             service: "gmail",
                             auth: {
-                                user: 'ordextechnology@gmail.com',
-                                pass: 'dzjilbhtlkxoeknl'
+                                user: 'xanderr127@gmail.com',
+                                pass: 'oyvogwpmtdoioppb'
                             }
                         });
                         const filePath = path.join(__dirname, '../emailTemplate/forgotEmail.html');
@@ -91,7 +91,7 @@ const sendEmailForgot = ((req, res) => {
                         const htmlToSend = template(replacements);
 
                         var mailOptions = {
-                            from: 'ordextechnology@gmail.com',
+                            from: 'xanderr127@gmail.com',
                             to: req.body.Email,
                             subject: 'Forget Password Instructions',
                             html: htmlToSend
