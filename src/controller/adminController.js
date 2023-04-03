@@ -185,7 +185,7 @@ const getProjectByEmp = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
