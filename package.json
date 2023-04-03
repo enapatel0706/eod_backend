@@ -17,6 +17,7 @@
     "moment": "^2.29.4",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.8",
+    "nodemon": "^2.0.22",
     "underscore": "^1.13.4"
   }
 }

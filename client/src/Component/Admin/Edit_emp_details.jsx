@@ -264,7 +264,7 @@ const Edit_emp_details = (props) => {
     setLoader(true)
     try {
       let res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/employees`);
-      if (res.status == 200) {
+      if (res.status === 200) {
         setMentorList(res.data)
         setLoader(false)
       }
@@ -295,7 +295,7 @@ const Edit_emp_details = (props) => {
               project_id: projectId,
               updated_at: todayDate()
             });
-            if (res.status == 200) {
+            if (res.status === 200) {
               getProject()
               getEmpProject()
               setLoader(false)
@@ -324,7 +324,7 @@ const Edit_emp_details = (props) => {
     setLoader(true)
     try {
       // setLoader(false)
-      if (pValue.project_name == "" || pValue.project_name == "-- Select Project --") {
+      if (pValue.project_name === "" || pValue.project_name === "-- Select Project --") {
         setLoader(false)
         Swal.fire({
           type: "error",
@@ -334,7 +334,7 @@ const Edit_emp_details = (props) => {
           confirmButtonColor: "#06bdff",
         });
       }
-      else if (pValue.mentor_id == "" || pValue.mentor_id == "0") {
+      else if (pValue.mentor_id === "" || pValue.mentor_id === "0") {
         setLoader(false)
         Swal.fire({
           type: "error",
@@ -350,14 +350,15 @@ const Edit_emp_details = (props) => {
             emp_id: props.empId,
           },
         });
-        if (res.status == 200) {
+        if (res.status === 200) {
           let temp = false;
+          console.log("data ave 6?");
           res.data.map((dt) => {
             return (
-              dt.project_id == pValue.project_id ? temp = true : ''
+              dt.project_id === pValue.project_id ? temp = true : ''
             )
           })
-          if (temp == true) {
+          if (temp === true) {
             const res = await axios.patch(`${process.env.REACT_APP_BACKEND_BASE_URL}/employee/project`, {
               emp_id: pValue.emp_id,
               project_id: pValue.project_id,
@@ -380,7 +381,7 @@ const Edit_emp_details = (props) => {
               })
             }
           }
-          else if (temp == false) {
+          else if (temp === false) {
             const res = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/employee/project`, {
               emp_id: pValue.emp_id,
               project_id: pValue.project_id,
@@ -472,19 +473,19 @@ const Edit_emp_details = (props) => {
                         </div>
                         <div className="row col-12 mx-0 px-0 justify-content-center mt-3">
 
-                          <div class="col-8 col-sm-5 col-md-6 col-lg-3 px-0 bg-image">
+                          <div className="col-8 col-sm-5 col-md-6 col-lg-3 px-0 bg-image">
                             <img src={_image_75} alt="" />
-                            <div class="row col-12 Empname mx-auto text-center d-flex align-items-center">
+                            <div className="row col-12 Empname mx-auto text-center d-flex align-items-center">
                               <h5 style={{ "textTransform": "capitalize" }}>{getFullName()}</h5>
-                              <p class="mb-0">Employee Profile</p>
+                              <p className="mb-0">Employee Profile</p>
                             </div>
                           </div>
 
                           <div className="col-12 col-lg-8 mt-3 mt-lg-0">
                             <form className="admin-edit">
-                              <div class="row col-12 mx-0 px-0 mb-3">
-                                <div class="col-12 col-sm-8">
-                                  <label class="mb-1">Employee Code</label>
+                              <div className="row col-12 mx-0 px-0 mb-3">
+                                <div className="col-12 col-sm-8">
+                                  <label className="mb-1">Employee Code</label>
                                   <input
                                     type="text"
                                     name="emp_code"
@@ -494,8 +495,8 @@ const Edit_emp_details = (props) => {
                                     onChange={getData}
                                   />
                                 </div>
-                                <div class="col-12 col-sm-4 mt-3 mt-sm-0">
-                                  <label class="mb-1">Status</label>
+                                <div className="col-12 col-sm-4 mt-3 mt-sm-0">
+                                  <label className="mb-1">Status</label>
                                   <select
                                     className="form-select"
                                     name="status"
@@ -532,9 +533,9 @@ const Edit_emp_details = (props) => {
                                   </select>
                                 </div>
                               </div>
-                              <div class="row col-12 mx-0 px-0 mb-3">
-                                <div class="col-12 col-sm-8">
-                                  <label class="mb-1">E-mail Id</label>
+                              <div className="row col-12 mx-0 px-0 mb-3">
+                                <div className="col-12 col-sm-8">
+                                  <label className="mb-1">E-mail Id</label>
                                   <input
                                     type="email"
                                     name="email"
@@ -545,8 +546,8 @@ const Edit_emp_details = (props) => {
                                     required
                                   />
                                 </div>
-                                <div class="col-12 col-sm-4 mt-3 mt-sm-0">
-                                  <label class="mb-1">Post</label>
+                                <div className="col-12 col-sm-4 mt-3 mt-sm-0">
+                                  <label className="mb-1">Post</label>
                                   <input
                                     type="text"
                                     name="post"
@@ -564,11 +565,11 @@ const Edit_emp_details = (props) => {
                                   <button type="submit" className="btn-done text-white" onClick={(e) => { updateEmployee(e) }}>
                                     Done
                                   </button>
-                                </div >
-                              </div >
-                            </form >
-                          </div >
-                        </div >
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
                         <div className="row col-12 mx-0 px-0 justify-content-center admin-edit">
                           <div className="col-12 col-md-5 col-lg-4 px-3 px-md-0">
                             <label className="mb-1">Skills</label>
@@ -597,6 +598,8 @@ const Edit_emp_details = (props) => {
                             <div className="row col-12 mx-0 px-0 mb-0 mb-md-3 mt-0 mt-lg-3">
 
                               {empSkill.map((data, index) => {
+                                if(data.skill_name)
+                                {
                                 return (
                                   <div className="col-6 mt-3 px-1 ps-0 ps-sm-1" key={index} title={data.skill_name} >
                                     <div className="skill-box p-2 col-auto" style={{ paddingRight: 20 }}>
@@ -605,6 +608,9 @@ const Edit_emp_details = (props) => {
                                     </div>
                                   </div>
                                 )
+                              } else {
+                                return null;
+                              }
                               })}
 
 
@@ -642,17 +648,17 @@ const Edit_emp_details = (props) => {
                               </div>
                               <div className="col-12 col-lg-4 mt-3 mt-lg-0 px-1 px-lg-0">
                                 <div className="row mx-0 px-0">
-                                  <div class="col-12 col-sm-6 col-md-12 P-name">
+                                  <div className="col-12 col-sm-6 col-md-12 P-name">
                                     <label className="mb-1">Project Name</label>
-                                    <input type="text" name="pname" value={pValue.project_name == "-- Select Project --" ? "" : pValue.project_name} id="PName" className="form-control" />
+                                    <input type="text" name="pname" value={pValue.project_name === "-- Select Project --" ? "" : pValue.project_name} id="PName" className="form-control" />
                                   </div>
                                   <div className="col-12 col-sm-6 col-md-12 Mentor mt-2 mt-sm-0 mt-md-2">
                                     <label className="mb-1">Mentor</label>
-                                    <select className="form-select" value={pValue.mentor_id} onChange={(e) => { setPValue({ ...pValue, mentor_id: e.target.value }); }} disabled={pValue.project_name == "" || pValue.project_name == "-- Select Project --"}>
-                                      <option value="0" selected={!pValue.project_name || pValue.project_name == "-- Select Project --"}>-- Select Mentor --</option>
+                                    <select className="form-select" value={pValue.mentor_id} onChange={(e) => { setPValue({ ...pValue, mentor_id: e.target.value }); }} disabled={pValue.project_name === "" || pValue.project_name === "-- Select Project --"}>
+                                      <option value="0" selected={!pValue.project_name || pValue.project_name === "-- Select Project --"}>-- Select Mentor --</option>
                                       {mentorList.map((data, index) => {
                                         return (
-                                          (data.emp_id != props.empId && (data.emp_type == "employee" || data.emp_type == "admin") && data.status == "ACTIVE"
+                                          (data.emp_id !== props.empId && (data.emp_type === "employee" || data.emp_type === "admin") && data.status === "ACTIVE"
                                             ? <option key={data.emp_id} value={data.emp_id}>{data.emp_fname} {data.emp_lname}</option>
                                             : "")
                                         )
@@ -673,15 +679,15 @@ const Edit_emp_details = (props) => {
 
                           </div>
                         </div>
-                      </div >
-                    </div >
-                  </div >
-                </div >
-              </div >
-            </div >
-          </div >
-        </div >
-      </div >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
