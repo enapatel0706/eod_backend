@@ -367,8 +367,9 @@ const Edit_emp_details = (props) => {
           confirmButtonText: "OK",
           confirmButtonColor: "#06bdff",
         });
-      } else if (pValue.mentor_id == "" || pValue.mentor_id == "0") {
-        setLoader(false);
+      }
+      else if (pValue.mentor_id === "" || pValue.mentor_id === "0") {
+        setLoader(false)
         Swal.fire({
           type: "error",
           icon: "error",
@@ -546,9 +547,9 @@ const Edit_emp_details = (props) => {
 
                           <div className="col-12 col-lg-8 mt-3 mt-lg-0">
                             <form className="admin-edit">
-                              <div class="row col-12 mx-0 px-0 mb-3">
-                                <div class="col-12 col-sm-8">
-                                  <label class="mb-1">Employee Code</label>
+                              <div className="row col-12 mx-0 px-0 mb-3">
+                                <div className="col-12 col-sm-8">
+                                  <label className="mb-1">Employee Code</label>
                                   <input
                                     type="text"
                                     name="emp_code"
@@ -558,8 +559,8 @@ const Edit_emp_details = (props) => {
                                     onChange={getData}
                                   />
                                 </div>
-                                <div class="col-12 col-sm-4 mt-3 mt-sm-0">
-                                  <label class="mb-1">Status</label>
+                                <div className="col-12 col-sm-4 mt-3 mt-sm-0">
+                                  <label className="mb-1">Status</label>
                                   <select
                                     className="form-select"
                                     name="status"
@@ -602,9 +603,9 @@ const Edit_emp_details = (props) => {
                                   </select>
                                 </div>
                               </div>
-                              <div class="row col-12 mx-0 px-0 mb-3">
-                                <div class="col-12 col-sm-8">
-                                  <label class="mb-1">E-mail Id</label>
+                              <div className="row col-12 mx-0 px-0 mb-3">
+                                <div className="col-12 col-sm-8">
+                                  <label className="mb-1">E-mail Id</label>
                                   <input
                                     type="email"
                                     name="email"
@@ -615,8 +616,8 @@ const Edit_emp_details = (props) => {
                                     required
                                   />
                                 </div>
-                                <div class="col-12 col-sm-4 mt-3 mt-sm-0">
-                                  <label class="mb-1">Post</label>
+                                <div className="col-12 col-sm-4 mt-3 mt-sm-0">
+                                  <label className="mb-1">Post</label>
                                   <input
                                     type="text"
                                     name="post"
@@ -678,6 +679,8 @@ const Edit_emp_details = (props) => {
                             </div>
                             <div className="row col-12 mx-0 px-0 mb-0 mb-md-3 mt-0 mt-lg-3">
                               {empSkill.map((data, index) => {
+                                if(data.skill_name)
+                                {
                                 return (
                                   <div
                                     className="col-6 mt-3 px-1 ps-0 ps-sm-1"
@@ -703,7 +706,11 @@ const Edit_emp_details = (props) => {
                                     </div>
                                   </div>
                                 );
-                              })}
+                               }}
+                                )
+                              
+                              }
+                              
                             </div>
                           </div>
                           <div className="col-12 col-md-7 px-0 px-sm-1">
@@ -780,7 +787,7 @@ const Edit_emp_details = (props) => {
                               </div>
                               <div className="col-12 col-lg-4 mt-3 mt-lg-0 px-1 px-lg-0">
                                 <div className="row mx-0 px-0">
-                                  <div class="col-12 col-sm-6 col-md-12 P-name">
+                                  <div className="col-12 col-sm-6 col-md-12 P-name">
                                     <label className="mb-1">Project Name</label>
                                     <input
                                       type="text"

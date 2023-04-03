@@ -5,6 +5,7 @@ const getEmployees = ((req, res) => {
     mysql.query(selQuery, (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -17,13 +18,20 @@ const getEmployees = ((req, res) => {
 
 
 const getEmployeeById = ((req, res) => {
-    const selQuery = `select e.*,es.skill_name,es.emp_skill_id from EMPLOYEE e 
-    join EMPLOYEE_EMPSKILL ees on e.emp_id=ees.emp_id
-    join EMPSKILL es on es.emp_skill_id=ees.emp_skill_id
-    where e.emp_id=?;`;
+    // const selQuery = `select e.*,es.skill_name,es.emp_skill_id from EMPLOYEE e 
+    // join EMPLOYEE_EMPSKILL ees on e.emp_id=ees.emp_id
+    // join EMPSKILL es on es.emp_skill_id=ees.emp_skill_id
+    // where e.emp_id=?;`;
+    const selQuery =`SELECT e.*, es.skill_name, es.emp_skill_id
+    FROM EMPLOYEE e 
+    LEFT JOIN EMPLOYEE_EMPSKILL ees ON e.emp_id = ees.emp_id
+    LEFT JOIN EMPSKILL es ON es.emp_skill_id = ees.emp_skill_id
+    WHERE e.emp_id = ?;`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -56,9 +64,13 @@ const getSkills = ((req, res) => {
     mysql.query(selQuery, [], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
+                console.log(results);
+
             } else {
                 res.status(404).json({ "msg": "Data not found!" });
             }
@@ -68,10 +80,12 @@ const getSkills = ((req, res) => {
 
 
 const getSkillsByEmp = ((req, res) => {
-    const selQuery = `SELECT es.emp_skill_id,es.skill_name FROM EMPLOYEE_EMPSKILL ees, EMPSKILL es where ees.emp_id = ? AND ees.emp_skill_id = es.emp_skill_id ORDER BY es.skill_name asc`;
+    const selQuery = `SELECT DISTINCT es.emp_skill_id,es.skill_name FROM EMPLOYEE_EMPSKILL ees, EMPSKILL es where ees.emp_id = ? AND ees.emp_skill_id = es.emp_skill_id ORDER BY es.skill_name asc`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -83,27 +97,40 @@ const getSkillsByEmp = ((req, res) => {
 })
 
 
-const insertSkill = ((req, res, results) => {
-    const insertQuery = `INSERT INTO EMPLOYEE_EMPSKILL(emp_id, emp_skill_id,created_at) VALUES(?,?,?)`;
-    mysql.query(insertQuery, [req.body.emp_id, results[0].emp_skill_id, req.body.created_at], (err, results) => {
+const insertSkill = ((req, res, emp_skill_id) => {
+
+    const insertQuery = `INSERT INTO EMPLOYEE_EMPSKILL(emp_id, emp_skill_id,created_at)
+SELECT ?, ?, ?
+FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT * FROM EMPLOYEE_EMPSKILL
+            WHERE emp_id = ? AND emp_skill_id = ?
+        )`;
+    mysql.query(insertQuery, [req.body.emp_id, emp_skill_id, req.body.created_at, req.body.emp_id, emp_skill_id], (err, results) => {
         if (err) {
             res.status(500).json({ "msg": "Insertion Failed" });
         } else {
-            res.status(200).json({ "msg": "Data inserted successfully" });
+
+            if (results.affectedRows > 0) {
+                res.status(200).json({ "msg": "Data inserted successfully" });
+            } else {
+                res.status(200).json({ "msg": "Record already exists" });
+            }
         }
     })
 })
 
-
 const setEmpSkills = ((req, res) => {
-    const selQuery = `SELECT * FROM EMPSKILL where skill_name like '${req.body.skill_name}%'`;
+    const selQuery = `SELECT  * FROM EMPSKILL where skill_name like '${req.body.skill_name}%'`;
     mysql.query(selQuery, [req.body.skill_name], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 if (res.status(200)) {
-                    insertSkill(req, res, results)
+
+                    insertSkill(req, res, results[0].emp_skill_id)
                 }
             } else {
                 if (res.status(404)) {
@@ -120,7 +147,9 @@ const setEmpSkills = ((req, res) => {
                                     } else {
                                         if (results != "") {
                                             if (res.status(200)) {
-                                                insertSkill(req, res, results)
+                                                // insertSkill(req, res, results)
+                                                insertSkill(req, res, results[0].emp_skill_id)
+
                                             }
                                         }
                                     }
@@ -160,6 +189,7 @@ const getProject = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -234,6 +264,7 @@ const getEmpAttendance = ((req, res) => {
     mysql.query(selQuery, [req.query.eod_date, req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -252,6 +283,7 @@ const getEmpAttendancePresent = ((req, res) => {
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -269,6 +301,7 @@ const getEmpAttendanceAbsent = ((req, res) => {
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -286,6 +319,7 @@ const getEODReportAll = ((req, res) => {
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -304,6 +338,7 @@ const getEODReportAllDateRange = ((req, res) => {
     mysql.query(selQuery, [req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -321,6 +356,8 @@ const getEODReport = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id, req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -339,6 +376,8 @@ const getEODReportDateRange = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -356,6 +395,8 @@ const getEODCompliance = ((req, res) => {
     mysql.query(selQuery, [req.query.eod_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -374,6 +415,8 @@ const getEODComplianceDateRange = ((req, res) => {
     mysql.query(selQuery, [req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ "msg": 'Error To Fetching Data' });
+
         } else {
             if (results != "") {
                 res.status(200).json(results)

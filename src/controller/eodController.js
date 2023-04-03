@@ -6,11 +6,13 @@ const path = require("path");
 const fs = require("fs");
 
 
+
 const getProjectEmp = ((req, res) => {
-    const selQuery = "select P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
+    const selQuery = "select DISTINCT P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id;";
     mysql.query(selQuery, [req.query.empid], (err, results) => {
         if (err) {
-            console.log(`Error fetching data`);
+            // res.status(500).json(err)
+            res.status(500).json({ err: "Error When Fetching Data" })
         } else {
             if (results != "") {
                 res.status(200).json(results);
@@ -41,6 +43,7 @@ const getTaskEmp = ((req, res) => {
     mysql.query(selQuery, [req.query.empid, req.query.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
+            res.status(500).json({ "error": "Error When Fetching Data" })
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -56,6 +59,8 @@ const setEod = ((req, res) => {
     mysql.query(selQuery, [req.body.empId, req.body.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
+            res.status(500).json({ error: "Error When Fetching Data" })
+
         } else {
             if (results != "") {
                 function sumUp(sum, time) {
@@ -171,16 +176,10 @@ const setEod = ((req, res) => {
                                         console.log("Email Sent");
                                         console.log(info.response);
                                         res.status(200).json({ "msg": "EOD submitted Successfully" });
-
-                                        // res.status(200).json({ "msg": "Email sent successfully" });
                                     }
                                 })
                             }
-
                         })
-
-
-
                     }
                 })
             } else {
@@ -199,6 +198,7 @@ const getTaskEmpDateRange = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id, req.query.start_date, req.query.end_date], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
+            res.status(500).json({ error: "Error When Fetching Data" })
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -215,6 +215,7 @@ const getAdditionalMail = ((req, res) => {
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ error: "Error When Fetching Data" })
         } else {
             if (results != "") {
                 res.status(200).json(results)
@@ -230,6 +231,7 @@ const updateAdditionalMail = ((req, res) => {
     mysql.query(selQuery, [req.body.email1, req.body.email2, req.body.email3, req.body.updated_at, req.body.emp_id], (err, results) => {
         if (err) {
             console.log(err);
+            res.status(500).json({ error: "Error When Fetching Data" })
         } else {
             if (results != "") {
                 res.status(200).json(results)

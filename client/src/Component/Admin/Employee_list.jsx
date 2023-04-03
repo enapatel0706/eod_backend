@@ -81,10 +81,10 @@ const Employee_list = () => {
                     <div className="row col-12 px-0 mx-0">
                       <div className="col-sm-12 px-0">
                         <div className="page-title-box">
-                          <div class="row col-12 mx-0 px-0 text-center border-bottom">
-                            <h3 class="text-uppercase">EMPLOYEE'S LIST</h3>
+                          <div className="row col-12 mx-0 px-0 text-center border-bottom">
+                            <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
                           </div>
-                          <div class="row col-12 mx-0 px-0 justify-content-center mt-3">
+                          <div className="row col-12 mx-0 px-0 justify-content-center mt-3">
                             <div className="table-responsive" style={{ width: "100%" }}>
                               <table className="table border-end-0">
                                 <thead>
@@ -118,7 +118,7 @@ const Employee_list = () => {
                                   {empData.map((data) => {
                                     return (
                                       <>
-                                        <tr className="border-start">
+                                        <tr className="border-start" key={data.emp_id}>
                                           {console.log(data)}
                                           <th scope="row">{data.emp_id}</th>
                                           <td>{data.emp_code}</td>

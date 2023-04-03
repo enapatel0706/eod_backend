@@ -14,6 +14,7 @@ const login = ((req, res) => {
         console.log(results);
         if (err) {
             console.log(`Error In Login ${err}`);
+            res.status(500).json({ "msg": 'Error in Login please Enter Valid Credentials' });
         } else {
             if (results != "") {
 
@@ -49,12 +50,15 @@ const sendEmailForgot = ((req, res) => {
     mysql.query(selQuery, [req.body.Email], (err, results) => {
         if (err) {
             console.log(`Error - ${err}`);
+            res.status(500).json({ "msg": 'Error To Fetch The Data' });
         } else {
             if (results != "") {
                 const selQuery = "select u.user_id, e.email, u.password from EMPLOYEE e, USER u where u.user_id= e.user_id and e.email=?";
                 mysql.query(selQuery, [req.body.Email], (err, results) => {
                     if (err) {
                         console.log(`Error- ${err}`);
+                        res.status(500).json({ "msg": 'Error in Fetching Data' });
+
                     }
                     else {
                         user_id = results[0].user_id

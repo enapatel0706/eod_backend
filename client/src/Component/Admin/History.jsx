@@ -184,7 +184,11 @@ const History = (props) => {
 
                           </>
                         ) : (
-                          <></>
+                          <>
+                            <div className="row col-12 mx-0 px-0 text-center border-bottom">
+                              <h3 className="text-uppercase">end of day History</h3>
+                            </div>
+                          </>
                         )}
                         {/* TitleBar */}
 
