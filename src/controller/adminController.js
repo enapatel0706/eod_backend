@@ -18,10 +18,15 @@ const getEmployees = ((req, res) => {
 
 
 const getEmployeeById = ((req, res) => {
-    const selQuery = `select e.*,es.skill_name,es.emp_skill_id from EMPLOYEE e 
-    join EMPLOYEE_EMPSKILL ees on e.emp_id=ees.emp_id
-    join EMPSKILL es on es.emp_skill_id=ees.emp_skill_id
-    where e.emp_id=?;`;
+    // const selQuery = `select e.*,es.skill_name,es.emp_skill_id from EMPLOYEE e 
+    // join EMPLOYEE_EMPSKILL ees on e.emp_id=ees.emp_id
+    // join EMPSKILL es on es.emp_skill_id=ees.emp_skill_id
+    // where e.emp_id=?;`;
+    const selQuery =`SELECT e.*, es.skill_name, es.emp_skill_id
+    FROM EMPLOYEE e 
+    LEFT JOIN EMPLOYEE_EMPSKILL ees ON e.emp_id = ees.emp_id
+    LEFT JOIN EMPSKILL es ON es.emp_skill_id = ees.emp_skill_id
+    WHERE e.emp_id = ?;`;
     mysql.query(selQuery, [req.query.emp_id], (err, results) => {
         if (err) {
             console.log(err);

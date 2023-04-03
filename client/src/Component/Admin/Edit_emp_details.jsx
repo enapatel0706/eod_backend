@@ -598,6 +598,8 @@ const Edit_emp_details = (props) => {
                             <div className="row col-12 mx-0 px-0 mb-0 mb-md-3 mt-0 mt-lg-3">
 
                               {empSkill.map((data, index) => {
+                                if(data.skill_name)
+                                {
                                 return (
                                   <div className="col-6 mt-3 px-1 ps-0 ps-sm-1" key={index} title={data.skill_name} >
                                     <div className="skill-box p-2 col-auto" style={{ paddingRight: 20 }}>
@@ -606,6 +608,9 @@ const Edit_emp_details = (props) => {
                                     </div>
                                   </div>
                                 )
+                              } else {
+                                return null;
+                              }
                               })}
 
 
