@@ -22,7 +22,7 @@ const getEmployeeById = ((req, res) => {
     // join EMPLOYEE_EMPSKILL ees on e.emp_id=ees.emp_id
     // join EMPSKILL es on es.emp_skill_id=ees.emp_skill_id
     // where e.emp_id=?;`;
-    const selQuery =`SELECT e.*, es.skill_name, es.emp_skill_id
+    const selQuery = `SELECT e.*, es.skill_name, es.emp_skill_id
     FROM EMPLOYEE e 
     LEFT JOIN EMPLOYEE_EMPSKILL ees ON e.emp_id = ees.emp_id
     LEFT JOIN EMPSKILL es ON es.emp_skill_id = ees.emp_skill_id
@@ -222,12 +222,33 @@ const getProjectByEmp = ((req, res) => {
 })
 
 const setEmpProject = ((req, res) => {
-    const insertQuery = `INSERT INTO EMPLOYEE_PROJECT(emp_id,project_id,mentor_id,created_at) VALUES (?,?,?,?);`;
-    mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
+    const selQuery = "SELECT * from EMPLOYEE_PROJECT where emp_id=? and project_id=?";
+
+    mysql.query(selQuery, [req.body.emp_id, req.body.project_id], (err, selResults) => {
         if (err) {
-            res.status(500).json({ "msg": "Insertion Failed" });
+            res.status(500).json({ "msg": "Unable to get Data." });
         } else {
-            res.status(200).json({ "msg": "Data inserted successfully" });
+            if (selResults.length > 0) {
+                console.log(selResults);
+                const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=? WHERE emp_id=?;`;
+                mysql.query(updateQuery, ['active', req.body.emp_id], (err, updResults) => {
+                    if (err) {
+                        res.status(500).json({ "msg": "Updation Failed" });
+                    } else {
+                        res.status(200).json({ "msg": "Data updated successfully" });
+                    }
+                })
+            } else {
+                console.log("Hi")
+                const insertQuery = `INSERT INTO EMPLOYEE_PROJECT(emp_id,project_id,mentor_id,created_at) VALUES (?,?,?,?);`;
+                mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
+                    if (err) {
+                        res.status(500).json({ "msg": "Insertion Failed" });
+                    } else {
+                        res.status(200).json({ "msg": "Data inserted successfully" });
+                    }
+                })
+            }
         }
     })
 })
