@@ -4,6 +4,7 @@ const eodRoute = require("./routes/eodRoute");
 const adminRoute = require("./routes/adminRoute")
 const app = express();
 const cors = require("cors");
+const { PORT } = require("./config/envConfig");
 
 const corsOpts = {
     origin: "*",
@@ -21,7 +22,7 @@ app.use(authRoute);
 app.use(eodRoute);
 app.use(adminRoute);
 
-app.listen(8000, () => {
-    console.log("Server running at Port 8000");
+app.listen(PORT, () => {
+    console.log(`Server running at Port ${PORT}`);
 })
 
