@@ -4,6 +4,7 @@ const underscore = require("underscore");
 const handlebars = require("handlebars");
 const path = require("path");
 const fs = require("fs");
+const { FROM_MAIL, FROM_MAIL_PASS } = require("../config/envConfig");
 
 
 
@@ -125,8 +126,8 @@ const setEod = ((req, res) => {
                                 let transporter = nodemailer.createTransport({
                                     service: 'gmail',
                                     auth: {
-                                        user: 'xanderr127@gmail.com',
-                                        pass: 'oyvogwpmtdoioppb'
+                                        user: FROM_MAIL,
+                                        pass: FROM_MAIL_PASS
                                     }
                                 });
 
@@ -156,7 +157,7 @@ const setEod = ((req, res) => {
 
 
                                 let mailOptions = {
-                                    from: 'xanderr127@gmail.com',
+                                    from: FROM_MAIL,
                                     to: mentorsList,
                                     cc: ccList,
                                     subject: `EOD of ${result[0]['EMP NAME ']} for ${req.body.eoddate}`,
