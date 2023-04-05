@@ -5,11 +5,9 @@ const path = require("path")
 const fs = require("fs")
 const jwt = require("jsonwebtoken")
 const JWT_SECRET = 'Ordex Portal EOD Web App........'
-
+const bcrypt = require('bcryptjs');
 const login = ((req, res) => {
-
     const selQuery = "select * from USER as u, EMPLOYEE as e,EMPLOYEE_EMPROLE as ee, EMPROLE as er where u.user_id=e.user_id and e.email=? and e.emp_id=ee.emp_id and ee.emp_role_id=er.emp_role_id;";
-    // console.log(req.body.Username);
     mysql.query(selQuery, [req.body.Email], (err, results) => {
         console.log(results);
         if (err) {
@@ -17,8 +15,9 @@ const login = ((req, res) => {
             res.status(500).json({ "msg": 'Error in Login please Enter Valid Credentials' });
         } else {
             if (results != "") {
-
-                if (results[0].password == req.body.Password) {
+                const passwordcompare = bcrypt.compare(results[0].password, req.body.Password)
+                // if (results[0].password == req.body.Password) {
+                if (passwordcompare) {
                     if ((req.body.Role == 'employee' || req.body.Role == 'intern') && (results[0].role_name == 'employee' || results[0].role_name == 'intern')) {
                         res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });
                     }
@@ -73,13 +72,14 @@ const sendEmailForgot = ((req, res) => {
                         }
 
                         token = jwt.sign(payload, secret, { expiresIn: '15m' })
-
                         var transporter = nodemailer.createTransport({
+
                             service: "gmail",
                             auth: {
-                                user: 'xanderr127@gmail.com',
-                                pass: 'oyvogwpmtdoioppb'
+                                user: "xanderr127@gmail.com",
+                                pass: "oyvogwpmtdoioppb"
                             }
+
                         });
                         const filePath = path.join(__dirname, '../emailTemplate/forgotEmail.html');
                         const source = fs.readFileSync(filePath, 'utf-8').toString();
@@ -125,14 +125,19 @@ const forgotPassword = ((req, res) => {
                     if (req.body.password == req.body.password2) {
                         const secretA = JWT_SECRET + results[0].password
                         const payloadA = jwt.verify(req.body.tokenF, secretA)
-                        const updateQuery = `UPDATE USER SET Password = ?  WHERE User_ID =?`;
-                        mysql.query(updateQuery, [req.body.password, req.body.user_idF], (err, results) => {
-                            if (err) {
-                                res.status(500).json({ "msg": "Updation Failed" });
-                            } else {
-                                res.status(200).json({ "msg": "Password updated Successfully" });
-                            }
-                        })
+                        const updateQuery = `UPDATE USER SET Password = ? WHERE User_ID = ?`;
+                        const saltRounds = 10; // number of salt rounds
+                        const salt = bcrypt.genSaltSync(saltRounds);
+                        bcrypt.hash(req.body.password, salt, function (err, hash) {
+                            const secpass = hash;
+                            mysql.query(updateQuery, [secpass, req.body.user_idF], (err, results) => {
+                                if (err) {
+                                    res.status(500).json({ "msg": "Updation Failed" });
+                                } else {
+                                    res.status(200).json({ "msg": "Password updated Successfully" });
+                                }
+                            })
+                        });
                     }
                     else {
                         res.status(500).json({ "msg": "Password and Confirm Password are not matched" })
@@ -145,5 +150,6 @@ const forgotPassword = ((req, res) => {
         }
     })
 })
+
 
 module.exports = { login, sendEmailForgot, forgotPassword };
