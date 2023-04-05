@@ -7,38 +7,44 @@ const jwt = require("jsonwebtoken");
 const { FROM_MAIL, FROM_MAIL_PASS } = require("../config/envConfig");
 const JWT_SECRET = 'Ordex Portal EOD Web App........'
 const bcrypt = require('bcryptjs');
+const { log } = require("console");
 const login = ((req, res) => {
-    const selQuery = "select * from USER as u, EMPLOYEE as e,EMPLOYEE_EMPROLE as ee, EMPROLE as er where u.user_id=e.user_id and e.email=? and e.emp_id=ee.emp_id and ee.emp_role_id=er.emp_role_id;";
-    mysql.query(selQuery, [req.body.Email], (err, results) => {
-        console.log(results);
-        if (err) {
-            console.log(`Error In Login ${err}`);
-            res.status(500).json({ "msg": 'Error in Login please Enter Valid Credentials' });
-        } else {
-            if (results != "") {
-                const passwordcompare = bcrypt.compare(results[0].password, req.body.Password)
-                // if (results[0].password == req.body.Password) {
-                if (passwordcompare) {
-                    if ((req.body.Role == 'employee' || req.body.Role == 'intern') && (results[0].role_name == 'employee' || results[0].role_name == 'intern')) {
-                        res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });
-                    }
-                    else if (req.body.Role == 'admin' && results[0].role_name == 'admin') {
-                        res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });
-                    }
-                    else {
-                        res.status(401).json({ msg: "Unauthorized User" });
-                    }
-                }
-                else {
-                    res.status(401).json({ msg: "Unauthorized User" })
-                }
+
+    const selQuery = "SELECT * FROM USER AS u, EMPLOYEE AS e, EMPLOYEE_EMPROLE AS ee, EMPROLE AS er WHERE u.user_id=e.user_id AND e.email=? AND e.emp_id=ee.emp_id AND ee.emp_role_id=er.emp_role_id;"
+    mysql.query(selQuery, [req.body.Email], async (err, results) => {
+        try {
+            console.log(results);
+            if (err) {
+                console.log(`Error In Login ${err}`);
+                res.status(500).json({ "msg": 'Error in Login please Enter Valid Credentials' });
             } else {
-                console.log("No results found");
-                res.status(404).json({ "msg": "user not found!" });
+                if (results.length > 0) {
+                    const passwordcompare = await bcrypt.compare(req.body.Password, results[0].password);
+                    console.log(passwordcompare);
+                    if (passwordcompare) {
+                        if ((req.body.Role == 'employee' || req.body.Role == 'intern') && (results[0].role_name == 'employee' || results[0].role_name == 'intern')) {
+                            res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });
+                        } else if (req.body.Role == 'admin' && results[0].role_name == 'admin') {
+                            res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });
+                        } else {
+                            res.status(401).json({ msg: "Unauthorized User" });
+                        }
+                    } else {
+                        res.status(401).json({ msg: "Invalid credentials" });
+                    }
+                } else {
+                    console.log("No results found");
+                    res.status(404).json({ "msg": "user not found!" });
+                }
             }
+        }
+        catch (err) {
+            console.log(err.message);
+            res.status(400).send({ Error: err })
         }
     })
 })
+
 
 let secret, payload, token;
 
@@ -79,6 +85,9 @@ const sendEmailForgot = ((req, res) => {
                             auth: {
                                 user: FROM_MAIL,
                                 pass: FROM_MAIL_PASS
+                            },
+                            tls: {
+                                rejectUnauthorized: false
                             }
 
                         });
@@ -116,8 +125,9 @@ const sendEmailForgot = ((req, res) => {
 })
 
 const forgotPassword = ((req, res) => {
+
     const selQuery = `SELECT * FROM USER WHERE user_id=?`;
-    mysql.query(selQuery, [req.body.user_idF], (err, results) => {
+    mysql.query(selQuery, [req.body.user_idF], async (err, results) => {
         if (err) {
             res.status(500).json({ "msg": "Error" })
         } else {
@@ -128,7 +138,7 @@ const forgotPassword = ((req, res) => {
                         const payloadA = jwt.verify(req.body.tokenF, secretA)
                         const updateQuery = `UPDATE USER SET Password = ? WHERE User_ID = ?`;
                         const saltRounds = 10; // number of salt rounds
-                        const salt = bcrypt.genSaltSync(saltRounds);
+                        const salt = await bcrypt.genSaltSync(saltRounds);
                         bcrypt.hash(req.body.password, salt, function (err, hash) {
                             const secpass = hash;
                             mysql.query(updateQuery, [secpass, req.body.user_idF], (err, results) => {
