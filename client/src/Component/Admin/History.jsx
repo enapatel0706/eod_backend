@@ -68,10 +68,10 @@ const History = (props) => {
     setTasks({ ...tasks, [name]: value });
   };
 
-  const fetchTask = async () => {
+  const fetchTask = async (eodDate) => {
     try {
       setLoader(true);
-
+      
       if (eodDate) {
         const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod`, {
           params: {
@@ -83,18 +83,20 @@ const History = (props) => {
         console.log(tasks);
         setLoader(false);
       } else {
-        Swal.fire({
-          title: "Error",
-          type: "error",
-          icon: "error",
-          text: "Select Date",
-        }).then(() => setLoader(false));
+        setLoader(false);
+          Swal.fire({
+            title: "Error",
+            type: "error",
+            icon: "error",
+            text: "Select Date",
+          }).then(() => setLoader(false));
       }
     } catch (err) {
       setTasks([]);
       setLoader(false);
     }
   };
+  
   const fetchDateRange = async () => {
     try {
       setLoader(true);
@@ -124,11 +126,12 @@ const History = (props) => {
   };
   useEffect(() => {
     getEmpData();
+    fetchTask(todayDate())
   }, []);
-
-  useEffect(() => {
-    !props.temp && fetchTask();
-  }, [eodDate]);
+  
+  // useEffect(() => {
+  //   !props.temp && fetchTask();
+  // }, [eodDate]);
 
   return (
     <>
@@ -146,8 +149,8 @@ const History = (props) => {
                       <div className="page-title-box" id="admin-history">
                         {bar == true ? (
                           <>
-                            {console.log(props.phone)}
-
+                            {/* {console.log(props.phone)} */}
+                            
                             <div className="row flex-nowrap">
                               <div className="col py-2 h-100">
                                 <div className="row col-12 mx-0 px-0 text-center border-bottom">
@@ -207,7 +210,7 @@ const History = (props) => {
                                 aria-controls="nav-history"
                                 aria-selected="true"
                                 onClick={() => {
-                                  fetchTask();
+                                  fetchTask(eodDate);
                                 }}
                               >
                                 Date
@@ -257,7 +260,7 @@ const History = (props) => {
                                     value={eodDate}
                                     // defaultValue={eodDate}
                                     max={todayDate()}
-                                    onChange={(e) => { setEodDate(e.target.value); fetchTask(); }}
+                                    onChange={(e) => { setEodDate(e.target.value); fetchTask(e.target.value); }}
                                     required
                                   />
                                 </div>
@@ -348,7 +351,7 @@ const History = (props) => {
                               <tbody className="position-relative">
                                 {tasks.length != 0 ? (
                                   tasks.map((elem, index) => (
-                                    <tr style={{ borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
+                                    <tr key={index} style={{ borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
                                       <td>{index + 1}</td>
                                       <td>{moment(elem.eod_date).format("DD-MM-YYYY")}</td>
                                       <td>{elem.emp_fname + " " + elem.emp_lname}</td>

@@ -32,7 +32,7 @@ const AdminSidebar = () => {
               <div id="sidebar-menu">
                 <div className="profile">
                   <div className="profile_img">
-                    <img src={Profile} alt="Profile Image" />
+                    {/* <img src={Profile} alt="Profile Image" /> */}
                   </div>
                   <div className="profile_position">
                     <h5 style={{ "textTransform": "capitalize" }}>{`${getuserDetails().empFname} ${getuserDetails().empLname}`}</h5>

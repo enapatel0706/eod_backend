@@ -54,6 +54,7 @@ const Eod_history = () => {
         setTasks(res.data);
         setLoader(false);
       } else {
+        setLoader(false);
         Swal.fire({
           title: "Error",
           type: "error",
