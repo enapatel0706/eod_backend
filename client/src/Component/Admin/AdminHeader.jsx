@@ -46,7 +46,7 @@ const AdminHeader = () => {
             </li>
           </ul>
           <ul className="list-inline ms-auto mb-0" style={{ display: "flex", alignItems: "center" }}>
-            <li className="list-inline-item dropdown notification-list">
+            {/* <li className="list-inline-item dropdown notification-list">
               <div className="nav-link input-group d-flex">
                 <button className="btn btn-secondary">
                   <i className="fas fa-search"></i>
@@ -57,7 +57,7 @@ const AdminHeader = () => {
                   placeholder="Search"
                 />
               </div>
-            </li>
+            </li> */}
             <li className="list-inline-item dropdown notification-list nav-user">
               <div className="dropdown selectdiv" id='navbar'>
                 <a className="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" style={{ display: "flex", alignItems: "center" }}>
@@ -68,7 +68,7 @@ const AdminHeader = () => {
                       marginTop: "10px"
                     }}
                   >
-                    <img src={_image_75} alt="" srcSet="" className="me-2 rounded-circle" />
+                    {/* <img src={_image_75} alt="" srcSet="" className="me-2 rounded-circle" /> */}
                   </div>
                   <span className="d-inline-block ml-1" style={{ "textTransform": "capitalize" }}>{`${getuserDetails().empFname} ${getuserDetails().empLname}`}</span>
                   {/* <i

@@ -536,7 +536,7 @@ const Edit_emp_details = (props) => {
                         </div>
                         <div className="row col-12 mx-0 px-0 justify-content-center mt-3">
                           <div class="col-8 col-sm-5 col-md-6 col-lg-3 px-0 bg-image">
-                            <img src={_image_75} alt="" />
+                            {/* <img src={_image_75} alt="" /> */}
                             <div class="row col-12 Empname mx-auto text-center d-flex align-items-center">
                               <h5 style={{ textTransform: "capitalize" }}>
                                 {getFullName()}
