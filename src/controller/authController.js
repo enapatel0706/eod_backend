@@ -3,7 +3,8 @@ const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const path = require("path")
 const fs = require("fs")
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { FROM_MAIL, FROM_MAIL_PASS } = require("../config/envConfig");
 const JWT_SECRET = 'Ordex Portal EOD Web App........'
 const bcrypt = require('bcryptjs');
 const login = ((req, res) => {
@@ -76,8 +77,8 @@ const sendEmailForgot = ((req, res) => {
 
                             service: "gmail",
                             auth: {
-                                user: "xanderr127@gmail.com",
-                                pass: "oyvogwpmtdoioppb"
+                                user: FROM_MAIL,
+                                pass: FROM_MAIL_PASS
                             }
 
                         });
@@ -91,7 +92,7 @@ const sendEmailForgot = ((req, res) => {
                         const htmlToSend = template(replacements);
 
                         var mailOptions = {
-                            from: 'xanderr127@gmail.com',
+                            from: FROM_MAIL,
                             to: req.body.Email,
                             subject: 'Forget Password Instructions',
                             html: htmlToSend

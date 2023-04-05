@@ -1,10 +1,11 @@
 const mysql = require("mysql2");
+const { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE, DB_PORT } = require("../config/envConfig");
 const con = mysql.createConnection({
-    host: "kyobeeproddb.cvclroatvi7x.us-west-2.rds.amazonaws.com",
-    user: "root",
-    password: "KyobeeOrdex1234",
-    database: "ORDEX-PORTAL",
-    port: 3306
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_DATABASE,
+    port: DB_PORT
 });
 
 con.connect((err) => {

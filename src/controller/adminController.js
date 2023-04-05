@@ -230,8 +230,8 @@ const setEmpProject = ((req, res) => {
         } else {
             if (selResults.length > 0) {
                 console.log(selResults);
-                const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=? WHERE emp_id=?;`;
-                mysql.query(updateQuery, ['active', req.body.emp_id], (err, updResults) => {
+                const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=? WHERE emp_id=? and project_id=?;`;
+                mysql.query(updateQuery, ['active', req.body.emp_id, req.body.project_id], (err, updResults) => {
                     if (err) {
                         res.status(500).json({ "msg": "Updation Failed" });
                     } else {

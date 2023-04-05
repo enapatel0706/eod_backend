@@ -29,7 +29,7 @@ const Employee_list = () => {
     setLoader(true)
     try {
       let res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/employees`);
-      // console.log(res.data[0].email);
+      
       setEmpData(res.data);
       setLoader(false)
     } catch (error) {
