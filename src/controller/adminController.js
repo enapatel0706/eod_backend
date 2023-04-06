@@ -229,17 +229,18 @@ const setEmpProject = ((req, res) => {
             res.status(500).json({ "msg": "Unable to get Data." });
         } else {
             if (selResults.length > 0) {
-                console.log(selResults);
-                const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=? WHERE emp_id=? and project_id=?;`;
-                mysql.query(updateQuery, ['active', req.body.emp_id, req.body.project_id], (err, updResults) => {
+                console.log(req.body);
+                const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=?,mentor_id=? WHERE emp_id=? and project_id=?;`;
+                mysql.query(updateQuery, ['active', req.body.mentor_id, req.body.emp_id, req.body.project_id], (err, updResults) => {
                     if (err) {
+                        console.log(err)
                         res.status(500).json({ "msg": "Updation Failed" });
                     } else {
+                        console.log("In else")
                         res.status(200).json({ "msg": "Data updated successfully" });
                     }
                 })
             } else {
-                console.log("Hi")
                 const insertQuery = `INSERT INTO EMPLOYEE_PROJECT(emp_id,project_id,mentor_id,created_at) VALUES (?,?,?,?);`;
                 mysql.query(insertQuery, [req.body.emp_id, req.body.project_id, req.body.mentor_id, req.body.created_at], (err, results) => {
                     if (err) {
