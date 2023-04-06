@@ -89,7 +89,7 @@ const History = (props) => {
             type: "error",
             icon: "error",
             text: "Select Date",
-          }).then(() => setLoader(false));
+          }).then(() => setLoader(false), setTasks([]) );
       }
     } catch (err) {
       setTasks([]);

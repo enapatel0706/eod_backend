@@ -50,7 +50,7 @@ const Compliance = () => {
             eod_date: eodDate,
           },
         });
-        setCompliance(res.data);
+        setCompliance(res.data);      
         setLoader(false);
       } else {
         Swal.fire({
@@ -60,6 +60,7 @@ const Compliance = () => {
           confirmButtonText: "OK",
           confirmButtonColor: "#06bdff",
         });
+        setCompliance([]);
       }
     } catch (error) {
       setCompliance([]);
@@ -297,7 +298,7 @@ const Compliance = () => {
                                           {data.emp_type}
                                         </td>
 
-                                        <td className="border-0">
+                                        {/* <td className="border-0">
                                           <img
                                             src={edit_emp}
                                             alt=""
@@ -307,7 +308,7 @@ const Compliance = () => {
                                           //   editEmployee(data.emp_id);
                                           // }}
                                           />
-                                        </td>
+                                        </td> */}
                                       </tr>
                                     </>
                                   );

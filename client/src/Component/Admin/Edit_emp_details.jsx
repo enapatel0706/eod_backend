@@ -368,7 +368,7 @@ const Edit_emp_details = (props) => {
           confirmButtonColor: "#06bdff",
         });
       }
-      else if (pValue.mentor_id === "" || pValue.mentor_id === "0") {
+      else if (pValue.mentor_id == "" || pValue.mentor_id == "0") {
         setLoader(false)
         Swal.fire({
           type: "error",
