@@ -132,7 +132,6 @@ const Eod_main = () => {
   //   const item_to_edit = temp.find((curElem) => {
   //     return curElem.id == ind;
   //   });
-  //   console.log(item_to_edit);
   //   setData(item_to_edit.name);
   //   setEditIndex(ind);
   //   setIsEdit(false);

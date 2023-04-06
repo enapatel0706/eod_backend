@@ -61,7 +61,6 @@ const ResetPassword = () => {
                     "password": npass,
                     "password2": cpass
                 });
-                console.log(res);
                 if (res.status == 200) {
                     setLoader(false)
                     Swal.fire({

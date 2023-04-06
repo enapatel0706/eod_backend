@@ -48,12 +48,8 @@ const History = (props) => {
           eoddate: props.date,
         },
       });
-      console.log("-----fatch data-----");
-      console.log(res.data);
       setTasks(res.data);
       setBar(true);
-      console.log("----empdata ----");
-      console.log(tasks);
     } catch (err) {
       setTasks([]);
       setLoader(false);
@@ -71,7 +67,7 @@ const History = (props) => {
   const fetchTask = async (eodDate) => {
     try {
       setLoader(true);
-      
+
       if (eodDate) {
         const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod`, {
           params: {
@@ -79,24 +75,22 @@ const History = (props) => {
           },
         });
         setTasks(res.data);
-        console.log("----fetchtask------");
-        console.log(tasks);
         setLoader(false);
       } else {
         setLoader(false);
-          Swal.fire({
-            title: "Error",
-            type: "error",
-            icon: "error",
-            text: "Select Date",
-          }).then(() => setLoader(false), setTasks([]) );
+        Swal.fire({
+          title: "Error",
+          type: "error",
+          icon: "error",
+          text: "Select Date",
+        }).then(() => setLoader(false), setTasks([]));
       }
     } catch (err) {
       setTasks([]);
       setLoader(false);
     }
   };
-  
+
   const fetchDateRange = async () => {
     try {
       setLoader(true);
@@ -128,7 +122,7 @@ const History = (props) => {
     getEmpData();
     fetchTask(todayDate())
   }, []);
-  
+
   // useEffect(() => {
   //   !props.temp && fetchTask();
   // }, [eodDate]);
@@ -149,8 +143,6 @@ const History = (props) => {
                       <div className="page-title-box" id="admin-history">
                         {bar == true ? (
                           <>
-                            {/* {console.log(props.phone)} */}
-                            
                             <div className="row flex-nowrap">
                               <div className="col py-2 h-100">
                                 <div className="row col-12 mx-0 px-0 text-center border-bottom">

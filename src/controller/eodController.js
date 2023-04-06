@@ -136,9 +136,6 @@ const setEod = ((req, res) => {
                                     obj: result
                                 })
 
-                                console.log(eodTbl);
-
-
                                 // filtering unique emails for to: & cc:
                                 const unique = (value, index, self) => {
                                     return self.indexOf(value) === index
@@ -149,10 +146,6 @@ const setEod = ((req, res) => {
 
                                 let mentorsList = uniqueMentorList.toString();
                                 let ccList = uniqueCCList.toString();
-
-                                console.log(">>>>mentorlist  ", mentorsList);
-                                console.log(">>>cclist ", ccList);
-
 
                                 let mailOptions = {
                                     from: FROM_MAIL,

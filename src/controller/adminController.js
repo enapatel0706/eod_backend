@@ -69,8 +69,6 @@ const getSkills = ((req, res) => {
         } else {
             if (results != "") {
                 res.status(200).json(results)
-                console.log(results);
-
             } else {
                 res.status(404).json({ "msg": "Data not found!" });
             }
@@ -170,7 +168,6 @@ const setEmpSkills = ((req, res) => {
 const deleteEmpSkills = ((req, res) => {
     const deleteQuery = `DELETE FROM EMPLOYEE_EMPSKILL WHERE emp_skill_id=? AND emp_id=?`;
     mysql.query(deleteQuery, [req.body.emp_skill_id, req.body.emp_id], (err, results) => {
-        console.log(req.body.emp_skill_id + "\n" + req.body.emp_id)
         if (err) {
             res.status(500).json({ "msg": "Deletion Failed" });
         } else {
@@ -229,14 +226,12 @@ const setEmpProject = ((req, res) => {
             res.status(500).json({ "msg": "Unable to get Data." });
         } else {
             if (selResults.length > 0) {
-                console.log(req.body);
                 const updateQuery = `UPDATE EMPLOYEE_PROJECT SET status=?,mentor_id=? WHERE emp_id=? and project_id=?;`;
                 mysql.query(updateQuery, ['active', req.body.mentor_id, req.body.emp_id, req.body.project_id], (err, updResults) => {
                     if (err) {
                         console.log(err)
                         res.status(500).json({ "msg": "Updation Failed" });
                     } else {
-                        console.log("In else")
                         res.status(200).json({ "msg": "Data updated successfully" });
                     }
                 })

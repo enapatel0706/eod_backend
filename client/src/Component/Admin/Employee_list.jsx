@@ -119,7 +119,6 @@ const Employee_list = () => {
                                     return (
                                       <>
                                         <tr className="border-start" key={data.emp_id}>
-                                          {console.log(data)}
                                           <th scope="row">{data.emp_id}</th>
                                           <td>{data.emp_code}</td>
                                           <td>{data.emp_fname + " " + data.emp_lname}</td>

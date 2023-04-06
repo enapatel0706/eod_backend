@@ -13,14 +13,11 @@ const login = ((req, res) => {
     const selQuery = "SELECT * FROM USER AS u, EMPLOYEE AS e, EMPLOYEE_EMPROLE AS ee, EMPROLE AS er WHERE u.user_id=e.user_id AND e.email=? AND e.emp_id=ee.emp_id AND ee.emp_role_id=er.emp_role_id;"
     mysql.query(selQuery, [req.body.Email], async (err, results) => {
         try {
-            console.log(results);
             if (err) {
-                console.log(`Error In Login ${err}`);
                 res.status(500).json({ "msg": 'Error in Login please Enter Valid Credentials' });
             } else {
                 if (results.length > 0) {
                     const passwordcompare = await bcrypt.compare(req.body.Password, results[0].password);
-                    console.log(passwordcompare);
                     if (passwordcompare) {
                         if ((req.body.Role == 'employee' || req.body.Role == 'intern') && (results[0].role_name == 'employee' || results[0].role_name == 'intern')) {
                             res.status(200).json({ "userId": results[0].user_id, "userName": results[0].username, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post });

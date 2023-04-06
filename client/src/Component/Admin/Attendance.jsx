@@ -118,8 +118,6 @@ const Attendance = () => {
       }
       // setAbsent(res.data);
       setLoader(false)
-      // console.log("----- Present-Data  ------");
-      // console.log(present);
     } catch (error) {
       setTableData([]);
       console.log(error);

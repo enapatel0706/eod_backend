@@ -65,7 +65,6 @@ const Compliance = () => {
     } catch (error) {
       setCompliance([]);
       setLoader(false);
-      console.log(error);
     }
   };
 
