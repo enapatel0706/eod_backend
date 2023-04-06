@@ -63,7 +63,8 @@ const setEod = ((req, res) => {
             res.status(500).json({ error: "Error When Fetching Data" })
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
+               
                 function sumUp(sum, time) {
                     var times = time.split(":");
                     sum.h += +times[0];
@@ -92,17 +93,14 @@ const setEod = ((req, res) => {
                         res.status(500).json({ "msg": "Insertion failed" });
                     } else {
 
-                        const selQry = "SELECT  B.emp_id, (CONCAT(B.emp_fname, '  ', B.emp_lname))  AS 'EMP NAME ' , ET.*,P.project_name AS 'PROJECT NAME' , A.mentor_id AS 'EMPLOYEE MENTOR ID' , EA.* , C.email AS 'MENTOR ID'from EMPLOYEE_PROJECT A JOIN EMPLOYEE C ON A.mentor_id=C.emp_id JOIN EMPLOYEE B ON A.emp_id=B.emp_id JOIN EOD_TASK ET ON ET.emp_id=ET.emp_id JOIN PROJECT P  ON P.project_id=A.project_id JOIN EMPLOYEE_ADDITIONAL_MAIL EA ON A.emp_id=EA.emp_id WHERE A.project_id=ET.project_id and B.emp_id=? AND ET.eod_date=?";
+                        const selQry = "SELECT B.emp_id,(CONCAT(B.emp_fname, '  ', B.emp_lname)) AS 'EMP NAME ',ET.*,P.project_name AS 'PROJECT NAME',A.mentor_id AS 'EMPLOYEE MENTOR ID',EA.*,C.email AS 'MENTOR ID' FROM EMPLOYEE_PROJECT A JOIN EMPLOYEE C ON A.mentor_id = C.emp_id JOIN EMPLOYEE B ON A.emp_id = B.emp_id JOIN EOD_TASK ET ON ET.emp_id = ET.emp_id JOIN PROJECT P ON P.project_id = A.project_id JOIN EMPLOYEE_ADDITIONAL_MAIL EA ON A.emp_id = EA.emp_id WHERE A.project_id = ET.project_id AND A.emp_id = ET.emp_id AND B.emp_id =? AND A.emp_id = ET.emp_id AND B.emp_id = ? AND ET.eod_date = ?; ";
 
-
-                        mysql.query(selQry, [req.body.empId, req.body.eoddate], (err, result) => {
+                        mysql.query(selQry, [req.body.empId, req.body.empId, String(req.body.eoddate)], (err, result) => {
                             if (err) {
                                 res.status(500).json({ "msg": "Email not Sent" });
                             } else {
 
-                                console.log(">>>>");
-                                console.log(result);
-
+                                
 
                                 let mentors = [];
                                 let cc = [];
