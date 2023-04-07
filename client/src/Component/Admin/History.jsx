@@ -38,18 +38,25 @@ const History = (props) => {
     return today;
   };
   const [eodDate, setEodDate] = useState(props.date ? props.date : todayDate());
+
+  useEffect(() => {
+
+    (props.empId ? getEmpData() : fetchTask(eodDate));
+  }, [eodDate])
+
   const getEmpData = async () => {
     try {
       setLoader(true);
-
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod/task`, {
         params: {
           empid: props.empId,
-          eoddate: props.date,
+          eoddate: eodDate,
         },
       });
       setTasks(res.data);
       setBar(true);
+      setLoader(false);
+
     } catch (err) {
       setTasks([]);
       setLoader(false);
@@ -91,10 +98,40 @@ const History = (props) => {
     }
   };
 
+  const fetchEmployeeDateRange = async () => {
+    try {
+      setLoader(true);
+      if (startDate && endDate && endDate > startDate) {
+
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/employee/eod/daterange`, {
+          params: {
+            emp_id: props.empId,
+            start_date: startDate,
+            end_date: endDate,
+          },
+        });
+        setTasks(res.data);
+        setLoader(false);
+      } else {
+        setLoader(false);
+        Swal.fire({
+          type: "error",
+          icon: "error",
+          title: "Please select valid date",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#06bdff",
+        });
+      }
+    } catch (err) {
+      setTasks([]);
+      setLoader(false);
+    }
+  }
   const fetchDateRange = async () => {
     try {
       setLoader(true);
       if (startDate && endDate && endDate > startDate) {
+
         const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod/daterange`, {
           params: {
             start_date: startDate,
@@ -119,8 +156,7 @@ const History = (props) => {
     }
   };
   useEffect(() => {
-    getEmpData();
-    fetchTask(todayDate())
+    (props.empId ? getEmpData() : fetchTask(todayDate()))
   }, []);
 
   // useEffect(() => {
@@ -218,7 +254,7 @@ const History = (props) => {
                                 aria-selected="false"
                                 onClick={() => {
                                   if (startDate && endDate) {
-                                    fetchDateRange();
+                                    (props.empId ? fetchEmployeeDateRange() : fetchDateRange())
                                   } else {
                                     setTasks([]);
                                     setStartDate("");
@@ -252,7 +288,10 @@ const History = (props) => {
                                     value={eodDate}
                                     // defaultValue={eodDate}
                                     max={todayDate()}
-                                    onChange={(e) => { setEodDate(e.target.value); fetchTask(e.target.value); }}
+                                    onChange={(e) => {
+                                      setEodDate(e.target.value);
+                                      (props.empId ? getEmpData() : fetchTask(e.target.value));
+                                    }}
                                     required
                                   />
                                 </div>
@@ -297,7 +336,7 @@ const History = (props) => {
                                 <button
                                   type="submit"
                                   className="btn-search text-white"
-                                  onClick={fetchDateRange}
+                                  onClick={() => { (props.empId ? fetchEmployeeDateRange() : fetchDateRange()) }}
                                 >
                                   Search
                                 </button>

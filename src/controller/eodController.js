@@ -18,7 +18,7 @@ const getProjectEmp = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results);
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -49,7 +49,7 @@ const getTaskEmp = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -175,7 +175,7 @@ const setEod = ((req, res) => {
                     }
                 })
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -195,7 +195,7 @@ const getTaskEmpDateRange = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -212,7 +212,7 @@ const getAdditionalMail = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -228,7 +228,7 @@ const updateAdditionalMail = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })

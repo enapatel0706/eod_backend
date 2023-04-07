@@ -10,7 +10,7 @@ const getEmployees = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -36,7 +36,7 @@ const getEmployeeById = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -70,7 +70,7 @@ const getSkills = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -88,7 +88,7 @@ const getSkillsByEmp = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -131,7 +131,7 @@ const setEmpSkills = ((req, res) => {
                     insertSkill(req, res, results[0].emp_skill_id)
                 }
             } else {
-                if (res.status(404)) {
+                if (res.status(404) || res.status(204)) {
                     const insertQuery = `INSERT INTO EMPSKILL(skill_name,created_at) VALUES (?,?)`;
                     mysql.query(insertQuery, [req.body.skill_name, req.body.created_at], (err, results) => {
                         if (err) {
@@ -154,7 +154,7 @@ const setEmpSkills = ((req, res) => {
                                 })
                             }
                             else {
-                                res.status(404).json({ "msg": "Data not found!" });
+                                res.status(204).json({ "msg": "Data not found!" });
                             }
                         }
                     })
@@ -191,7 +191,7 @@ const getProject = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -286,7 +286,7 @@ const getEmpAttendance = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -305,7 +305,7 @@ const getEmpAttendancePresent = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -323,7 +323,7 @@ const getEmpAttendanceAbsent = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -341,7 +341,7 @@ const getEODReportAll = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -360,7 +360,7 @@ const getEODReportAllDateRange = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -379,7 +379,7 @@ const getEODReport = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -399,7 +399,7 @@ const getEODReportDateRange = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -418,7 +418,7 @@ const getEODCompliance = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })
@@ -438,7 +438,7 @@ const getEODComplianceDateRange = ((req, res) => {
             if (results != "") {
                 res.status(200).json(results)
             } else {
-                res.status(404).json({ "msg": "Data not found!" });
+                res.status(204).json({ "msg": "Data not found!" });
             }
         }
     })

@@ -31,7 +31,7 @@ const login = ((req, res) => {
                     }
                 } else {
                     console.log("No results found");
-                    res.status(404).json({ "msg": "user not found!" });
+                    res.status(204).json({ "msg": "user not found!" });
                 }
             }
         }
@@ -115,7 +115,7 @@ const sendEmailForgot = ((req, res) => {
                     }
                 })
             } else {
-                res.status(404).json({ "msg": "user not found!" });
+                res.status(204).json({ "msg": "user not found!" });
             }
         }
     })
