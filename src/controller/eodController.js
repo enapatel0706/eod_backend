@@ -15,7 +15,7 @@ const getProjectEmp = ((req, res) => {
             // res.status(500).json(err)
             res.status(500).json({ err: "Error When Fetching Data" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results);
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -192,7 +192,7 @@ const getTaskEmpDateRange = ((req, res) => {
             console.log(`Error fetching data`);
             res.status(500).json({ error: "Error When Fetching Data" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -209,7 +209,7 @@ const getAdditionalMail = ((req, res) => {
             console.log(err);
             res.status(500).json({ error: "Error When Fetching Data" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -225,7 +225,7 @@ const updateAdditionalMail = ((req, res) => {
             console.log(err);
             res.status(500).json({ error: "Error When Fetching Data" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });

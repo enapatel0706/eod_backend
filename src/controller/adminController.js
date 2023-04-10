@@ -7,7 +7,7 @@ const getEmployees = ((req, res) => {
             console.log(err);
             res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -33,7 +33,7 @@ const getEmployeeById = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -67,7 +67,7 @@ const getSkills = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -85,7 +85,7 @@ const getSkillsByEmp = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -125,7 +125,7 @@ const setEmpSkills = ((req, res) => {
             console.log(err);
             res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 if (res.status(200)) {
 
                     insertSkill(req, res, results[0].emp_skill_id)
@@ -143,7 +143,7 @@ const setEmpSkills = ((req, res) => {
                                     if (err) {
                                         res.status(500).json({ "msg": "Insertion Failed" });
                                     } else {
-                                        if (results != "") {
+                                        if (results.length > 0) {
                                             if (res.status(200)) {
                                                 // insertSkill(req, res, results)
                                                 insertSkill(req, res, results[0].emp_skill_id)
@@ -188,7 +188,7 @@ const getProject = ((req, res) => {
             console.log(err);
             res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -209,7 +209,7 @@ const getProjectByEmp = ((req, res) => {
             console.log(err);
             res.status(500).json(err);
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -275,18 +275,24 @@ const statusEmpProject = ((req, res) => {
 const getEmpAttendance = ((req, res) => {
     const selQuery = `SELECT emp.emp_id,eo.eod_date,eo.created_at,emp_code,emp.emp_fname,emp.emp_midname,emp.emp_lname,emp.email,emp.phoneno,emp.emp_type,eo.total_work_time, emp.status FROM EMPLOYEE emp LEFT JOIN EOD eo
     ON emp.emp_id=eo.emp_id AND eo.eod_date=? AND eo.created_at=? WHERE emp.status='ACTIVE' AND emp.emp_type<>'admin' ;`;
-    mysql.query(selQuery, [req.query.eod_date, req.query.eod_date], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ "msg": 'Error To Fetching Data' });
-        } else {
-            if (results != "") {
-                res.status(200).json(results)
+    if (req.query.eod_date) {
+
+        mysql.query(selQuery, [req.query.eod_date, req.query.eod_date], (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ "msg": 'Error To Fetching Data' });
             } else {
-                res.status(204).json({ "msg": "Data not found!" });
+                if (results.length > 0) {
+                    res.status(200).json(results);
+                } else {
+                    res.status(204).json({ "msg": "Data not found!" });
+                }
             }
-        }
-    })
+        })
+    } else {
+        res.status(400).json({ "msg": "EOD Date is required!" });
+
+    }
 })
 
 
@@ -294,36 +300,50 @@ const getEmpAttendancePresent = ((req, res) => {
     const selQuery = `SELECT emp.emp_id,eo.eod_date,emp.emp_code,emp.emp_fname,emp.emp_lname,emp.email,emp.phoneno,emp.emp_type,emp.post,eo.total_work_time, IF(eo.eod_Date=eo.created_at,"Present","Absent") AS 'attendance'
     FROM EMPLOYEE emp, EOD eo 
     WHERE emp.status='ACTIVE' AND eo.emp_id=emp.emp_id AND eo.eod_date=? AND eo.eod_date=eo.created_at;`;
-    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ "msg": 'Error To Fetching Data' });
-        } else {
-            if (results != "") {
-                res.status(200).json(results)
+    if (req.query.eod_date) {
+        mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ "msg": 'Error To Fetching Data' });
             } else {
-                res.status(204).json({ "msg": "Data not found!" });
+                if (results.length > 0) {
+                    res.status(200).json(results)
+                } else {
+                    res.status(204).json({ "msg": "Data not found!" });
+                }
             }
-        }
-    })
+        })
+    } else {
+        res.status(400).json({ "msg": "EOD Date is required!" });
+
+    }
 })
 
 const getEmpAttendanceAbsent = ((req, res) => {
     const selQuery = `SELECT emp.emp_id,emp.emp_code,emp.emp_fname,emp.emp_lname,emp.email,emp.phoneno,emp.emp_type,emp.post, "Absent" As 'attendance'
     FROM EMPLOYEE emp
     WHERE emp.status='ACTIVE' AND emp.emp_type!='admin' AND NOT EXISTS (SELECT * FROM EOD eo WHERE emp.emp_id=eo.emp_id AND eo.eod_date=eo.created_at AND eo.eod_date=?);`;
-    mysql.query(selQuery, [req.query.eod_date], (err, results) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ "msg": 'Error To Fetching Data' });
-        } else {
-            if (results != "") {
-                res.status(200).json(results)
+
+    if (req.query.eod_date) {
+
+        mysql.query(selQuery, [req.query.eod_date], (err, results) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ "msg": 'Error To Fetching Data' });
             } else {
-                res.status(204).json({ "msg": "Data not found!" });
+                if (results.length > 0) {
+                    console.log(">>>")
+                    console.log(results)
+                    res.status(200).json(results)
+                } else {
+                    res.status(204).json({ "msg": "Data not found!" });
+                }
             }
-        }
-    })
+        })
+    } else {
+        res.status(400).json({ "msg": "EOD Date is required!" });
+
+    }
 })
 
 const getEODReportAll = ((req, res) => {
@@ -335,7 +355,7 @@ const getEODReportAll = ((req, res) => {
             console.log(err);
             res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -354,7 +374,7 @@ const getEODReportAllDateRange = ((req, res) => {
             console.log(err);
             res.status(500).json({ "msg": 'Error To Fetching Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -373,7 +393,7 @@ const getEODReport = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -393,7 +413,7 @@ const getEODReportDateRange = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -412,7 +432,7 @@ const getEODCompliance = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });
@@ -432,7 +452,7 @@ const getEODComplianceDateRange = ((req, res) => {
             res.status(500).json({ "msg": 'Error To Fetching Data' });
 
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(204).json({ "msg": "Data not found!" });

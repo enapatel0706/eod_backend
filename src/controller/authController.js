@@ -55,7 +55,7 @@ const sendEmailForgot = ((req, res) => {
             console.log(`Error - ${err}`);
             res.status(500).json({ "msg": 'Error To Fetch The Data' });
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 const selQuery = "select u.user_id, e.email, u.password from EMPLOYEE e, USER u where u.user_id= e.user_id and e.email=?";
                 mysql.query(selQuery, [req.body.Email], (err, results) => {
                     if (err) {
@@ -128,7 +128,7 @@ const forgotPassword = ((req, res) => {
         if (err) {
             res.status(500).json({ "msg": "Error" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 if (req.body.user_idF == user_id) {
                     if (req.body.password == req.body.password2) {
                         const secretA = JWT_SECRET + results[0].password
