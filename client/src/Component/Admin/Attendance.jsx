@@ -91,6 +91,10 @@ const Attendance = () => {
         setTableData(res.data);
         setLoader(false)
       }
+      else if (res.status == 204) {
+        setTableData([]);
+      }
+
       // setPresent(res.data);
       setLoader(false)
     } catch (error) {
@@ -115,6 +119,9 @@ const Attendance = () => {
       if (res.status == 200) {
         setTableData(res.data);
         setLoader(false)
+      }
+      else if (res.status == 204) {
+        setTableData([]);
       }
       // setAbsent(res.data);
       setLoader(false)
