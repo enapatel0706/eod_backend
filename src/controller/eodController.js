@@ -46,7 +46,7 @@ const getTaskEmp = ((req, res) => {
             console.log(`Error fetching data`);
             res.status(500).json({ "error": "Error When Fetching Data" })
         } else {
-            if (results != "") {
+            if (results.length > 0) {
                 res.status(200).json(results)
             } else {
                 res.status(404).json({ "msg": "Data not found!" });
@@ -64,7 +64,7 @@ const setEod = ((req, res) => {
 
         } else {
             if (results.length > 0) {
-               
+
                 function sumUp(sum, time) {
                     var times = time.split(":");
                     sum.h += +times[0];
@@ -100,7 +100,7 @@ const setEod = ((req, res) => {
                                 res.status(500).json({ "msg": "Email not Sent" });
                             } else {
 
-                                
+
 
                                 let mentors = [];
                                 let cc = [];

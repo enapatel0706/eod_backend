@@ -21,6 +21,7 @@ const History = (props) => {
 
   //------------ Loader Code End ------------
 
+  
   const [empData, setEmpData] = useState([]);
 
   const [tasks, setTasks] = useState([]);
@@ -41,13 +42,14 @@ const History = (props) => {
   const getEmpData = async () => {
     try {
       setLoader(true);
-
+      // alert(`HI ${props.empId} ${eodDate}`)
       const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod/task`, {
         params: {
           empid: props.empId,
-          eoddate: props.date,
+          eoddate: eodDate,
         },
       });
+      console.log(res.data);
       setTasks(res.data);
       setBar(true);
     } catch (err) {
@@ -119,8 +121,9 @@ const History = (props) => {
     }
   };
   useEffect(() => {
-    getEmpData();
-    fetchTask(todayDate())
+    (props.empId ? getEmpData() : fetchTask(todayDate()));
+
+
   }, []);
 
   // useEffect(() => {
@@ -202,7 +205,8 @@ const History = (props) => {
                                 aria-controls="nav-history"
                                 aria-selected="true"
                                 onClick={() => {
-                                  fetchTask(eodDate);
+                                  (props.empId ? getEmpData() : fetchTask(eodDate));
+                                  // fetchTask(eodDate);
                                 }}
                               >
                                 Date
@@ -252,7 +256,11 @@ const History = (props) => {
                                     value={eodDate}
                                     // defaultValue={eodDate}
                                     max={todayDate()}
-                                    onChange={(e) => { setEodDate(e.target.value); fetchTask(e.target.value); }}
+                                    onChange={(e) => {
+                                      setEodDate(e.target.value);
+                                      alert(e.target.value)
+                                        (props.empId ? getEmpData() : fetchTask(e.target.value));
+                                    }}
                                     required
                                   />
                                 </div>
