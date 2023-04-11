@@ -219,16 +219,37 @@ const getAdditionalMail = ((req, res) => {
 })
 
 const updateAdditionalMail = ((req, res) => {
-    const selQuery = "UPDATE EMPLOYEE_ADDITIONAL_MAIL SET mentor1_email=?, mentor2_email=?, mentor3_email=?, updated_at=? WHERE emp_id=?;";
-    mysql.query(selQuery, [req.body.email1, req.body.email2, req.body.email3, req.body.updated_at, req.body.emp_id], (err, results) => {
+
+    const selQuery = "SELECT * FROM EMPLOYEE_ADDITIONAL_MAIL WHERE emp_id=?;";
+    mysql.query(selQuery, [req.body.emp_id], (err, results) => {
         if (err) {
             console.log(err);
             res.status(500).json({ error: "Error When Fetching Data" })
         } else {
             if (results.length > 0) {
-                res.status(200).json(results)
+                const updQuery = "UPDATE EMPLOYEE_ADDITIONAL_MAIL SET mentor1_email=?, mentor2_email=?, mentor3_email=?, updated_at=? WHERE emp_id=?;";
+                mysql.query(updQuery, [req.body.email1, req.body.email2, req.body.email3, req.body.updated_at, req.body.emp_id], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).json({ error: "Error while Updating Data" })
+                    } else {
+                        if (results.affectedRows > 0) {
+                            res.status(200).json(results);
+                        } else {
+                            res.status(204).json({ "msg": "Data not found!" });
+                        }
+                    }
+                })
             } else {
-                res.status(204).json({ "msg": "Data not found!" });
+                const insQuery = "insert into EMPLOYEE_ADDITIONAL_MAIL(emp_id,mentor1_email, mentor2_email, mentor3_email, created_at) values(?,?,?,?,?)";
+                mysql.query(insQuery, [req.body.emp_id, req.body.email1, req.body.email2, req.body.email3, req.body.updated_at], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(500).json({ error: "Error While Inserting Data" })
+                    } else {
+                        res.status(200).json({ "msg": "Data inserted Successfully" });
+                    }
+                })
             }
         }
     })
