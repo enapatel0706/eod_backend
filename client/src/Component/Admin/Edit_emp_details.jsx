@@ -31,7 +31,7 @@ const Edit_emp_details = (props) => {
     );
     setEmpData(res.data[0]);
     setLoader(false);
-};
+  };
 
   let name, value;
   const getData = (e) => {
@@ -206,7 +206,7 @@ const Edit_emp_details = (props) => {
   };
 
   const deleteEmpSkill = async (skill_id) => {
-    
+
     setLoader(true);
     try {
       let res = await axios.delete(
@@ -224,7 +224,7 @@ const Edit_emp_details = (props) => {
         setLoader(false);
       }
     } catch (error) {
-      
+
       setLoader(false);
       console.log(error);
     }
@@ -345,7 +345,7 @@ const Edit_emp_details = (props) => {
         })();
       });
     } catch (error) {
-      
+
       console.log(error);
       setLoader(false);
     }
@@ -387,7 +387,7 @@ const Edit_emp_details = (props) => {
           }
         );
 
-        
+
         if (res.status == 200 || res.status == 204) {
           let temp = false;
 
@@ -596,9 +596,9 @@ const Edit_emp_details = (props) => {
                                   >
                                     <option value="intern">Intern</option>
                                     <option value="employee">Employee</option>
-                                    <option value="consultant">
+                                    {/* <option value="consultant">
                                       Consultant
-                                    </option>
+                                    </option> */}
                                     <option value="admin">admin</option>
                                   </select>
                                 </div>
@@ -679,38 +679,38 @@ const Edit_emp_details = (props) => {
                             </div>
                             <div className="row col-12 mx-0 px-0 mb-0 mb-md-3 mt-0 mt-lg-3">
                               {empSkill.map((data, index) => {
-                                if(data.skill_name)
-                                {
-                                return (
-                                  <div
-                                    className="col-6 mt-3 px-1 ps-0 ps-sm-1"
-                                    key={index}
-                                    title={data.skill_name}
-                                  >
+                                if (data.skill_name) {
+                                  return (
                                     <div
-                                      className="skill-box p-2 col-auto"
-                                      style={{ paddingRight: 20 }}
+                                      className="col-6 mt-3 px-1 ps-0 ps-sm-1"
+                                      key={index}
+                                      title={data.skill_name}
                                     >
                                       <div
-                                        className="mb-0"
-                                        style={{ paddingRight: "2rem" }}
+                                        className="skill-box p-2 col-auto"
+                                        style={{ paddingRight: 20 }}
                                       >
-                                        {data.skill_name}
+                                        <div
+                                          className="mb-0"
+                                          style={{ paddingRight: "2rem" }}
+                                        >
+                                          {data.skill_name}
+                                        </div>
+                                        <i
+                                          className="fas fa-circle-xmark"
+                                          onClick={() =>
+                                            deleteEmpSkill(data.emp_skill_id)
+                                          }
+                                        ></i>
                                       </div>
-                                      <i
-                                        className="fas fa-circle-xmark"
-                                        onClick={() =>
-                                          deleteEmpSkill(data.emp_skill_id)
-                                        }
-                                      ></i>
                                     </div>
-                                  </div>
-                                );
-                               }}
-                                )
-                              
+                                  );
+                                }
                               }
-                              
+                              )
+
+                              }
+
                             </div>
                           </div>
                           <div className="col-12 col-md-7 px-0 px-sm-1">
@@ -794,7 +794,7 @@ const Edit_emp_details = (props) => {
                                       name="pname"
                                       value={
                                         pValue.project_name ==
-                                        "-- Select Project --"
+                                          "-- Select Project --"
                                           ? ""
                                           : pValue.project_name
                                       }
@@ -816,7 +816,7 @@ const Edit_emp_details = (props) => {
                                       disabled={
                                         pValue.project_name == "" ||
                                         pValue.project_name ==
-                                          "-- Select Project --"
+                                        "-- Select Project --"
                                       }
                                     >
                                       <option
@@ -824,7 +824,7 @@ const Edit_emp_details = (props) => {
                                         selected={
                                           !pValue.project_name ||
                                           pValue.project_name ==
-                                            "-- Select Project --"
+                                          "-- Select Project --"
                                         }
                                       >
                                         -- Select Mentor --
