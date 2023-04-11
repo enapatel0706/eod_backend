@@ -70,15 +70,34 @@ const Login = () => {
         e.preventDefault();
 
         const res = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/login`, obj);
-
         if (res.status == 200) {
           localStorage.setItem("userData", JSON.stringify(res.data));
           dispatch({ type: "LOGIN", payload: true });
           setLoader(false)
           if (role == 'employee')
-            navigate("/eod");
+            if (res.data.pass_expire == "no") {
+              navigate("/eod");
+            }
+            else {
+              const resdata = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/setuser/token`, obj);
+              if (resdata.status == 200) {
+                const user_id = resdata.data.user_id;
+                const token = resdata.data.token
+                navigate(`/resetpassword?user_id=${user_id}&token=${token}`)
+              }
+            }
           else if (role == 'admin')
-            navigate("/admin/main");
+            if (res.data.pass_expire == "no") {
+              navigate("/admin/main");
+            }
+            else {
+              const resdata = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/setuser/token`, obj);
+              if (resdata.status == 200) {
+                const user_id = resdata.data.user_id;
+                const token = resdata.data.token
+                navigate(`/resetpassword?user_id=${user_id}&token=${token}`)
+              }
+            }
         }
         else {
           setLoader(false)
