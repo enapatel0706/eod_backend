@@ -49,7 +49,7 @@ let user_id, email, password;
 
 const sendEmailForgot = ((req, res) => {
 
-    const selQuery = "SELECT * FROM `ORDEX-PORTAL`.EMPLOYEE WHERE Email=?";
+    const selQuery = "SELECT * FROM EMPLOYEE WHERE Email=?";
     mysql.query(selQuery, [req.body.Email], (err, results) => {
         if (err) {
             console.log(`Error - ${err}`);

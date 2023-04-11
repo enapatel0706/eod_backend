@@ -1,7 +1,7 @@
 const mysql = require("../db/connection").con;
 
 const getEmployees = ((req, res) => {
-    const selQuery = "SELECT * FROM `ORDEX-PORTAL`.EMPLOYEE;";
+    const selQuery = "SELECT * FROM EMPLOYEE;";
     mysql.query(selQuery, (err, results) => {
         if (err) {
             console.log(err);

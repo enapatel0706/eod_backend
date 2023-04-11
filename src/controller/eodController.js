@@ -9,7 +9,7 @@ const { FROM_MAIL, FROM_MAIL_PASS } = require("../config/envConfig");
 
 
 const getProjectEmp = ((req, res) => {
-    const selQuery = "select DISTINCT P.project_id,P.project_name from `ORDEX-PORTAL`.EMPLOYEE_PROJECT EP, `ORDEX-PORTAL`.PROJECT P, `ORDEX-PORTAL`.EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id AND EP.status='active';";
+    const selQuery = "select DISTINCT P.project_id,P.project_name from EMPLOYEE_PROJECT EP, PROJECT P, EMPLOYEE E WHERE E.emp_id=? AND E.emp_id = EP.emp_id AND EP.project_id = P.project_id AND EP.status='active';";
     mysql.query(selQuery, [req.query.empid], (err, results) => {
         if (err) {
             // res.status(500).json(err)
@@ -87,7 +87,7 @@ const setEod = ((req, res) => {
                 })
                 let timeSum = parseSum(sum)
 
-                const insQuery = "INSERT INTO `ORDEX-PORTAL`.EOD(emp_id, total_work_time, created_at,eod_date) VALUES (?,?,?,?)";
+                const insQuery = "INSERT INTO EOD(emp_id, total_work_time, created_at,eod_date) VALUES (?,?,?,?)";
                 mysql.query(insQuery, [req.body.empId, timeSum, req.body.createdAt, req.body.eoddate], (err, results) => {
                     if (err) {
                         res.status(500).json({ "msg": "Insertion failed" });
