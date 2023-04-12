@@ -68,7 +68,8 @@ const Eod_main = () => {
         setTasks(res.data);
         setTaskStatus(res.status);
         setLoader(false)
-      } else {
+      } else if (res.status == 204) {
+        setTasks([]);
       }
     } catch (err) {
       setTasks([]);
@@ -244,32 +245,33 @@ const Eod_main = () => {
         confirmButtonText: 'Ok',
         confirmButtonColor: '#06bdff',
       })
-        .then((result) => {
+        .then(async (result) => {
           if (result.isConfirmed) {
             setLoader(true)
-            const res = axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod`, {
+            const res = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod`, {
               empId: getuserDetails().empId,
               eoddate: eod_date,
               createdAt: dateString,
-            }).then(() => {
-              if (res) {
-                setLoader(false)
-                Swal.fire({
-                  icon: "success",
-                  title: "EOD submitted successfully",
-                  confirmButtonText: 'OK',
-                  confirmButtonColor: '#06bdff',
-                })
-              } else {
-                Swal.fire({
-                  icon: "warning",
-                  title: "Something went wrong",
-                  confirmButtonText: 'OK',
-                  confirmButtonColor: '#06bdff',
-                })
-                setLoader(false)
-              }
-            })
+            });
+
+            alert(JSON.stringify(res));
+            if (res.status == 200) {
+              setLoader(false)
+              Swal.fire({
+                icon: "success",
+                title: "EOD submitted successfully",
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#06bdff',
+              })
+            } else {
+              setLoader(false)
+              Swal.fire({
+                icon: "warning",
+                title: "Something went wrong",
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#06bdff',
+              })
+            }
           }
         })
     } catch (error) {

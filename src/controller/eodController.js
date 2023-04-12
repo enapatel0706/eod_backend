@@ -56,13 +56,16 @@ const getTaskEmp = ((req, res) => {
 })
 
 const setEod = ((req, res) => {
-    const selQuery = "SELECT * FROM `ORDEX-PORTAL`.EOD_TASK WHERE emp_id=? AND eod_date=?;";
+    console.log(req.body.empId);
+    console.log(req.body.eoddate)
+    const selQuery = "SELECT * FROM EOD_TASK WHERE emp_id=? AND eod_date=?;";
     mysql.query(selQuery, [req.body.empId, req.body.eoddate], (err, results) => {
         if (err) {
             console.log(`Error fetching data`);
             res.status(500).json({ error: "Error When Fetching Data" })
 
         } else {
+            console.log(results);
             if (results.length > 0) {
 
                 function sumUp(sum, time) {
@@ -146,6 +149,9 @@ const setEod = ((req, res) => {
 
                                 let mentorsList = uniqueMentorList.toString();
                                 let ccList = uniqueCCList.toString();
+
+                                console.log(ccList);
+                                console.log(mentorsList)
 
                                 let mailOptions = {
                                     from: FROM_MAIL,
