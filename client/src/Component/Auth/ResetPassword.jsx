@@ -48,45 +48,40 @@ const ResetPassword = () => {
 
     const changePass = async (e) => {
         e.preventDefault();
-        setLoader(true)
+        setLoader(true);
         try {
             if (passValidations()) {
                 const queryParams = new URLSearchParams(window.location.search);
                 const user_id = queryParams.get("user_id");
                 const token = queryParams.get("token");
-
                 const res = await axios.patch(`${process.env.REACT_APP_BACKEND_BASE_URL}/forgot/password`, {
                     "user_idF": user_id,
                     "tokenF": token,
                     "password": npass,
                     "password2": cpass
                 });
-                if (res.status == 200) {
-                    setLoader(false)
+                if (res.status === 200) {
+                    setLoader(false);
                     Swal.fire({
                         type: "success",
                         icon: "success",
                         title: "Your password Changed Successfully!",
                         confirmButtonText: "OK",
                         confirmButtonColor: "#06bdff",
-                    })
-                        .then(() => navigate('/'))
+                    }).then(() => navigate("/"));
                 } else {
-                    setLoader(false)
+                    setLoader(false);
                     Swal.fire({
                         type: "error",
                         icon: "error",
                         title: "Your password reset link has expired",
                         confirmButtonText: "OK",
                         confirmButtonColor: "#06bdff",
-                    }).then(() =>
-                        navigate('/forgotpassword'))
-
+                    }).then(() => navigate("/forgotpassword"));
                 }
-
             }
         } catch (err) {
-            setLoader(false)
+            setLoader(false);
             Swal.fire({
                 type: "error",
                 icon: "error",
@@ -94,10 +89,11 @@ const ResetPassword = () => {
                 confirmButtonText: "OK",
                 confirmButtonColor: "#06bdff",
             });
-            navigate('/forgotpassword');
+            navigate("/forgotpassword");
             console.log(err);
         }
-    }
+    };
+
 
     return (
         <>
@@ -115,7 +111,7 @@ const ResetPassword = () => {
                     <div className="tab-content" id="nav-tabContent">
                         <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                             <div className="image mt-4 mb-3">
-                                <img src="./image/Logo.png" alt="" srcset="" />
+                                <img src="./image/Logo.png" alt="" srcSet="" />
                             </div>
                             <form className="mt-3">
                                 {/* <!-- Email input --> */}

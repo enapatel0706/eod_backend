@@ -36,12 +36,12 @@ function App() {
       let userData = JSON.parse(localStorage.getItem("userData"));
       dispatch({ type: "LOGIN", payload: true });
 
-      if (userData.roleName == "employee" || userData.roleName == "intern") {
+      if ((userData.roleName == "employee" || userData.roleName == "intern") && userData.pass_expire == "no") {
         if (location.pathname != '/eod') {
           navigate("/eod");
         }
       }
-      if (userData.roleName == "admin") {
+      if (userData.roleName == "admin" && userData.pass_expire == "no") {
         if (location.pathname != '/admin/main') {
           navigate("/admin/main");
         }
@@ -105,21 +105,22 @@ function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   let userData = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <>
       {/* Header */}
 
-      {(localStorage.getItem("userData")) ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Header /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Header /> : null}</> : null}
 
-      {(localStorage.getItem("userData")) ? <>{(userData.roleName == "admin") ? <AdminHeader /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "admin") ? <AdminHeader /> : null}</> : null}
 
 
 
       {/* Sidebar */}
 
-      {(localStorage.getItem("userData")) ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Sidebar /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Sidebar /> : null}</> : null}
 
-      {(localStorage.getItem("userData")) ? <>{(userData.roleName == "admin") ? <AdminSidebar /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "admin") ? <AdminSidebar /> : null}</> : null}
 
 
       <MenuContext.Provider value={{ state, dispatch }}>
