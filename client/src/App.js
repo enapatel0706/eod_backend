@@ -35,15 +35,20 @@ function App() {
     if (localStorage.getItem("userData")) {
       let userData = JSON.parse(localStorage.getItem("userData"));
       dispatch({ type: "LOGIN", payload: true });
+      if (userData.pass_expire == "yes") {
 
-      if ((userData.roleName == "employee" || userData.roleName == "intern") && userData.pass_expire == "no") {
-        if (location.pathname != '/eod') {
-          navigate("/eod");
+
+        navigate('/');
+      } else {
+        if ((userData.roleName == "employee" || userData.roleName == "intern") && userData.pass_expire == "no") {
+          if (location.pathname != '/eod') {
+            navigate("/eod");
+          }
         }
-      }
-      if (userData.roleName == "admin" && userData.pass_expire == "no") {
-        if (location.pathname != '/admin/main') {
-          navigate("/admin/main");
+        if (userData.roleName == "admin" && userData.pass_expire == "no") {
+          if (location.pathname != '/admin/main') {
+            navigate("/admin/main");
+          }
         }
       }
     } else {
@@ -59,6 +64,7 @@ function App() {
       else if (location.pathname.includes("resetpassword")) {
 
         const queryParams = new URLSearchParams(window.location.search);
+        console.log(queryParams);
         const user_id = queryParams.get("user_id");
         const token = queryParams.get("token");
         navigate(`/resetpassword?user_id=${user_id}&token=${token}`);

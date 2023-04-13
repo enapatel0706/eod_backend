@@ -56,6 +56,7 @@ const Login = () => {
   }
 
   const handleSubmit = async (e) => {
+    let res;
     try {
 
       if (ValidateEmail()) {
@@ -69,24 +70,25 @@ const Login = () => {
         setLoader(true)
         e.preventDefault();
 
-        const res = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/login`, obj);
+        res = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/login`, obj);
         if (res.status == 200) {
           localStorage.setItem("userData", JSON.stringify(res.data));
           dispatch({ type: "LOGIN", payload: true });
           setLoader(false)
-          if (role == 'employee')
+          if (role == 'employee') {
             if (res.data.pass_expire == "no") {
               navigate("/eod");
             }
             else {
-              const resdata = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/setuser/token`, obj);
+              const resdata = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/setuser/token`, obj)
               if (resdata.status == 200) {
                 const user_id = resdata.data.user_id;
                 const token = resdata.data.token
                 navigate(`/resetpassword?user_id=${user_id}&token=${token}`)
               }
             }
-          else if (role == 'admin')
+          }
+          else if (role == 'admin') {
             if (res.data.pass_expire == "no") {
               navigate("/admin/main");
             }
@@ -98,6 +100,7 @@ const Login = () => {
                 navigate(`/resetpassword?user_id=${user_id}&token=${token}`)
               }
             }
+          }
         }
         else {
           setLoader(false)
@@ -120,6 +123,7 @@ const Login = () => {
       console.log(err);
       throw err;
     }
+
   };
 
   return (

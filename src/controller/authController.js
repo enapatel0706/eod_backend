@@ -137,10 +137,11 @@ const sendEmailForgot = ((req, res) => {
         }
     })
 })
+
 const forgotPassword = ((req, res) => {
+
     const selQuery = `SELECT * FROM USER WHERE user_id=?`;
     mysql.query(selQuery, [req.body.user_idF], async (err, results) => {
-
         if (err) {
             res.status(500).json({ "msg": "Error" })
         } else {
@@ -149,12 +150,12 @@ const forgotPassword = ((req, res) => {
                     if (req.body.password == req.body.password2) {
                         const secretA = JWT_SECRET + results[0].password
                         const payloadA = jwt.verify(req.body.tokenF, secretA)
-                        const updateQuery = `UPDATE USER SET Password = ? WHERE User_ID = ?`;
                         const saltRounds = 10; // number of salt rounds
                         const salt = await bcrypt.genSaltSync(saltRounds);
                         bcrypt.hash(req.body.password, salt, function (err, hash) {
                             const secpass = hash;
-                            mysql.query(updateQuery, [secpass, req.body.user_idF], (err, results) => {
+                            const updateQuery = `UPDATE USER SET Password = ? ,pass_expire=? WHERE User_ID = ?`;
+                            mysql.query(updateQuery, [secpass, 'no', req.body.user_idF], (err, results) => {
                                 if (err) {
                                     res.status(500).json({ "msg": "Updation Failed" });
                                 } else {
@@ -162,49 +163,18 @@ const forgotPassword = ((req, res) => {
                                 }
                             })
                         });
-                        try {
-                            if (err) {
-                                res.status(500).json({ "msg": "Error" });
-                            } else {
-                                if (results.length > 0) {
-                                    if (req.body.user_idF == user_id) {
-                                        if (req.body.password == req.body.password2) {
-                                            const secretA = JWT_SECRET + results[0].password
-                                            const payloadA = jwt.verify(req.body.tokenF, secretA)
-                                            const saltRounds = 10;
-                                            const salt = await bcrypt.genSaltSync(saltRounds);
-                                            bcrypt.hash(req.body.password, salt, function (err, hash) {
-                                                const secpass = hash;
-                                                const updateQuery = `UPDATE USER SET Password = ?, pass_expire = ? WHERE User_ID = ?`;
-                                                mysql.query(updateQuery, [secpass, 'no', req.body.user_idF], (err, results) => {
-                                                    if (err) {
-                                                        res.status(500).json({ "msg": "Updation Failed" });
-                                                    } else {
-                                                        res.status(200).json({ "msg": "Password updated Successfully" });
-                                                    }
-                                                });
-                                            });
-                                        } else {
-                                            res.status(500).json({ "msg": "Password and Confirm Password are not matched" })
-                                        }
-                                    } else {
-                                        res.status(500).json({ "msg": "Invalid ID........" })
-
-                                    }
-                                }
-                            }
-                        } catch (err) {
-                            console.log(err.message);
-                            res.status(400).send({ Error: err })
-                        }
-
                     }
+                    else {
+                        res.status(500).json({ "msg": "Password and Confirm Password are not matched" })
+                    }
+                }
+                else {
+                    res.status(500).json({ "msg": "Invalid ID........" })
                 }
             }
         }
-    });
-});
-
+    })
+})
 
 
 const getusertoken = ((req, res) => {
