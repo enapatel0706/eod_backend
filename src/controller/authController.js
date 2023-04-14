@@ -178,7 +178,7 @@ const forgotPassword = ((req, res) => {
 
 
 const getusertoken = ((req, res) => {
-    const selQuery = "SELECT * FROM `ORDEX-PORTAL`.EMPLOYEE WHERE Email = ?";
+    const selQuery = "SELECT * FROM EMPLOYEE WHERE Email = ?";
     mysql.query(selQuery, [req.body.Email], (err, results) => {
         if (err) {
             console.log(err);
@@ -209,6 +209,7 @@ const getusertoken = ((req, res) => {
         }
     });
 });
+
 
 
 

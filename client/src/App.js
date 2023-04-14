@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import Main from "./Component/Admin/Main";
 import PrivateRoutes from "./Component/Auth/PrivateRoutes";
 import { ContextProvider } from "./Component/Auth/Context";
-import { useReducer, createContext, useEffect } from 'react';
+import { useReducer, createContext, useEffect, useState } from 'react';
 import { initialState, reducer } from "./reducer/reducer";
 import ForgotPassword from "./Component/Auth/ForgotPassword";
 import ResetPassword from "./Component/Auth/ResetPassword";
@@ -23,23 +23,40 @@ import AdminHeader from "./Component/Admin/AdminHeader";
 import Eod_main from "./Component/Employee/Eod_main";
 import Configuration from "./Component/Employee/Configuration";
 import Eod_history from "./Component/Employee/Eod_history";
+import axios from "axios";
 export const MenuContext = createContext();
 
-function App() {
 
+function App() {
+  const [loader, setLoader] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const checkLocalStorage = () => {
+  const checkLocalStorage = async () => {
 
     if (localStorage.getItem("userData")) {
       let userData = JSON.parse(localStorage.getItem("userData"));
       dispatch({ type: "LOGIN", payload: true });
-      if (userData.pass_expire == "yes") {
 
 
-        navigate('/');
-      } else {
+      if (userData.pass_expire === "yes") {
+        setLoader(true)
+        const obj = {
+          Email: userData.email,
+          Role: userData.roleName,
+        };
+        const resdata = await axios.post(`${process.env.REACT_APP_BACKEND_BASE_URL}/setuser/token`, obj)
+        const user_id = resdata.data.user_id;
+        const token = resdata.data.token
+        navigate(`/resetpassword?user_id=${user_id}&token=${token}`)
+        // navigate('/')
+        setLoader(false)
+
+      }
+
+
+      else {
         if ((userData.roleName == "employee" || userData.roleName == "intern") && userData.pass_expire == "no") {
           if (location.pathname != '/eod') {
             navigate("/eod");
@@ -59,15 +76,18 @@ function App() {
         navigate('/');
       }
       else if (location.pathname == "/forgotpassword") {
+
         navigate('/forgotpassword');
+
       }
       else if (location.pathname.includes("resetpassword")) {
-
+        setLoader(true)
         const queryParams = new URLSearchParams(window.location.search);
         console.log(queryParams);
         const user_id = queryParams.get("user_id");
         const token = queryParams.get("token");
         navigate(`/resetpassword?user_id=${user_id}&token=${token}`);
+        setLoader(false)
 
       } else {
         navigate('/*');
@@ -115,7 +135,7 @@ function App() {
   return (
     <>
       {/* Header */}
-
+      {loader ? <div className="loadingPopup"></div> : null}
       {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Header /> : null}</> : null}
 
       {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "admin") ? <AdminHeader /> : null}</> : null}
@@ -154,6 +174,8 @@ function App() {
           />
         </Routes>
       </MenuContext.Provider>
+
+
     </>
   );
 }
