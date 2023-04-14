@@ -131,7 +131,7 @@ const Employee_list = () => {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    placeholder="Search by name"
+                                    placeholder="Search"
                                     value={searchQuery}
                                     onChange={(e) =>
                                       setSearchQuery(e.target.value)
