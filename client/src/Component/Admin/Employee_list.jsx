@@ -5,13 +5,15 @@ import axios from "axios";
 // import Header from "./AdminHeader";
 // import Sidebar from "./AdminSidebar";
 import "../../css/employee-list.css";
+import Pagination from 'react-bootstrap/Pagination';
+import { convertLength } from "@mui/material/styles/cssUtils";
 
 const Employee_list = () => {
   const [empData, setEmpData] = useState([]);
   const [showAllEmpData, setShowAllEmpData] = useState(true);
   const [showSingleEmpData, setShowSingleEmpData] = useState(false);
   const [empId, setEmpId] = useState("");
-
+ 
   //------------ Loader Code Start------------
   const [loader, setLoader] = useState(false);
 
@@ -40,9 +42,7 @@ const Employee_list = () => {
 
   const handlesubmit = () => { };
 
-  useEffect(() => {
-    getEmpData();
-  }, []);
+  
 
   const SingleEmpData = () => {
     return (
@@ -58,19 +58,59 @@ const Employee_list = () => {
     setShowAllEmpData(false);
     setShowSingleEmpData(true);
   };
+    // ---------------Pagination Code------------
 
+  let [pageData, setPageData] = useState([])
+  const [page,setPage]= useState(1)
+  const [pagecount,setPagecount] = useState(0)
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleNext = () =>{
+    if(page === pagecount) return page
+    setPage(page + 1)
+  }
+
+  const handlePrevious = () =>{
+    if(page === 1) return page
+    setPage(page - 1)
+  }
+  useEffect(() => {
+    getEmpData();
+   
+  }, [page]);
+
+  
+  const filteredEmpData = empData.filter(
+    
+    (data) =>
+      data.emp_fname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      data.emp_lname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      data.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      data.post.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(data.emp_code).toLowerCase().includes(searchQuery.toLowerCase())
+);
+
+
+  const displayData = searchQuery ? filteredEmpData : pageData
+  const pagedatacount = Math.ceil(empData.length/8)
+  const limit = 8
+  useEffect(() =>{
+        setPagecount(pagedatacount)
+          if(page){
+            
+            const skip = limit * page
+              const dataskip = empData.slice(page === 1 ? 0 : skip - limit, skip) 
+              setPageData(dataskip)
+          }
+         
+  },[empData])
+
+  // ---------------Pagination Code------------
+     
   const AllEmployeesData = () => {
     return (
       <>
         {loader ? <div className="loadingPopup"></div> : null}
-
-        {/* <Header />
-        <div className="container-fluid">
-        <div className="row flex-nowrap bg-dark pt-3">
-          <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 py-3">
-            <Sidebar />
-          </div>
-        </div> */}
         <div className="fixed-left">
           <div id="wrapper">
             <div className="content-page">
@@ -83,6 +123,20 @@ const Employee_list = () => {
                         <div className="page-title-box">
                           <div className="row col-12 mx-0 px-0 text-center border-bottom">
                             <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
+                          </div>
+                          <div className="nav-link input-group d-flex w-25 mt-3">
+                            <button className="btn btn-secondary">
+                              <i className="fas fa-search"></i>
+                            </button>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Search by name"
+                                    value={searchQuery}
+                                    onChange={(e) =>
+                                      setSearchQuery(e.target.value)
+                                      }
+                                      autoFocus />      
                           </div>
                           <div className="row col-12 mx-0 px-0 justify-content-center mt-3">
                             <div className="table-responsive" style={{ width: "100%" }}>
@@ -115,7 +169,8 @@ const Employee_list = () => {
                                   </tr>
                                 </thead>
                                 <tbody className="">
-                                  {empData.map((data) => {
+                                {filteredEmpData.length > 0?
+                                  displayData.map((data) => {
                                     return (
                                       <>
                                         <tr className="border-start" key={data.emp_id}>
@@ -159,21 +214,47 @@ const Employee_list = () => {
                                         </tr>
                                       </>
                                     );
-                                  })}
+                                  }):(<tr>
+                                    <th colSpan={6} style={{ textAlign: "center", borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
+                                      No Data Available
+                                    </th>
+                                  </tr>)
+                                }
                                 </tbody>
                               </table>
+                              
+                              <div>
+                              {
+                                searchQuery.length == 0?
+                                  <Pagination>
+              
+                                      <Pagination.Prev onClick={handlePrevious} disabled={page === 1}/>
+                                      {
+                                        Array(pagecount).fill(null).map((ele,index) =>{
+                                            return(
+                                                <>
+                                                <Pagination.Item active={page === index+1 ? true : false} onClick={() => setPage(index+1)}>{index+1}</Pagination.Item>
+                                                
+                                                </>
+                                            )
+                                        })
+                                      }
+                                      <Pagination.Next onClick={handleNext} disabled={page === pagecount} />
+                                      
+                                  </Pagination>: null
+                              }
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div> 
+                </div> 
               </div>
             </div>
           </div>
         </div>
-        {/* </div> */}
       </>
     );
   };
@@ -185,19 +266,11 @@ const Employee_list = () => {
       <div className="fixed-left">
         <div id="wrapper">
 
-          {/* <Sidebar /> */}
-
-          {/* <div className="container-fluid"> */}
-          {/* <div className="row flex-nowrap bg-dark pt-3">
-        <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 py-3">
-          <Sidebar />
-        </div>
-      </div> */}
-
           {showAllEmpData && <AllEmployeesData />}
           {showSingleEmpData && <SingleEmpData />}
 
         </div>
+        
       </div>
     </>
   );

@@ -253,8 +253,6 @@ const Eod_main = () => {
               eoddate: eod_date,
               createdAt: dateString,
             });
-
-            alert(JSON.stringify(res));
             if (res.status == 200) {
               setLoader(false)
               Swal.fire({
