@@ -125,7 +125,11 @@ const Login = () => {
     }
 
   };
-
+  //-----------------password visibility----------------
+    const [showPassword, setShowPassword] = useState(false);
+    const [showAdminPassword, setShowAdminPassword] = useState(false);
+    const handleTogglePassword = () => setShowPassword(!showPassword);
+    const handleToggleAdminPassword = () => setShowAdminPassword(!showAdminPassword);  
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -197,7 +201,7 @@ const Login = () => {
                   <div className="col-10 px-0">
                     <div className="floating-label-group">
                       <input
-                        type="password"
+                        type={showPassword ? "text" : "password"} // toggle password visibility
                         id="password"
                         name="Password"
                         className="form-control"
@@ -205,6 +209,10 @@ const Login = () => {
                         required
                         onChange={handleChange}
                       />
+                      <div className="toggle-password" onClick={handleTogglePassword}>
+                        {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                      </div>
+                    
                       <label className="floating-label">Password</label>
                     </div>
                   </div>
@@ -258,7 +266,8 @@ const Login = () => {
                   <div className="col-10 px-0">
                     <div className="floating-label-group">
                       <input
-                        type="password"
+                      type={showAdminPassword ? "text" : "password"} // toggle password visibility
+                       // type="password"
                         id="password"
                         name="Password"
                         className="form-control"
@@ -266,6 +275,9 @@ const Login = () => {
                         required
                         onChange={handleChange}
                       />
+                      <div className="toggle-password" onClick={handleToggleAdminPassword}>
+                        {showAdminPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                      </div>
                       <label className="floating-label">Password</label>
                     </div>
                   </div>

@@ -94,7 +94,11 @@ const ResetPassword = () => {
         }
     };
 
-
+    //-----------------password visibility----------------
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const handleTogglePassword = () => setShowPassword(!showPassword);
+    const handleToggleConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);    
     return (
         <>
             {loader ? <div className="loadingPopup"></div> : null}
@@ -119,7 +123,8 @@ const ResetPassword = () => {
                                     <div className="col-12">
                                         <div className="floating-label-group">
                                             <input
-                                                type="password"
+                                             type={showPassword ? "text" : "password"} // toggle password visibility
+                                               // type="password"
                                                 id="password"
                                                 name='npass'
                                                 value={npass}
@@ -128,6 +133,9 @@ const ResetPassword = () => {
                                                 autoComplete="off"
                                                 required
                                             />
+                                             <div className="toggle-password" onClick={handleTogglePassword}>
+                                                 {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                                             </div>
                                             <label className="floating-label">New Password</label>
                                         </div>
 
@@ -135,7 +143,8 @@ const ResetPassword = () => {
                                     <div className="col-12">
                                         <div className="floating-label-group">
                                             <input
-                                                type="password"
+                                                type={showConfirmPassword ? "text" : "password"} // toggle password visibility
+                                                //type="password"
                                                 id="password"
                                                 className="form-control"
                                                 autoComplete="off"
@@ -144,6 +153,9 @@ const ResetPassword = () => {
                                                 onChange={(e) => { setCPass(e.target.value) }}
                                                 required
                                             />
+                                             <div className="toggle-password" onClick={handleToggleConfirmPassword}>
+                                                 {showConfirmPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                                             </div>
                                             <label className="floating-label">Confirm Password</label>
                                         </div>
                                     </div>

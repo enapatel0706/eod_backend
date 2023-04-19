@@ -128,4 +128,13 @@ p {
 	font-size: 12px;
 	opacity: 1;
 	color: #0b7db0;
-}
+}  
+  .toggle-password {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+  }
+
+  
