@@ -3,6 +3,7 @@ import axios from "axios";
 import { MenuContext } from "../../App";
 import Swal from "sweetalert2";
 import "./../../css/eod.css";
+import { TimePicker, Tooltip } from 'antd';
 
 const Eod_main = () => {
   const { state, dispatch } = useContext(MenuContext);
@@ -278,6 +279,10 @@ const Eod_main = () => {
     }
   };
 
+  const handleTimeChange = (selectedTime) => {
+      setEodTaskData({ ...eodTaskData, workTime: selectedTime.format('HH:mm') });    
+  };
+  
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -359,16 +364,20 @@ const Eod_main = () => {
                                 <div className="col-6 ms-0 ms-lg-3 me-3">
                                   <p className="mb-1">Total Working Time</p>
                                   <div className="cs-form">
-                                    <input
-                                      type="time"
-                                      name="workTime"
-                                      value={eodTaskData.workTime}
-                                      className="form-control"
-                                      placeholder="Time"
-                                      onChange={getInput}
-                                      required
-                                    // step="1"
-                                    />
+                                    <Tooltip id="time-tooltip" place="top" effect="solid" className="form-control" title="Enter the total time taken for the task.">      
+                                      <TimePicker
+                                        placeholder="--:--"
+                                        className="time-picker"
+                                        showSecond={false}
+                                        onChange={handleTimeChange}
+                                        disabledHours={() => [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}
+                                        showNow={false}
+                                        hideDisabledOptions
+                                        format="HH:mm"
+                                        inputReadOnly={true}
+                                        allowClear={true}
+                                      />
+                                    </Tooltip>
                                   </div>
                                 </div>
                                 <div className="col-6">
