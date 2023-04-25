@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "build": "mkdir build && babel src -s -d build"
   },
   "author": "",
   "license": "ISC",
@@ -22,5 +23,8 @@
     "nodemailer": "^6.7.8",
     "nodemon": "^2.0.22",
     "underscore": "^1.13.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0"
   }
 }
