@@ -1,18 +1,20 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState,useMemo } from "react";
 import Edit_emp_details from "./Edit_emp_details";
 import edit_emp from "./../../Image/EditIcon.svg";
 import axios from "axios";
 // import Header from "./AdminHeader";
 // import Sidebar from "./AdminSidebar";
 import "../../css/employee-list.css";
-import Pagination from 'react-bootstrap/Pagination';
-import { convertLength } from "@mui/material/styles/cssUtils";
+import DataTable from "react-data-table-component";
+import styled from 'styled-components';
+
 
 const Employee_list = () => {
   const [empData, setEmpData] = useState([]);
   const [showAllEmpData, setShowAllEmpData] = useState(true);
   const [showSingleEmpData, setShowSingleEmpData] = useState(false);
   const [empId, setEmpId] = useState("");
+  const [filterText, setFilterText] = useState("");
  
   //------------ Loader Code Start------------
   const [loader, setLoader] = useState(false);
@@ -24,8 +26,6 @@ const Employee_list = () => {
     }, 1500);
     setLoader(false);
   }, []);
-
-  //------------ Loader Code End ------------
 
   const getEmpData = async () => {
     setLoader(true)
@@ -40,6 +40,175 @@ const Employee_list = () => {
     }
   };
 
+  //------------ Loader Code End ------------
+  // --------------------------Data Fetching -----------------------------------
+const columns = [
+  {
+    name:<th scope="col" className="border-top">Sr.No</th>,
+    selector:(row) =><th scope="row">{row.emp_id}</th>,
+  },
+  {
+    name:<th scope="col" className="border-top">Emp Code</th>,
+    selector:(row) =>row.emp_code,
+    sortable:true,
+  },
+  {
+    name:<th scope="col" className="border-top">Name</th>,
+    selector:(row) =>row.emp_fname + " " + row.emp_lname,
+    sortable:true,
+  },
+  {
+    name:<th scope="col" className="border-top">Email</th>,
+    selector:(row) =>row.email,
+  },
+  {
+    name:<th scope="col" className="border-top">Designation</th>,
+    selector:(row) =>row.post,
+  },
+  {
+    name:<th scope="col" className="border-top">Status</th>,
+    selector:(row) =><tr className="border-start">
+    <td style={{ borderRight: "1px solid #dee2e6" }} className="text-center">
+    {row.status == "ACTIVE" ? (
+      <i
+        className="fa-solid fa-circle"
+        style={{ color: "green", fontSize: "11px" }}
+        onClick={handlesubmit}
+        title="Active"
+      ></i>
+    ) : (
+      <i
+        className="fa-solid fa-circle"
+        style={{ color: "#fcba03", fontSize: "11px" }}
+        title="In Active"
+      ></i>
+    )}
+  </td>
+  </tr>
+  },
+  {
+    name:<th className="border-0"></th>,
+    selector:(row) =><tr>
+    <td className="border-0">
+    <img src={edit_emp} alt="" width={20}  height={20} onClick={() => { editEmployee(row.emp_id);}}/>
+    </td></tr>,
+  },
+]
+//--------------------------Data Fetching -----------------------------------
+
+ //------------------------Searching Data----------------------------------
+ const customStyles ={
+  pagination: {
+    style: {
+      color:'black',
+      fontSize:'20px',
+    },
+  },   
+  
+};
+ const TextField = styled.input`
+ height: 32px;
+ width: 200px;
+ border-radius: 3px;
+ border-top-left-radius: 5px;
+ border-bottom-left-radius: 5px;
+ border-top-right-radius: 0;
+ border-bottom-right-radius: 0;
+ border: 1px solid #e5e5e5;
+ padding: 0 32px 0 16px;
+
+ &:hover {
+   cursor: pointer;
+ }
+`;
+const Button = styled.button`
+    width: 138px;
+    height: 35px;
+    text-align: center;
+    letter-spacing: 0px;
+    color: black;
+    Font-weight:bold;
+`;
+const FilterComponent = ({ filterText, onFilter}) => (
+  <>
+    <TextField
+      id="search"
+      type="text"
+      placeholder="Search by name"
+      aria-label="Search Input"
+      value={filterText}
+      onChange={onFilter}
+      autoFocus
+    />
+  </>
+);
+const filteredItems = empData.filter(
+item => item.emp_fname.toLowerCase().includes(filterText.toLowerCase()) ||
+        item.emp_lname.toLowerCase().includes(filterText.toLowerCase()),
+);
+const subHeaderComponentMemo = useMemo(() => {
+  return (
+    <FilterComponent onFilter={e => setFilterText(e.target.value)} filterText={filterText} />
+  );
+}, [filterText]);
+
+ //------------------------Searching Data----------------------------------
+
+
+ //------------------------Exporting  Data----------------------------------
+function convertArrayOfObjectsToCSV(array) {
+  	let result;
+  
+  	const columnDelimiter = ',';
+  	const lineDelimiter = '\n';
+  	const keys = Object.keys(empData[0]);
+  
+  	result = '';
+  	result += keys.join(columnDelimiter);
+  	result += lineDelimiter;
+  
+  	array.forEach(item => {
+  		let ctr = 0;
+  		keys.forEach(key => {
+  			if (ctr > 0) result += columnDelimiter;
+  
+  			result += item[key];
+  			
+  			ctr++;
+  		});
+  		result += lineDelimiter;
+  	});
+  
+  	return result;
+  }
+  
+  
+  function downloadCSV(array) {
+   // alert(empData)
+    //console.log(array)
+  	const link = document.createElement('a');
+  	let csv = convertArrayOfObjectsToCSV(array);
+  	if (csv == null) return;
+  
+  	const filename = 'EmployeeData.csv';
+  
+  	if (!csv.match(/^empData:text\/csv/i)) {
+  		csv = `data:text/csv;charset=utf-8,${csv}`;
+  	}
+  
+  	link.setAttribute('href', encodeURI(csv));
+  	link.setAttribute('download', filename);
+  	link.click();
+  }
+  
+ 
+   //const Export = ({ onExport }) => <Button onClick={e => onExport(e.target.value)}>Export</Button>;
+   //const actionsMemo = useMemo(() => <Export onExport={() => downloadCSV(empData)} />, []);
+
+
+ //------------------------Exporting  Data----------------------------------
+ 
+
   const handlesubmit = () => { };
 
   
@@ -53,59 +222,14 @@ const Employee_list = () => {
   };
 
   const editEmployee = (empId) => {
-    // alert(empId);
     setEmpId(empId);
     setShowAllEmpData(false);
     setShowSingleEmpData(true);
   };
-    // ---------------Pagination Code------------
-
-  let [pageData, setPageData] = useState([])
-  const [page,setPage]= useState(1)
-  const [pagecount,setPagecount] = useState(0)
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleNext = () =>{
-    if(page === pagecount) return page
-    setPage(page + 1)
-  }
-
-  const handlePrevious = () =>{
-    if(page === 1) return page
-    setPage(page - 1)
-  }
+    
   useEffect(() => {
     getEmpData();
-   
-  }, [page]);
-
-  
-  const filteredEmpData = empData.filter(
-    
-    (data) =>
-      data.emp_fname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      data.emp_lname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      data.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      data.post.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      String(data.emp_code).toLowerCase().includes(searchQuery.toLowerCase())
-);
-
-
-  const displayData = searchQuery ? filteredEmpData : pageData
-  const pagedatacount = Math.ceil(empData.length/8)
-  const limit = 8
-  useEffect(() =>{
-        setPagecount(pagedatacount)
-          if(page){
-            
-            const skip = limit * page
-              const dataskip = empData.slice(page === 1 ? 0 : skip - limit, skip) 
-              setPageData(dataskip)
-          }
-         
-  },[empData])
-
-  // ---------------Pagination Code------------
+  }, []);
      
   const AllEmployeesData = () => {
     return (
@@ -124,128 +248,19 @@ const Employee_list = () => {
                           <div className="row col-12 mx-0 px-0 text-center border-bottom">
                             <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
                           </div>
-                          <div className="nav-link input-group d-flex w-25 mt-3">
-                            <button className="btn btn-secondary">
-                              <i className="fas fa-search"></i>
-                            </button>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search"
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                      setSearchQuery(e.target.value)
-                                      }
-                                      autoFocus />      
+                          <div>
+                          <Button onClick={() => downloadCSV(empData)}>Export</Button>
                           </div>
-                          <div className="row col-12 mx-0 px-0 justify-content-center mt-3">
-                            <div className="table-responsive" style={{ width: "100%" }}>
-                              <table className="table border-end-0">
-                                <thead>
-                                  <tr className="border-start">
-                                    <th scope="col" className="border-top">
-                                      Sr No.
-                                    </th>
-                                    <th scope="col" className="border-top">
-                                      Emp. code
-                                    </th>
-                                    <th scope="col" className="border-top">
-                                      Name
-                                    </th>
-                                    <th scope="col" className="border-top">
-                                      E-mail
-                                    </th>
-                                    <th scope="col" className="border-top">
-                                      Designation
-                                    </th>
-                                    <th
-                                      scope="col"
-                                      className="border-top"
-                                      style={{ borderRight: "1px solid #dee2e6" }}
-                                    >
-                                      Status
-                                    </th>
-                                    <th className="border-0"></th>
-                                  </tr>
-                                </thead>
-                                <tbody className="">
-                                {filteredEmpData.length > 0?
-                                  displayData.map((data) => {
-                                    return (
-                                      <>
-                                        <tr className="border-start" key={data.emp_id}>
-                                          <th scope="row">{data.emp_id}</th>
-                                          <td>{data.emp_code}</td>
-                                          <td>{data.emp_fname + " " + data.emp_lname}</td>
-                                          <td>{data.email}</td>
-
-                                          <td>{data.post}</td>
-
-                                          <td
-                                            style={{ borderRight: "1px solid #dee2e6" }}
-                                            className="text-center"
-                                          >
-                                            {data.status == "ACTIVE" ? (
-                                              <i
-                                                className="fa-solid fa-circle"
-                                                style={{ color: "green", fontSize: "11px" }}
-                                                onClick={handlesubmit}
-                                                title="Active"
-                                              ></i>
-                                            ) : (
-                                              <i
-                                                className="fa-solid fa-circle"
-                                                style={{ color: "#fcba03", fontSize: "11px" }}
-                                                title="In Active"
-                                              ></i>
-                                            )}
-                                          </td>
-                                          <td className="border-0">
-                                            <img
-                                              src={edit_emp}
-                                              alt=""
-                                              width={20}
-                                              height={20}
-                                              onClick={() => {
-                                                editEmployee(data.emp_id);
-                                              }}
-                                            />
-                                          </td>
-                                        </tr>
-                                      </>
-                                    );
-                                  }):(<tr>
-                                    <th colSpan={6} style={{ textAlign: "center", borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
-                                      No Data Available
-                                    </th>
-                                  </tr>)
-                                }
-                                </tbody>
-                              </table>
-                              
-                              <div>
-                              {
-                                searchQuery.length == 0?
-                                  <Pagination>
-              
-                                      <Pagination.Prev onClick={handlePrevious} disabled={page === 1}/>
-                                      {
-                                        Array(pagecount).fill(null).map((ele,index) =>{
-                                            return(
-                                                <>
-                                                <Pagination.Item active={page === index+1 ? true : false} onClick={() => setPage(index+1)}>{index+1}</Pagination.Item>
-                                                
-                                                </>
-                                            )
-                                        })
-                                      }
-                                      <Pagination.Next onClick={handleNext} disabled={page === pagecount} />
-                                      
-                                  </Pagination>: null
-                              }
-                              </div>
-                            </div>
-                          </div>
+                          
+                          <DataTable 
+                            columns={columns} data={filteredItems}
+                            pagination
+                            fixedHeader
+                            fixedHeaderScrollHeight="400px"
+                            subHeader
+                            subHeaderComponent={subHeaderComponentMemo}
+                            customStyles={customStyles}
+                          />
                         </div>
                       </div>
                     </div>

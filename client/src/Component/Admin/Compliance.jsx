@@ -5,6 +5,7 @@ import edit_emp from "./../../Image/EditIcon.svg";
 import moment from "moment";
 import Swal from "sweetalert2";
 import './../../css/history.scss'
+import DataTable from "react-data-table-component";
 // import Header from "./AdminHeader";
 // import Sidebar from "./AdminSidebar";
 
@@ -101,8 +102,75 @@ const Compliance = () => {
   useEffect(() => {
     getEODCompliance();
   }, [eodDate]);
-
-
+// --------------------------Data Fetching -----------------------------------
+const columns = [
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Sr.No
+      </th>
+    ),
+    selector: (row,index) => <th scope="row">{index+1}</th>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Date
+      </th>
+    ),
+    selector: (row) => <td>{moment(row.eod_date).format("DD-MM-YYYY")}</td>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Submitted on
+      </th>
+    ),
+    selector: (row) =>  <td>{moment(row.created_at).format("DD-MM-YYYY")}</td>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Emp.Code
+      </th>
+    ),
+    selector: (row) => <td>{row.emp_code}</td>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Name
+      </th>
+    ),
+    selector: (row) => <td>{row.emp_fname + " " + row.emp_lname}</td>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Email
+      </th>
+    ),
+    selector: (row) => <td>{row.email}</td>,
+  },
+  {
+    name: (
+      <th scope="col" className="border-top">
+        Type
+      </th>
+    ),
+    selector: (row) => <td style={{ borderRight: "1px solid #dee2e6" }}>
+    {row.emp_type}
+  </td>,
+  },
+]
+const customStyles ={
+  pagination: {
+    style: {
+      color:'black',
+      fontSize:'20px',
+    },
+  },   
+};  
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -250,84 +318,15 @@ const Compliance = () => {
                         </div>
 
                         <div className="table-responsive mx-auto" style={{ width: "10 0%" }}>
-                          <table className="table border-end-0">
-                            <thead>
-                              <tr className="border-start">
-                                <th scope="col" className="border-top">
-                                  Sr.no
-                                </th>
-                                <th scope="col" className="border-top">
-                                  Date
-                                </th>
-                                <th scope="col" className="border-top">
-                                  Submitted on
-                                </th>
-                                <th scope="col" className="border-top">
-                                  Emp.Code
-                                </th>
-                                <th scope="col" className="border-top">
-                                  Name
-                                </th>
-                                <th scope="col" className="border-top">
-                                  Email
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="border-top"
-                                  style={{ borderRight: "1px solid #dee2e6" }}
-                                >
-                                  Type
-                                </th>
-                                {/* <th className="border-0"></th> */}
-                              </tr>
-                            </thead>
-                            <tbody className="">
-                              {compliance.length != 0 ? (
-                                compliance.map((data, index) => {
-                                  return (
-                                    <>
-                                      <tr className="border-start">
-                                        <th scope="row">{index + 1}</th>
-                                        <td>{moment(data.eod_date).format("DD-MM-YYYY")}</td>
-                                        <td>{moment(data.created_at).format("DD-MM-YYYY")}</td>
-                                        <td>{data.emp_code}</td>
-                                        <td>{data.emp_fname + " " + data.emp_lname}</td>
-                                        <td>{data.email}</td>
-                                        <td style={{ borderRight: "1px solid #dee2e6" }}>
-                                          {data.emp_type}
-                                        </td>
-
-                                        {/* <td className="border-0">
-                                          <img
-                                            src={edit_emp}
-                                            alt=""
-                                            width={20}
-                                            height={20}
-                                          // onClick={() => {
-                                          //   editEmployee(data.emp_id);
-                                          // }}
-                                          />
-                                        </td> */}
-                                      </tr>
-                                    </>
-                                  );
-                                })
-                              ) : (
-                                <tr>
-                                  <th
-                                    colSpan={7}
-                                    style={{
-                                      textAlign: "center",
-                                      borderRight: "1px solid #dee2e6",
-                                      borderLeft: "1px solid #dee2e6",
-                                    }}
-                                  >
-                                    No Data Available
-                                  </th>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
+                        <DataTable 
+                            columns={columns} data={compliance}
+                            pagination
+                            fixedHeader
+                            fixedHeaderScrollHeight="400px"
+                            subHeader
+                            subHeaderAlign="left" 
+                            customStyles={customStyles}
+                          />
                         </div>
                       </div>
                     </div>

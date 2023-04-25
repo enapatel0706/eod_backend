@@ -1,6 +1,6 @@
 import React from "react";
 import "./../../css/attendence.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useMemo } from "react";
 // import "./../../css/attendence.scss";
 import axios from "axios";
 // import "./../../css/attendencenew.scss";
@@ -12,6 +12,8 @@ import moment from "moment";
 // import Sidebar from "./Sidebar";
 import History from "./History";
 import Swal from "sweetalert2";
+import DataTable from "react-data-table-component";
+import styled from "styled-components";
 
 const Attendance = () => {
   const [allAttendance, setAllAttendance] = useState(true);
@@ -27,6 +29,7 @@ const Attendance = () => {
   const [name, setName] = useState("");
   const [phoneno, setPhoneno] = useState("");
   const [email, setEmail] = useState("");
+  const [filterText, setFilterText] = useState("");
 
   const [loader, setLoader] = useState(false);
 
@@ -51,7 +54,7 @@ const Attendance = () => {
   let [eodDate, setEodDate] = useState(todayDate());
 
   const getAllAttandace = async () => {
-    setLoader(true)
+    setLoader(true);
     try {
       let res = await axios.get(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/attendance`,
@@ -63,20 +66,19 @@ const Attendance = () => {
       );
       if (res.status == 200) {
         setTableData(res.data);
-        setLoader(false)
+        setLoader(false);
       }
       // setAllAttendance(res.data);
-      setLoader(false)
-
+      setLoader(false);
     } catch (error) {
       setTableData([]);
       console.log(error);
-      setLoader(false)
+      setLoader(false);
     }
   };
 
   const getPresent = async () => {
-    setLoader(true)
+    setLoader(true);
     try {
       let res = await axios.get(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/attendance/present`,
@@ -89,23 +91,22 @@ const Attendance = () => {
 
       if (res.status == 200) {
         setTableData(res.data);
-        setLoader(false)
-      }
-      else if (res.status == 204) {
+        setLoader(false);
+      } else if (res.status == 204) {
         setTableData([]);
       }
 
       // setPresent(res.data);
-      setLoader(false)
+      setLoader(false);
     } catch (error) {
       setTableData([]);
       console.log(error);
-      setLoader(false)
+      setLoader(false);
     }
   };
 
   const getAbsent = async () => {
-    setLoader(true)
+    setLoader(true);
     try {
       let res = await axios.get(
         `${process.env.REACT_APP_BACKEND_BASE_URL}/attendance/absent`,
@@ -118,33 +119,32 @@ const Attendance = () => {
 
       if (res.status == 200) {
         setTableData(res.data);
-        setLoader(false)
-      }
-      else if (res.status == 204) {
+        setLoader(false);
+      } else if (res.status == 204) {
         setTableData([]);
       }
       // setAbsent(res.data);
-      setLoader(false)
+      setLoader(false);
     } catch (error) {
       setTableData([]);
       console.log(error);
-      setLoader(false)
+      setLoader(false);
     }
   };
 
   const getData = () => {
     // alert("called")
-    setLoader(true)
+    setLoader(true);
     if (eodDate != "") {
       if (attendanceState == "all") {
         getAllAttandace();
-        setLoader(false)
+        setLoader(false);
       } else if (attendanceState == "present") {
         getPresent();
-        setLoader(false)
+        setLoader(false);
       } else if (attendanceState == "absent") {
         getAbsent();
-        setLoader(false)
+        setLoader(false);
       }
     } else {
       Swal.fire({
@@ -155,14 +155,14 @@ const Attendance = () => {
         confirmButtonColor: "#06bdff",
       });
       setTableData([]);
-      setLoader(false)
+      setLoader(false);
     }
   };
 
   useEffect(() => {
-    setLoader(true)
+    setLoader(true);
     getData();
-    setLoader(false)
+    setLoader(false);
   }, [eodDate]);
 
   const SingleTask = () => {
@@ -188,6 +188,210 @@ const Attendance = () => {
     setShowAllTaskData(false);
     setshowSingleTaskData(true);
   };
+
+  // --------------------------Data Fetching -----------------------------------
+  const columns = [
+
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Sr.No
+        </th>
+      ),
+      selector: (row) => <th scope="row">{row.emp_id}</th>,
+      
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Date
+        </th>
+      ),
+      selector: (row) => (
+        <tr>
+          <td>
+            {row.eod_date
+              ? moment(row.eod_date).format("DD-MM-YYYY")
+              : moment(eodDate).format("DD-MM-YYYY")}
+          </td>
+        </tr>
+      ),
+      
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          EmpCode
+        </th>
+      ),
+      selector: (row) => row.emp_code,
+      sortable: true,
+      
+      
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Name
+        </th>
+      ),
+      selector: (row) => row.emp_fname + " " + row.emp_lname,
+      sortable: true,
+    
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Email
+        </th>
+      ),
+      selector: (row) =>row.email,
+      
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Type
+        </th>
+      ),
+      selector: (row) => row.emp_type,
+     
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Attendance
+        </th>
+      ),
+      selector: (row) => (
+        <tr>
+          <td className="text-center">
+            {row.eod_date ? (
+              <img
+                src={presentIcon}
+                alt="present"
+                width={20}
+                height={20}
+                title="Present"
+              />
+            ) : (
+              <img
+                src={absentIcon}
+                alt="absent"
+                width={20}
+                height={20}
+                title="Absent"
+              />
+            )}
+          </td>
+        </tr>
+      ),
+      
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          {" "}
+          T.W.T
+        </th>
+      ),
+      selector: (row) => (
+        <tr>
+          <td
+            style={{ borderRight: "1px solid #dee2e6" }}
+            className="text-center"
+          >
+            {row.total_work_time ? row.total_work_time : "T.W.T unavailable"}
+          </td>
+        </tr>
+      ),
+      
+    },
+
+    {
+      selector: (row) => (
+        <tr>
+          <td className="border-0">
+            {row.eod_date ? (
+              <>
+                <img
+                  src={edit_emp}
+                  alt=""
+                  width={20}
+                  height={20}
+                  onClick={() => {
+                    ShowTask(
+                      row.emp_id,
+                      moment(row.eod_date).format("YYYY-MM-DD"),
+                      row.emp_fname + " " + row.emp_lname,
+                      row.phoneno,
+                      row.email
+                    );
+                  }}
+                />
+              </>
+            ) : (
+              " "
+            )}
+          </td>
+        </tr>
+      ),
+     
+    },
+   
+  ];
+  
+  //--------------------------Data Fetching -----------------------------------
+
+  //------------------------Searching Data----------------------------------
+ 
+ const TextField = styled.input`
+ height: 32px;
+ width: 200px;
+ border-radius: 3px;
+ border-top-left-radius: 5px;
+ border-bottom-left-radius: 5px;
+ border-top-right-radius: 0;
+ border-bottom-right-radius: 0;
+ border: 1px solid #e5e5e5;
+ padding: 0 32px 0 16px;
+
+ &:hover {
+   cursor: pointer;
+ }
+`;
+const FilterComponent = ({ filterText, onFilter}) => (
+  <>
+    <TextField
+      id="search"
+      type="text"
+      placeholder="Search by name"
+      aria-label="Search Input"
+      value={filterText}
+      onChange={onFilter}
+      autoFocus
+    />
+  </>
+);
+const filteredItems = tableData.filter(
+item => item.emp_fname.toLowerCase().includes(filterText.toLowerCase()) ||
+        item.emp_lname.toLowerCase().includes(filterText.toLowerCase()),
+);
+const subHeaderComponentMemo = useMemo(() => {
+  return (
+    <FilterComponent onFilter={e => setFilterText(e.target.value)} filterText={filterText} />
+  );
+}, [filterText]);
+
+ //------------------------Searching Data----------------------------------
+const customStyles ={
+        pagination: {
+      		style: {
+            color:'black',
+            fontSize:'20px',
+      		},
+      	},
+};
 
   const AllTask = () => {
     return (
@@ -221,7 +425,11 @@ const Attendance = () => {
                                 role="tablist"
                               >
                                 <button
-                                  className={allAttendance ? "nav-link btn-1 active px-4" : "nav-link btn-1 px-4"}
+                                  className={
+                                    allAttendance
+                                      ? "nav-link btn-1 active px-4"
+                                      : "nav-link btn-1 px-4"
+                                  }
                                   id="nav-home-tab"
                                   data-bs-toggle="tab"
                                   data-bs-target="#nav-home"
@@ -232,14 +440,20 @@ const Attendance = () => {
                                   onClick={() => {
                                     setAttendanceState("all");
                                     getAllAttandace();
-                                    setAbsent(false); setPresent(false); setAllAttendance(true);
+                                    setAbsent(false);
+                                    setPresent(false);
+                                    setAllAttendance(true);
                                   }}
-                                // onClick={() => getAllAttandace()}
+                                  // onClick={() => getAllAttandace()}
                                 >
                                   All
                                 </button>
                                 <button
-                                  className={present ? "nav-link active btn-1" : "nav-link btn-1"}
+                                  className={
+                                    present
+                                      ? "nav-link active btn-1"
+                                      : "nav-link btn-1"
+                                  }
                                   id="nav-profile-tab"
                                   data-bs-toggle="tab"
                                   data-bs-target="#nav-profile"
@@ -250,14 +464,20 @@ const Attendance = () => {
                                   onClick={() => {
                                     setAttendanceState("present");
                                     getPresent();
-                                    setAllAttendance(false); setAbsent(false); setPresent(true);
+                                    setAllAttendance(false);
+                                    setAbsent(false);
+                                    setPresent(true);
                                   }}
-                                // onClick={() => getPresent()}
+                                  // onClick={() => getPresent()}
                                 >
                                   Present
                                 </button>
                                 <button
-                                  className={absent ? "nav-link active btn-1" : "nav-link btn-1"}
+                                  className={
+                                    absent
+                                      ? "nav-link active btn-1"
+                                      : "nav-link btn-1"
+                                  }
                                   id="nav-profile-tab"
                                   data-bs-toggle="tab"
                                   data-bs-target="#nav-profile"
@@ -268,7 +488,9 @@ const Attendance = () => {
                                   onClick={() => {
                                     setAttendanceState("absent");
                                     getAbsent();
-                                    setAllAttendance(false); setPresent(false); setAbsent(true);
+                                    setAllAttendance(false);
+                                    setPresent(false);
+                                    setAbsent(true);
                                   }}
                                 >
                                   Absent
@@ -278,6 +500,7 @@ const Attendance = () => {
                           </div>
 
                           <div className="row col-12 mx-0 px-0 my-3 justify-content-center justify-content-sm-start border-bottom pb-3">
+                          
                             <div className="col-10 col-sm-5 col-md-4 d-flex px-0">
                               <div className="col-12 attendence-date">
                                 <p className="attendence-report mb-0 text-white text-center">
@@ -303,146 +526,19 @@ const Attendance = () => {
                             className="table-responsive mx-auto"
                             style={{ width: "100%" }}
                           >
-                            <table className="table border-end-0">
-                              <thead>
-                                <tr className="border-start">
-                                  <th scope="col" className="border-top">
-                                    Sr No.
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Date
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Emp.Code
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Name
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Email
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Type
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Attendance
-                                  </th>
-                                  <th
-                                    scope="col"
-                                    className="border-top"
-                                    style={{ borderRight: "1px solid #dee2e6" }}
-                                  >
-                                    T.W.T
-                                  </th>
-                                  <th className="border-0"></th>
-                                </tr>
-                              </thead>
-
-                              <tbody className="">
-                                {tableData.length != 0 ? (
-                                  <>
-                                    {tableData.map((elem, index) => {
-                                      return (
-                                        <>
-                                          <tr className="border-start">
-                                            <th scope="row">{index + 1}</th>
-                                            <td>
-                                              {elem.eod_date
-                                                ? moment(elem.eod_date).format(
-                                                  "DD-MM-YYYY"
-                                                )
-                                                : moment(eodDate).format(
-                                                  "DD-MM-YYYY"
-                                                )}
-                                            </td>
-                                            <td>{elem.emp_code}</td>
-                                            <td>
-                                              {elem.emp_fname} {elem.emp_lname}
-                                            </td>
-                                            <td>{elem.email}</td>
-                                            <td>{elem.emp_type}</td>
-                                            <td className="text-center">
-                                              {elem.eod_date ? (
-                                                <img
-                                                  src={presentIcon}
-                                                  alt="present"
-                                                  width={20}
-                                                  height={20}
-                                                  title="Present"
-                                                />
-                                              ) : (
-                                                <img
-                                                  src={absentIcon}
-                                                  alt="absent"
-                                                  width={20}
-                                                  height={20}
-                                                  title="Absent"
-                                                />
-                                              )}
-                                            </td>
-                                            <td
-                                              style={{
-                                                borderRight: "1px solid #dee2e6",
-                                              }}
-                                              className="text-center"
-                                            >
-                                              {elem.total_work_time
-                                                ? elem.total_work_time
-                                                : "T.W.T unavailable"}
-                                            </td>
-                                            <td className="border-0">
-                                              {elem.eod_date ? (
-                                                <>
-                                                  <img
-                                                    src={edit_emp}
-                                                    alt=""
-                                                    width={20}
-                                                    height={20}
-                                                    onClick={() => {
-                                                      ShowTask(
-                                                        elem.emp_id,
-                                                        moment(
-                                                          elem.eod_date
-                                                        ).format("YYYY-MM-DD"),
-                                                        elem.emp_fname +
-                                                        " " +
-                                                        elem.emp_lname,
-                                                        elem.phoneno,
-                                                        elem.email
-                                                      );
-                                                    }}
-                                                  />
-                                                </>
-                                              ) : (
-                                                " "
-                                              )}
-                                            </td>
-                                          </tr>
-                                        </>
-                                      );
-                                    })}
-                                  </>
-                                ) : (
-                                  <tr className="text-center">
-                                    <th
-                                      style={{
-                                        borderRight: "1px solid #dee2e6",
-                                        borderLeft: "1px solid #dee2e6",
-                                      }}
-                                      className="text-center"
-                                      colSpan="8"
-                                    >
-                                      No Data Available.
-                                    </th>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
+                          <DataTable 
+                            columns={columns} data={filteredItems}
+                            pagination
+                            fixedHeader
+                            fixedHeaderScrollHeight="400px"
+                            subHeader
+                            subHeaderAlign="left"
+                            subHeaderComponent={subHeaderComponentMemo}    
+                            customStyles={customStyles}
+                          />
                           </div>
                         </div>
                       </div>
-
-
                     </div>
                   </div>
                 </div>
@@ -450,7 +546,6 @@ const Attendance = () => {
             </div>
           </div>
         </div>
-
       </>
     );
   };

@@ -6,6 +6,7 @@ import edit_emp from "./../../Image/EditIcon.svg";
 import moment from "moment";
 import Swal from "sweetalert2";
 import axios from "axios";
+import DataTable from "react-data-table-component";
 
 const History = (props) => {
   //------------ Loader Code Start------------
@@ -21,13 +22,13 @@ const History = (props) => {
 
   //------------ Loader Code End ------------
 
-
   const [empData, setEmpData] = useState([]);
 
   const [tasks, setTasks] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [bar, setBar] = useState(false);
+  
 
   const todayDate = () => {
     var today = new Date();
@@ -41,24 +42,25 @@ const History = (props) => {
   const [eodDate, setEodDate] = useState(props.date ? props.date : todayDate());
 
   useEffect(() => {
-
-    (props.empId ? getEmpData() : fetchTask(eodDate));
-  }, [eodDate])
+    props.empId ? getEmpData() : fetchTask(eodDate);
+  }, [eodDate]);
 
   const getEmpData = async () => {
     try {
       setLoader(true);
-      const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod/task`, {
-        params: {
-          empid: props.empId,
-          eoddate: eodDate,
-        },
-      });
+      const res = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/eod/task`,
+        {
+          params: {
+            empid: props.empId,
+            eoddate: eodDate,
+          },
+        }
+      );
       console.log(res.data);
       setTasks(res.data);
       setBar(true);
       setLoader(false);
-
     } catch (err) {
       setTasks([]);
       setLoader(false);
@@ -78,11 +80,14 @@ const History = (props) => {
       setLoader(true);
 
       if (eodDate) {
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod`, {
-          params: {
-            eod_date: eodDate,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/eod`,
+          {
+            params: {
+              eod_date: eodDate,
+            },
+          }
+        );
         setTasks(res.data);
         setLoader(false);
       } else {
@@ -104,14 +109,16 @@ const History = (props) => {
     try {
       setLoader(true);
       if (startDate && endDate && endDate > startDate) {
-
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/employee/eod/daterange`, {
-          params: {
-            emp_id: props.empId,
-            start_date: startDate,
-            end_date: endDate,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/employee/eod/daterange`,
+          {
+            params: {
+              emp_id: props.empId,
+              start_date: startDate,
+              end_date: endDate,
+            },
+          }
+        );
         setTasks(res.data);
         setLoader(false);
       } else {
@@ -128,18 +135,20 @@ const History = (props) => {
       setTasks([]);
       setLoader(false);
     }
-  }
+  };
   const fetchDateRange = async () => {
     try {
       setLoader(true);
       if (startDate && endDate && endDate > startDate) {
-
-        const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/eod/daterange`, {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-          },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/eod/daterange`,
+          {
+            params: {
+              start_date: startDate,
+              end_date: endDate,
+            },
+          }
+        );
         setTasks(res.data);
         setLoader(false);
       } else {
@@ -158,13 +167,110 @@ const History = (props) => {
     }
   };
   useEffect(() => {
-    (props.empId ? getEmpData() : fetchTask(todayDate()))
+    props.empId ? getEmpData() : fetchTask(todayDate());
   }, []);
 
   // useEffect(() => {
   //   !props.temp && fetchTask();
   // }, [eodDate]);
 
+  const columns = [
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Sr.No
+        </th>
+      ),
+      selector: (row,index) => <th scope="row">{index+1}</th>,
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Date
+        </th>
+      ),
+      selector: (row) => (
+        <tr>
+          <td>{moment(row.eod_date).format("DD-MM-YYYY")}</td>
+        </tr>
+      ),
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Name
+        </th>
+      ),
+      selector: (row) => row.emp_fname + " " + row.emp_lname,
+      sortable:true,
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Project
+        </th>
+      ),
+      selector: (row) => row.project_name,
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Task
+        </th>
+      ),
+      selector: (row) => row.task_title,
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Description
+        </th>
+      ),
+      selector: (row) => row.task_desc,
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          Status
+        </th>
+      ),
+      selector: (row) => (
+        <tr>
+          <td>
+            {row.status == "COMPLETED" ? (
+              <i
+                className="fa-solid fa-calendar-check"
+                style={{ color: "green" }}
+                title="Complete"
+              ></i>
+            ) : (
+              <i
+                className="fa-solid fa-hourglass-half"
+                style={{ color: "orange" }}
+                title="Work in progress"
+              ></i>
+            )}
+          </td>
+        </tr>
+      ),
+    },
+    {
+      name: (
+        <th scope="col" className="border-top">
+          T.W.T
+        </th>
+      ),
+      selector: (row) => row.worktime,
+    },
+];
+const customStyles ={
+  pagination: {
+    style: {
+      color:'black',
+      fontSize:'20px',
+    },
+  },   
+};
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -184,7 +290,9 @@ const History = (props) => {
                             <div className="row flex-nowrap">
                               <div className="col py-2 h-100">
                                 <div className="row col-12 mx-0 px-0 text-center border-bottom">
-                                  <h3 className="text-uppercase">end of day report</h3>
+                                  <h3 className="text-uppercase">
+                                    end of day report
+                                  </h3>
                                 </div>
                               </div>
                             </div>
@@ -205,21 +313,13 @@ const History = (props) => {
                                 <p className="email mb-0 ms-1">{props.email}</p>
                               </div>
                             </div>
-
-
-
-
-
-
-
-
-
-
                           </>
                         ) : (
                           <>
                             <div className="row col-12 mx-0 px-0 text-center border-bottom">
-                              <h3 className="text-uppercase">end of day History</h3>
+                              <h3 className="text-uppercase">
+                                end of day History
+                              </h3>
                             </div>
                           </>
                         )}
@@ -228,8 +328,15 @@ const History = (props) => {
                         {/* End Title Bar */}
 
                         <div className="mt-3 d-flex justify-content-center justify-content-sm-end">
-                          <nav className="date-btn d-flex justify-content-between" id="btn-top">
-                            <div className="nav nav-tabs" id="nav-tab" role="tablist">
+                          <nav
+                            className="date-btn d-flex justify-content-between"
+                            id="btn-top"
+                          >
+                            <div
+                              className="nav nav-tabs"
+                              id="nav-tab"
+                              role="tablist"
+                            >
                               <button
                                 className="nav-link btn-1 active"
                                 id="nav-history-tab"
@@ -240,7 +347,9 @@ const History = (props) => {
                                 aria-controls="nav-history"
                                 aria-selected="true"
                                 onClick={() => {
-                                  (props.empId ? getEmpData() : fetchTask(eodDate));
+                                  props.empId
+                                    ? getEmpData()
+                                    : fetchTask(eodDate);
                                   // fetchTask(eodDate);
                                 }}
                               >
@@ -257,7 +366,9 @@ const History = (props) => {
                                 aria-selected="false"
                                 onClick={() => {
                                   if (startDate && endDate) {
-                                    (props.empId ? fetchEmployeeDateRange() : fetchDateRange())
+                                    props.empId
+                                      ? fetchEmployeeDateRange()
+                                      : fetchDateRange();
                                   } else {
                                     setTasks([]);
                                     setStartDate("");
@@ -293,7 +404,9 @@ const History = (props) => {
                                     max={todayDate()}
                                     onChange={(e) => {
                                       setEodDate(e.target.value);
-                                      (props.empId ? getEmpData() : fetchTask(e.target.value));
+                                      props.empId
+                                        ? getEmpData()
+                                        : fetchTask(e.target.value);
                                     }}
                                     required
                                   />
@@ -310,7 +423,9 @@ const History = (props) => {
                             <div className="row col-12 mx-0 px-0 my-3 text-center align-items-end">
                               <div className="col-12 col-sm-5 col-md-4">
                                 <div className="col-12 date-1">
-                                  <p className="date-report mb-0 text-white">Starting Date</p>
+                                  <p className="date-report mb-0 text-white">
+                                    Starting Date
+                                  </p>
                                   <input
                                     type="date"
                                     id="birthday"
@@ -318,13 +433,17 @@ const History = (props) => {
                                     className="form-control p-2"
                                     value={startDate}
                                     max={todayDate()}
-                                    onChange={(e) => setStartDate(e.target.value)}
+                                    onChange={(e) =>
+                                      setStartDate(e.target.value)
+                                    }
                                   />
                                 </div>
                               </div>
                               <div className="col-12 col-sm-5 col-md-4 mt-3 mt-sm-0">
                                 <div className="col-12 date-1">
-                                  <p className="date-report mb-0 text-white">End Date</p>
+                                  <p className="date-report mb-0 text-white">
+                                    End Date
+                                  </p>
                                   <input
                                     type="date"
                                     className="form-control p-2"
@@ -339,7 +458,11 @@ const History = (props) => {
                                 <button
                                   type="submit"
                                   className="btn-search text-white"
-                                  onClick={() => { (props.empId ? fetchEmployeeDateRange() : fetchDateRange()) }}
+                                  onClick={() => {
+                                    props.empId
+                                      ? fetchEmployeeDateRange()
+                                      : fetchDateRange();
+                                  }}
                                 >
                                   Search
                                 </button>
@@ -347,78 +470,19 @@ const History = (props) => {
                             </div>
                           </div>
 
-                          <div className="table-responsive" style={{ width: "100%" }}>
-                            <table className="table border-end-0">
-                              <thead>
-                                <tr className="border-start">
-                                  <th scope="col" className="border-top">
-                                    Sr No.
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Date
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Name
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Project
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Task
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Description
-                                  </th>
-                                  <th scope="col" className="border-top">
-                                    Status
-                                  </th>
-                                  <th
-                                    scope="col"
-                                    className="border-top"
-                                    style={{ borderRight: "1px solid #dee2e6" }}
-                                  >
-                                    T.W.T
-                                  </th>
-                                  {/* <th className="border-0" ></th> */}
-                                </tr>
-                              </thead>
-                              <tbody className="position-relative">
-                                {tasks.length != 0 ? (
-                                  tasks.map((elem, index) => (
-                                    <tr key={index} style={{ borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
-                                      <td>{index + 1}</td>
-                                      <td>{moment(elem.eod_date).format("DD-MM-YYYY")}</td>
-                                      <td>{elem.emp_fname + " " + elem.emp_lname}</td>
-                                      <td>{elem.project_name}</td>
-                                      <td>{elem.task_title}</td>
-                                      <td>{elem.task_desc}</td>
-                                      <td>
-                                        {elem.status == "COMPLETED" ? (
-                                          <i
-                                            className="fa-solid fa-calendar-check"
-                                            style={{ color: "green" }}
-                                            title="Complete"
-                                          ></i>
-                                        ) : (
-                                          <i
-                                            className="fa-solid fa-hourglass-half"
-                                            style={{ color: "orange" }}
-                                            title="Work in progress"
-                                          ></i>
-                                        )}
-                                      </td>
-                                      <td>{elem.worktime}</td>
-                                    </tr>
-                                  ))
-                                ) : (
-                                  <tr>
-                                    <th colSpan={8} style={{ textAlign: "center", borderRight: "1px solid rgb(222, 226, 230)", borderLeft: "1px solid rgb(222, 226, 230)" }}>
-                                      No Data Available
-                                    </th>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
+                          <div
+                            className="table-responsive"
+                            style={{ width: "100%" }}
+                          >
+                            <DataTable 
+                              columns={columns} 
+                              data={tasks}
+                              pagination
+                              
+                              fixedHeader
+                              fixedHeaderScrollHeight="400px"
+                              customStyles={customStyles}
+                             />
                           </div>
                         </div>
                       </div>
@@ -430,9 +494,6 @@ const History = (props) => {
           </div>
         </div>
       </div>
-
-
-
     </>
   );
 };
