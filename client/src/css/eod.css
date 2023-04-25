@@ -365,3 +365,66 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url('./../Image/caret-down-fill.svg') !important;
     color: #7f7f7f;
 }
+.input-group-text {
+    line-height: 2 !important;
+    padding: 0.575rem !important;
+    border-radius: 0rem 0.375rem 0.375rem 0rem !important;
+    background: transparent !important;
+    cursor: pointer !important;
+}
+
+.cstm-control {
+    pointer-events: none !important;
+    border-right: none !important;
+}
+#input-color input[type="text"], #input-color .form-select, #input-color textarea ,.input-group-text {
+    box-shadow: 0 0 0 rgb(255, 255, 255) !important;
+    border: 0 !important;
+    border-bottom: 1px solid #7f7f7f!important;
+    background-color: #F2F2F2 !important;
+    border-radius: 0 !important;
+}
+.raise-ticket-label{
+    color: #595959;
+}
+.raise-ticket-title{
+    color: #595959;
+    font-weight: 400 !important;
+    text-align: center !important;
+}
+.span-title{
+    font-weight: 600 !important;
+}
+.status-placeholder  .form-control{
+    background-color:#F2F2F2  !important;
+
+    text-align: center !important;
+    font-weight: 700 !important;
+}
+.status-placeholder ::placeholder{
+    color:#000 !important;
+}
+.input-group-date .input-group-text{
+    background-color: #06beff !important;
+    color: #fff !important;
+    border-bottom: none !important;
+}
+
+.input-group-date input[type="date"]:after{
+    display: none !important;
+}
+.input-group-date .form-control{
+    border-radius: 0% !important;
+}
+.input-group-date .input-group-text{
+    line-height: 0 !important;
+}
+
+.input-group-date .form-control{
+    width: auto !important;
+}
+.close-icon{
+    position: relative;
+    bottom: 27px;
+    right: 8px;
+}
