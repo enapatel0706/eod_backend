@@ -185,7 +185,14 @@
     color: white;
     font-size: 18px;
 }
-
+.export-button {
+    background-color: #06beff;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 18px;
+    padding:5px 18px 5px 18px;
+}
 
 #task input[type="text"]:focus {
     box-shadow: 0 0 0 rgb(255, 255, 255) !important;
@@ -256,6 +263,9 @@ input[type="date"]:after {
     content: "\f133";
     color: #06bdff;
     padding: 0 5px;
+    position: absolute;
+    top: 7px;
+    right: 8px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -427,4 +437,58 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: relative;
     bottom: 27px;
     right: 8px;
+}
+
+/* -----------------------data table style--------------------------- */
+.custm-paginator .gMliOo select{
+border: 1px solid #ced4da !important;
+box-shadow: 0  !important;
+border-bottom: 1px solid #ced4da !important;
+background-color: #ffffff!important;
+border-radius: 5px !important;
+outline: none !important;
+color:#212529 !important;
+
+}
+.custm-paginator .gMliOo select:focus{
+box-shadow: none !important;
+    border: 1px solid #06beff!important;
+    background-color: #F2F2F2 !important;
+    outline: none !important;
+   
+}
+
+
+.custm-paginator .lmSJmf {
+    font-size: 15px;
+    color:#595959;
+}
+.custm-paginator .jaZsat {
+    height: 30px !important;
+    font-size: 20px !important;
+}
+.custm-paginator .gMliOo svg{
+    height: 31px !important;
+}
+.custm-paginator  .fyrdjl{
+    display: flex !important;
+}
+.custm-paginator  .fyrdjl:focus{
+  background-color: #06bdff !important;
+}
+
+.custm-paginator  .dynHSE{
+    justify-content: end !important;
+}
+.custm-paginator .dtqzBx div:first-child{
+    white-space: unset !important;
+}
+
+.help-desk-right-border{
+    border-right:1px solid gray !important;
+}
+@media (max-width: 768px) {
+    .help-desk-right-border{
+        border-bottom:1px solid gray !important;
+    }
 }

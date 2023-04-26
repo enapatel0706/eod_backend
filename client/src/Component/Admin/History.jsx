@@ -177,7 +177,7 @@ const History = (props) => {
   const columns = [
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Sr.No
         </th>
       ),
@@ -185,7 +185,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Date
         </th>
       ),
@@ -197,7 +197,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Name
         </th>
       ),
@@ -206,7 +206,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Project
         </th>
       ),
@@ -214,7 +214,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Task
         </th>
       ),
@@ -222,7 +222,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Description
         </th>
       ),
@@ -230,7 +230,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Status
         </th>
       ),
@@ -256,7 +256,7 @@ const History = (props) => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           T.W.T
         </th>
       ),
@@ -471,7 +471,7 @@ const customStyles ={
                           </div>
 
                           <div
-                            className="table-responsive"
+                            className="table-responsive custm-paginator"
                             style={{ width: "100%" }}
                           >
                             <DataTable 

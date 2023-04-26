@@ -44,31 +44,33 @@ const Employee_list = () => {
   // --------------------------Data Fetching -----------------------------------
 const columns = [
   {
-    name:<th scope="col" className="border-top">Sr.No</th>,
+    name:<th scope="col" className="">Sr.No</th>,
     selector:(row) =><th scope="row">{row.emp_id}</th>,
+    minWidth:"1rem"
   },
   {
-    name:<th scope="col" className="border-top">Emp Code</th>,
+    name:<th scope="col" className="">Emp Code</th>,
     selector:(row) =>row.emp_code,
     sortable:true,
   },
   {
-    name:<th scope="col" className="border-top">Name</th>,
+    name:<th scope="col" className="">Name</th>,
     selector:(row) =>row.emp_fname + " " + row.emp_lname,
     sortable:true,
   },
   {
-    name:<th scope="col" className="border-top">Email</th>,
+    name:<th scope="col" className="">Email</th>,
     selector:(row) =>row.email,
+    minWidth:"18rem"
   },
   {
-    name:<th scope="col" className="border-top">Designation</th>,
+    name:<th scope="col" className="">Designation</th>,
     selector:(row) =>row.post,
   },
   {
-    name:<th scope="col" className="border-top">Status</th>,
+    name:<th scope="col" className="">Status</th>,
     selector:(row) =><tr className="border-start">
-    <td style={{ borderRight: "1px solid #dee2e6" }} className="text-center">
+    <td className="text-center">
     {row.status == "ACTIVE" ? (
       <i
         className="fa-solid fa-circle"
@@ -130,9 +132,14 @@ const Button = styled.button`
     Font-weight:bold;
 `;
 const FilterComponent = ({ filterText, onFilter}) => (
-  <>
-    <TextField
+  <div className="row mt-3">
+   <div className="col ">
+     <button onClick={() => downloadCSV(empData)} class="export-button">Export</button>
+     </div>
+     <div className="col-auto">
+    <input
       id="search"
+      className="form-control"
       type="text"
       placeholder="Search by name"
       aria-label="Search Input"
@@ -140,7 +147,9 @@ const FilterComponent = ({ filterText, onFilter}) => (
       onChange={onFilter}
       autoFocus
     />
-  </>
+    </div>
+    </div>
+  
 );
 const filteredItems = empData.filter(
 item => item.emp_fname.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -244,13 +253,13 @@ function convertArrayOfObjectsToCSV(array) {
                   <div className="container-fluid">
                     <div className="row col-12 px-0 mx-0">
                       <div className="col-sm-12 px-0">
-                        <div className="page-title-box">
+                        <div className="page-title-box custm-paginator">
                           <div className="row col-12 mx-0 px-0 text-center border-bottom">
                             <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
                           </div>
-                          <div>
-                          <Button onClick={() => downloadCSV(empData)}>Export</Button>
-                          </div>
+                          {/* <div>
+                          <button onClick={() => downloadCSV(empData)} class="export-button">Export</button>
+                          </div> */}
                           
                           <DataTable 
                             columns={columns} data={filteredItems}
@@ -258,7 +267,7 @@ function convertArrayOfObjectsToCSV(array) {
                             fixedHeader
                             fixedHeaderScrollHeight="400px"
                             subHeader
-                            subHeaderComponent={subHeaderComponentMemo}
+                            subHeaderComponent={subHeaderComponentMemo}                          
                             customStyles={customStyles}
                           />
                         </div>

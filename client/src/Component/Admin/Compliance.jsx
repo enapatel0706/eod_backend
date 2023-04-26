@@ -106,7 +106,7 @@ const Compliance = () => {
 const columns = [
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Sr.No
       </th>
     ),
@@ -114,7 +114,7 @@ const columns = [
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Date
       </th>
     ),
@@ -122,7 +122,7 @@ const columns = [
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Submitted on
       </th>
     ),
@@ -130,7 +130,7 @@ const columns = [
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Emp.Code
       </th>
     ),
@@ -138,7 +138,7 @@ const columns = [
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Name
       </th>
     ),
@@ -146,19 +146,20 @@ const columns = [
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Email
       </th>
     ),
     selector: (row) => <td>{row.email}</td>,
+    minWidth:"18rem"
   },
   {
     name: (
-      <th scope="col" className="border-top">
+      <th scope="col">
         Type
       </th>
     ),
-    selector: (row) => <td style={{ borderRight: "1px solid #dee2e6" }}>
+    selector: (row) => <td>
     {row.emp_type}
   </td>,
   },
@@ -317,7 +318,7 @@ const customStyles ={
                           </div>
                         </div>
 
-                        <div className="table-responsive mx-auto" style={{ width: "10 0%" }}>
+                        <div className="table-responsive mx-auto custm-paginator" style={{ width: "100%" }}>
                         <DataTable 
                             columns={columns} data={compliance}
                             pagination

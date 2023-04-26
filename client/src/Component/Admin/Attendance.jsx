@@ -194,7 +194,7 @@ const Attendance = () => {
 
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Sr.No
         </th>
       ),
@@ -203,7 +203,7 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Date
         </th>
       ),
@@ -220,7 +220,7 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           EmpCode
         </th>
       ),
@@ -231,7 +231,7 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Name
         </th>
       ),
@@ -241,16 +241,17 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Email
         </th>
       ),
       selector: (row) =>row.email,
+      minWidth:"18rem"
       
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Type
         </th>
       ),
@@ -259,7 +260,7 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col">
           Attendance
         </th>
       ),
@@ -290,20 +291,19 @@ const Attendance = () => {
     },
     {
       name: (
-        <th scope="col" className="border-top">
+        <th scope="col" >
           {" "}
           T.W.T
         </th>
       ),
       selector: (row) => (
-        <tr>
+  
           <td
-            style={{ borderRight: "1px solid #dee2e6" }}
             className="text-center"
           >
             {row.total_work_time ? row.total_work_time : "T.W.T unavailable"}
           </td>
-        </tr>
+    
       ),
       
     },
@@ -362,7 +362,9 @@ const Attendance = () => {
 `;
 const FilterComponent = ({ filterText, onFilter}) => (
   <>
-    <TextField
+  <div className="ml-auto">
+    <input
+     className="form-control"
       id="search"
       type="text"
       placeholder="Search by name"
@@ -371,6 +373,7 @@ const FilterComponent = ({ filterText, onFilter}) => (
       onChange={onFilter}
       autoFocus
     />
+    </div>
   </>
 );
 const filteredItems = tableData.filter(
@@ -523,8 +526,8 @@ const customStyles ={
                             </div>
                           </div>
                           <div
-                            className="table-responsive mx-auto"
-                            style={{ width: "100%" }}
+                            className="table-responsive mx-auto custm-paginator"
+                            // style={{ width: "100%" }}
                           >
                           <DataTable 
                             columns={columns} data={filteredItems}
