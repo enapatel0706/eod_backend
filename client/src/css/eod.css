@@ -365,6 +365,3 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-image: url('./../Image/caret-down-fill.svg') !important;
     color: #7f7f7f;
 }
-.custom-timepicker .ant-picker-footer {
-    display: none;
-  }
