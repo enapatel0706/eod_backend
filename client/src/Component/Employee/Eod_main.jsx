@@ -4,6 +4,7 @@ import { MenuContext } from "../../App";
 import Swal from "sweetalert2";
 import "./../../css/eod.css";
 import { TimePicker, Tooltip } from 'antd';
+import moment from 'moment';
 
 const Eod_main = () => {
   const { state, dispatch } = useContext(MenuContext);
@@ -376,6 +377,13 @@ const Eod_main = () => {
                                         format="HH:mm"
                                         inputReadOnly={true}
                                         allowClear={true}
+                                        popupClassName="custom-timepicker"
+                                        defaultOpenValue={moment('00:00', 'HH:mm')} 
+                                        value={eodTaskData.workTime ? moment(eodTaskData.workTime, 'HH:mm') : null}
+                                        onSelect={(value) => {
+                                          const timeString = moment(value).format("HH:mm");
+                                          setEodTaskData({ ...eodTaskData, workTime: timeString });
+                                        }}
                                       />
                                     </Tooltip>
                                   </div>
