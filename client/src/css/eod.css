@@ -492,3 +492,7 @@ box-shadow: none !important;
         border-bottom:1px solid gray !important;
     }
 }
+
+.custom-timepicker .ant-picker-footer {
+    display: none;
+  }

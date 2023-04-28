@@ -272,5 +272,5 @@ const getTicketByDateRange = ((req, res) => {
 
 
 module.exports = {
-    getCategory, getSubCategory, addTicket, getTicketById, getTicketByEmp, getTicketEmpDateRange, getTicketByDate, getTicketByDateRange
+    getCategory, getSubCategory, addTicket, getTicketByEmp, getTicketEmpDateRange, getTicketByDate, getTicketByDateRange
 };

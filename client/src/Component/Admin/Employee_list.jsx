@@ -134,7 +134,7 @@ const Button = styled.button`
 const FilterComponent = ({ filterText, onFilter}) => (
   <div className="row mt-3">
    <div className="col ">
-     <button onClick={() => downloadCSV(empData)} class="export-button">Export</button>
+     {/* <button onClick={() => downloadCSV(empData)} class="export-button">Export</button> */}
      </div>
      <div className="col-auto">
     <input
@@ -257,9 +257,9 @@ function convertArrayOfObjectsToCSV(array) {
                           <div className="row col-12 mx-0 px-0 text-center border-bottom">
                             <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
                           </div>
-                          {/* <div>
+                          <div>
                           <button onClick={() => downloadCSV(empData)} class="export-button">Export</button>
-                          </div> */}
+                          </div>
                           
                           <DataTable 
                             columns={columns} data={filteredItems}
