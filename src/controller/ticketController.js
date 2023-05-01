@@ -78,7 +78,7 @@ const addTicket = ((req, res) => {
 
 const getTicketByEmp = ((req, res) => {
     try {
-        const selQuery = `SELECT R.req_id,R.req_date, R.title, R.status, C.category_name, S.sub_cat_name
+        const selQuery = `SELECT E.emp_code,E.emp_fname,E.emp_lname, R.req_id,R.req_date, R.title, R.status, C.category_name, S.sub_cat_name
     FROM REQUEST R, CATEGORIES C, SUBCATEGORIES S, EMPLOYEE E
     WHERE R.emp_id = ? AND R.req_date = ? AND R.cat_id = C.cat_id AND R.sub_cat_id = S.sub_cat_id AND R.emp_id = E.emp_id;`;
         mysql.query(selQuery, [req.query.emp_id, req.query.req_date], (err, results) => {
@@ -100,7 +100,7 @@ const getTicketByEmp = ((req, res) => {
 
 const getTicketEmpDateRange = ((req, res) => {
     try {
-        const selQuery = `SELECT R.req_id,R.req_date, R.title, R.status, C.category_name, S.sub_cat_name
+        const selQuery = `SELECT E.emp_code,E.emp_fname,E.emp_lname,R.req_id,R.req_date, R.title, R.status, C.category_name, S.sub_cat_name
     FROM REQUEST R, CATEGORIES C, SUBCATEGORIES S, EMPLOYEE E
     WHERE R.emp_id=? AND R.req_date>=? AND R.req_date<=? AND R.cat_id = C.cat_id AND R.sub_cat_id = S.sub_cat_id AND R.emp_id = E.emp_id
     ORDER BY R.req_date DESC;`
