@@ -76,7 +76,7 @@ const Login = () => {
           dispatch({ type: "LOGIN", payload: true });
           setLoader(false)
           if (role == 'employee') {
-            if (res.data.pass_expire == "no") {
+            if (res?.data?.pass_expire == "no") {
               navigate("/eod");
             }
             else {
@@ -89,7 +89,7 @@ const Login = () => {
             }
           }
           else if (role == 'admin') {
-            if (res.data.pass_expire == "no") {
+            if (res?.data?.pass_expire == "no") {
               navigate("/admin/main");
             }
             else {
@@ -126,10 +126,10 @@ const Login = () => {
 
   };
   //-----------------password visibility----------------
-    const [showPassword, setShowPassword] = useState(false);
-    const [showAdminPassword, setShowAdminPassword] = useState(false);
-    const handleTogglePassword = () => setShowPassword(!showPassword);
-    const handleToggleAdminPassword = () => setShowAdminPassword(!showAdminPassword);  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const handleTogglePassword = () => setShowPassword(!showPassword);
+  const handleToggleAdminPassword = () => setShowAdminPassword(!showAdminPassword);
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -212,7 +212,7 @@ const Login = () => {
                       <div className="toggle-password" onClick={handleTogglePassword}>
                         {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                       </div>
-                    
+
                       <label className="floating-label">Password</label>
                     </div>
                   </div>
@@ -266,8 +266,8 @@ const Login = () => {
                   <div className="col-10 px-0">
                     <div className="floating-label-group">
                       <input
-                      type={showAdminPassword ? "text" : "password"} // toggle password visibility
-                       // type="password"
+                        type={showAdminPassword ? "text" : "password"} // toggle password visibility
+                        // type="password"
                         id="password"
                         name="Password"
                         className="form-control"

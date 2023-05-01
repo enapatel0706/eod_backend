@@ -7,8 +7,14 @@ import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
 
-
   const [activeTab, setActiveTab] = useState("eod");
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+
+    setRole(JSON.parse(localStorage.getItem("userData")).roleName);
+  })
+
 
   const RenderSideBar = () => {
     return (
@@ -57,11 +63,13 @@ const Sidebar = () => {
                       Configuration
                     </NavLink>
                   </li>
-                  <li onClick={() => { setActiveTab("helpdesk") }} className={(activeTab == "helpdesk") ? "active nav-link" : "nav-link"}>
+
+                  {(role == "employee" || role == "intern" ? <li onClick={() => { setActiveTab("helpdesk") }} className={(activeTab == "helpdesk") ? "active nav-link" : "nav-link"}>
                     <NavLink exact activeClassName="active" to="/helpdesk" onlyActiveOnIndex>
-                     Help Desk
+                      Help Desk
                     </NavLink>
-                  </li>
+                  </li> : null)}
+
                 </ul>
               </div>
               <div className="clearfix"></div>
