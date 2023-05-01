@@ -12,7 +12,6 @@ const getCategory = (req, res) => {
             } else {
                 if (results.length > 0) {
                     res.status(200).json(results);
-
                 } else {
                     res.status(200).json({ "msg": "Data not found!" });
                 }
@@ -35,7 +34,7 @@ const getSubCategory = ((req, res) => {
                 if (results.length > 0) {
                     res.status(200).json(results);
                 } else {
-                    res.status(204).json({ "msg": "Data not found!" });
+                    res.status(200).json({ "msg": "Data not found!" });
                 }
             }
         })
@@ -56,7 +55,7 @@ const addTicket = ((req, res) => {
                 const ticketId = results.insertId;
                 const attachments = req.files;
                 const imagePath = req.files[0].path;
-                const blob = fs.readFileSync(imagePath)
+                const blob = fs.readFileSync(imagePath);
                 console.log(imagePath);
                 const attachmentInsertQuery = "INSERT INTO ATTACHEMENT(file_name,req_id) VALUES (?,?)";
                 attachments.forEach((attachment) => {
@@ -70,9 +69,6 @@ const addTicket = ((req, res) => {
                         }
                     })
                 });
-
-
-
             }
         })
     } catch (err) {
@@ -93,7 +89,7 @@ const getTicketByEmp = ((req, res) => {
                 if (results.length > 0) {
                     res.status(200).json(results)
                 } else {
-                    res.status(204).json({ "msg": "Data not found!" });
+                    res.status(200).json({ "msg": "Data not found!" });
                 }
             }
         })
@@ -116,7 +112,7 @@ const getTicketEmpDateRange = ((req, res) => {
                 if (results.length > 0) {
                     res.status(200).json(results)
                 } else {
-                    res.status(204).json({ "msg": "Data not found!" });
+                    res.status(200).json({ "msg": "Data not found!" });
                 }
             }
         })
@@ -138,7 +134,7 @@ const getTicketByDate = ((req, res) => {
                 if (results.length > 0) {
                     res.status(200).json(results)
                 } else {
-                    res.status(204).json({ "msg": "Data not found!" });
+                    res.status(200).json({ "msg": "Data not found!" });
                 }
             }
         })
@@ -162,7 +158,7 @@ const getTicketByDateRange = ((req, res) => {
                 if (results.length > 0) {
                     res.status(200).json(results)
                 } else {
-                    res.status(204).json({ "msg": "Data not found!" });
+                    res.status(200).json({ "msg": "Data not found!" });
                 }
             }
         })
@@ -205,7 +201,7 @@ const getTicketByDateRange = ((req, res) => {
 //                     // res.status(200).json({ buffers });
 //                     // res.send(Buffer.concat(buffers));
 //                 } else {
-//                     res.status(204).json({ "msg": "Data not found!" });
+//                     res.status(200).json({ "msg": "Data not found!" });
 //                 }
 //             }
 //         })
@@ -241,7 +237,7 @@ const getTicketByDateRange = ((req, res) => {
 //                     res.end(imageBuffer);
 
 //                 } else {
-//                     res.status(204).json({ "msg": "Data not found!" });
+//                     res.status(200).json({ "msg": "Data not found!" });
 //                 }
 //             }
 //         })

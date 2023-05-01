@@ -16,9 +16,9 @@ const upload = multer({ storage: storage });
 router.get("/ticket/categories", getCategory)
 router.get("/ticket/subcategories", getSubCategory)
 // router.get("/ticket/ticketDetaiils", getTicketById)
-router.get("/employee/ticket", getTicketByEmp)
+router.get("/employee/ticket/date", getTicketByEmp)
 router.get("/employee/ticket/daterange", getTicketEmpDateRange)
-router.get("/getallticket/date", getTicketByDate)
-router.get("/getallticket/daterange", getTicketByDateRange)
-router.post('/ticket/addTicket', upload.array('attachments'), addTicket);
+router.get("/hr/getallticket/date", getTicketByDate)
+router.get("/hr/getallticket/daterange", getTicketByDateRange)
+router.post('/employee/addTicket', upload.array('attachments'), addTicket);
 module.exports = router;
