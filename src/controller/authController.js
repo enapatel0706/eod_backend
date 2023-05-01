@@ -22,7 +22,7 @@ const login = ((req, res) => {
                     console.log(passwordcompare);
                     if (passwordcompare) {
 
-                        if ((req.body.Role == 'employee' || req.body.Role == 'intern') && (results[0].role_name == 'employee' || results[0].role_name == 'intern')) {
+                        if ((req.body.Role == 'employee' || req.body.Role == 'intern' || req.body.Role == 'hr') && (results[0].role_name == 'employee' || results[0].role_name == 'intern' || results[0].role_name == 'hr')) {
                             res.status(200).json({
                                 "userId": results[0].user_id, "userName": results[0].username,
                                 "pass_expire": results[0].pass_expire, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post

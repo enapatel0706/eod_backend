@@ -138,7 +138,7 @@ function App() {
     <>
       {/* Header */}
       {loader ? <div className="loadingPopup"></div> : null}
-      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Header /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern" || userData.roleName == "hr") ? <Header /> : null}</> : null}
 
       {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "admin") ? <AdminHeader /> : null}</> : null}
 
@@ -146,7 +146,7 @@ function App() {
 
       {/* Sidebar */}
 
-      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern") ? <Sidebar /> : null}</> : null}
+      {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "employee" || userData.roleName == "intern" || userData.roleName == "hr") ? <Sidebar /> : null}</> : null}
 
       {(localStorage.getItem("userData")) && userData.pass_expire == "no" ? <>{(userData.roleName == "admin") ? <AdminSidebar /> : null}</> : null}
 
@@ -162,8 +162,7 @@ function App() {
           <Route exact path="/eod" element={<Eod_main />} />
           <Route exact path="/history" element={<Eod_history />} />
           <Route exact path="/configuration" element={<Configuration />} />
-          <Route exact path="/raise-ticket" element={<RaiseTicket/>} />
-          <Route exact path="/helpdesk" element={<Ticket/>} />
+          <Route exact path="/helpdesk" element={<RaiseTicket/>} />
 
           {/* Admin Routes */}
           <Route exact={true} path="/admin/main" element={<Employee_list />} />
@@ -178,7 +177,7 @@ function App() {
           />
         </Routes>
       </MenuContext.Provider>
-   
+
 
     </>
   );
