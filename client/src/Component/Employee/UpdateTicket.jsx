@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useLocation,useNavigate } from "react-router-dom";
 import pinimg from "../../Image/icon-pin.svg";
 import "./../../css/eod.css";
 
-const RaiseTicket = () => {
+const UpdateTicket = () => {
   const defaultdate = new Date();
   // const getdate=defaultdate.getDate();
   // getdate.toLocaleString();
@@ -21,6 +22,14 @@ const RaiseTicket = () => {
     return today;
   };
   const [inputdate, setInputDate] = useState(todayDate());
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("req_id");
+  const navigate = useNavigate();
+
+  const handleCancel = () => {
+    navigate('/helpdesk');
+  };
   return (
     <>
       <div className="fixed-left">
@@ -47,7 +56,7 @@ const RaiseTicket = () => {
                     {/* </div> */}
                     <div className="col-sm-4 col-12  d-flex flex-sm-row flex-column   justify-content-center mt-sm-4 mt-3">
                       <h3 className="  raise-ticket-title  ">
-                        Raise <span className="span-title">Ticket</span>
+                        Ticket<span className="span-title"> {id}</span>
                       </h3>
                     </div>
                     <div className="col-sm-4 col-12  d-flex  flex-sm-row flex-column  justify-content-sm-end justify-content-center mb-xl-2 mb-2 mt-sm-4 mt-3">
@@ -187,14 +196,21 @@ const RaiseTicket = () => {
                       </div>
                      <div className="row mt-3">
                         <div className="col-12 d-flex justify-content-end">
+                        <button
+                            type="submit"
+                            className="px-4 py-2 add-button ms-1"
+                            onClick={handleCancel}
+                          >
+                            Cancel
+                          </button>
                           <button
                             type="submit"
-                            className="btn text-white add-button"
+                            className="px-4 py-2 add-button ms-1"
                           >
                             Submit
                           </button>
                         </div>
-                      </div> 
+                       </div> 
                       </div>
                       <div className="col-md-auto mt-4 help-desk-right-border">
                       <div className="row ">
@@ -251,4 +267,4 @@ const RaiseTicket = () => {
   );
 };
 
-export default RaiseTicket;
+export default UpdateTicket;

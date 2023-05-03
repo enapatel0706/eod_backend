@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import "./../../css/history.css";
 import "./../../css/history.scss";
 import axios from "axios";
 import moment from "moment";
@@ -8,7 +7,7 @@ import edit_emp from "./../../Image/EditIcon.svg";
 import DataTable from "react-data-table-component";
 import { useNavigate } from 'react-router-dom';
 
-const Ticket = () => {
+const Tickets = () => {
   //------------ Loader Code Start------------
   const [loader, setLoader] = useState(false);
 
@@ -46,7 +45,7 @@ const Ticket = () => {
       setLoader(true);
       if (ticketDate) {
         const res = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/employee/ticket/date`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/hr/getallticket/date`,
           {
             params: {
               emp_id: getTicketDetails().empId,
@@ -79,7 +78,7 @@ const Ticket = () => {
       setLoader(true);
       if (startDate && endDate && endDate > startDate) {
         const res = await axios.get(
-          `${process.env.REACT_APP_BACKEND_BASE_URL}/employee/ticket/daterange`,
+          `${process.env.REACT_APP_BACKEND_BASE_URL}/hr/getallticket/daterange`,
           {
             params: {
               emp_id: getTicketDetails().empId,
@@ -173,9 +172,6 @@ const Ticket = () => {
       },
     },
   };
-  const handleRaiseTicket = () => {
-    navigate('/raise-ticket');
-  };
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -193,16 +189,7 @@ const Ticket = () => {
                         <div className="row col-12 mx-0 px-0 text-center border-bottom">
                           <h3 className="text-uppercase">Tickets</h3>
                         </div>
-                        <div className="col-sm-4 col-12  d-flex  flex-sm-row flex-column  justify-content-sm-end justify-content-center mb-xl-2 mb-2 mt-sm-4 mt-3">
-                        <button
-                          type="submit"
-                          className="px-4 py-2 add-button ms-1"
-                          onClick={handleRaiseTicket}
-                        >
-                          Raise Ticket
-                        </button>
-                    </div>
-                    
+                        
                         <div className="mt-3 d-flex justify-content-end">
                           <nav
                             className="date-btn d-flex justify-content-between"
@@ -360,4 +347,4 @@ const Ticket = () => {
   );
 };
 
-export default Ticket;
+export default Tickets;

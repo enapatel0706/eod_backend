@@ -25,7 +25,9 @@ import Configuration from "./Component/Employee/Configuration";
 import Eod_history from "./Component/Employee/Eod_history";
 import axios from "axios";
 import RaiseTicket from "./Component/Employee/RaiseTicket";
-import Ticket from "./Component/Employee/Ticket";
+import HelpDesk from "./Component/Employee/HelpDesk";
+import Tickets from "./Component/Hr/Tickets";
+import UpdateTicket from "./Component/Employee/UpdateTicket";
 export const MenuContext = createContext();
 
 
@@ -59,7 +61,7 @@ function App() {
 
 
       else {
-        if ((userData.roleName == "employee" || userData.roleName == "intern") && userData.pass_expire == "no") {
+        if ((userData.roleName == "employee" || userData.roleName == "intern" || userData.roleName == "hr") && userData.pass_expire == "no") {
           if (location.pathname != '/eod') {
             navigate("/eod");
           }
@@ -162,8 +164,12 @@ function App() {
           <Route exact path="/eod" element={<Eod_main />} />
           <Route exact path="/history" element={<Eod_history />} />
           <Route exact path="/configuration" element={<Configuration />} />
-          <Route exact path="/helpdesk" element={<RaiseTicket/>} />
+          <Route exact path="/raise-ticket" element={<RaiseTicket/>} />
+          <Route exact path="/update-ticket" element={<UpdateTicket/>} />
+          <Route exact path="/helpdesk" element={<HelpDesk/>} />
 
+          {/* Hr Routes */}
+          <Route exact path="/tickets" element={<Tickets/>} />
           {/* Admin Routes */}
           <Route exact={true} path="/admin/main" element={<Employee_list />} />
           <Route path="/admin/attendance" element={<Attendance />} exact />

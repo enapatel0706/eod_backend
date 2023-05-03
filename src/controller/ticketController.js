@@ -123,7 +123,7 @@ const getTicketEmpDateRange = ((req, res) => {
 
 const getTicketByDate = ((req, res) => {
     try {
-        const selQuery = `SELECT R.req_id,R.req_date, R.title, R.status,R.emp_id ,C.category_name, S.sub_cat_name
+        const selQuery = `SELECT E.emp_code,E.emp_fname,E.emp_lname, R.req_id,R.req_date, R.title, R.status,R.emp_id ,C.category_name, S.sub_cat_name
     FROM REQUEST R, CATEGORIES C, SUBCATEGORIES S, EMPLOYEE E
     WHERE R.req_date = ? AND R.cat_id = C.cat_id AND R.sub_cat_id = S.sub_cat_id AND R.emp_id = E.emp_id;`;
         mysql.query(selQuery, [req.query.req_date], (err, results) => {
@@ -146,7 +146,7 @@ const getTicketByDate = ((req, res) => {
 
 const getTicketByDateRange = ((req, res) => {
     try {
-        const selQuery = `SELECT R.req_id,R.req_date, R.title, R.status,R.emp_id, C.category_name, S.sub_cat_name
+        const selQuery = `SELECT E.emp_code,E.emp_fname,E.emp_lname, R.req_id,R.req_date, R.title, R.status,R.emp_id, C.category_name, S.sub_cat_name
     FROM REQUEST R, CATEGORIES C, SUBCATEGORIES S, EMPLOYEE E
     WHERE R.req_date>=? AND R.req_date<=? AND R.cat_id = C.cat_id AND R.sub_cat_id = S.sub_cat_id AND R.emp_id = E.emp_id
     ORDER BY R.req_date DESC;`
@@ -166,104 +166,6 @@ const getTicketByDateRange = ((req, res) => {
         res.status(500).json({ err: "Error When Fetching in Catch Data" });
     }
 })
-
-
-
-// const getTicketById = ((req, res) => {
-//     try {
-//         console.log('======////', req);
-//         const selQuery = `SELECT R.*,A.file_name
-//     FROM REQUEST R 
-//     LEFT JOIN ATTACHEMENT A ON R.req_id = A.req_id
-//     WHERE R.req_id = ?;`;
-//         mysql.query(selQuery, [req.query.req_id], (err, results) => {
-//             if (err) {
-//                 console.log(err);
-//                 res.status(500).json({ "msg": 'Error To Fetching Data' });
-
-//             } else {
-//                 if (results.length > 0) {
-
-//                     let buffers = [];
-//                     results.map(result => {
-
-//                         console.log("===========125==============", result.file_name);
-//                         const attachmentBuffer = Buffer.from(result.file_name, 'binary');
-//                         // .toString('base64');
-//                         console.log(attachmentBuffer);
-//                         buffers.push(attachmentBuffer);
-
-//                         // res.write(attachmentBuffer);
-
-
-//                     });
-//                     res.send(buffers[0]);
-//                     // res.status(200).json({ buffers });
-//                     // res.send(Buffer.concat(buffers));
-//                 } else {
-//                     res.status(200).json({ "msg": "Data not found!" });
-//                 }
-//             }
-//         })
-//     } catch (err) {
-//         res.status(500).json({ err: "Error When Fetching in Catch Data" });
-//     }
-// })
-// const getTicketById = ((req, res) => {
-//     try {
-//         console.log('======////', req);
-//         const selQuery = `SELECT R.*,A.file_name
-//     FROM REQUEST R 
-//     LEFT JOIN ATTACHEMENT A ON R.req_id = A.req_id
-//     WHERE R.req_id = ?;`;
-//         mysql.query(selQuery, [req.query.req_id], (err, results) => {
-//             if (err) {
-//                 console.log(err);
-//                 res.status(500).json({ "msg": 'Error To Fetching Data' });
-
-//             } else {
-//                 if (results.length > 0) {
-//                     console.log("***********************", results);
-
-//                     const imageBuffer = Buffer.from(results[0].file_name);
-//                     console.log("///////////////////////", imageBuffer);
-//                     const extname = path.extname(results[0].file_name.toString('utf8'));
-//                     const contentType = getContentType(extname);
-//                     const filename = results[0].file_name.toString().replace(/[^\w.]/g, '_');
-//                     res.writeHead(200, {
-//                         'Content-Type': contentType,
-//                         'Content-Disposition': `attachment; filename=${filename}`
-//                     });
-//                     res.end(imageBuffer);
-
-//                 } else {
-//                     res.status(200).json({ "msg": "Data not found!" });
-//                 }
-//             }
-//         })
-//     } catch (err) {
-//         res.status(500).json({ err: "Error When Fetching in Catch Data" });
-//     }
-// })
-
-// function getContentType(extname) {
-//     switch (extname) {
-//         case '.jpg':
-//         case '.jpeg':
-//             return 'image/jpeg';
-//         case '.png':
-//             return 'image/png';
-//         case '.gif':
-//             return 'image/gif';
-//         case '.pdf':
-//             return 'application/pdf';
-//         // add more cases for other file types
-//         default:
-//             return 'application/octet-stream';
-//     }
-// }
-
-
 
 
 

@@ -70,6 +70,12 @@ const Sidebar = () => {
                     </NavLink>
                   </li> : null)}
 
+                  {(role == "hr"  ? <li onClick={() => { setActiveTab("tickets") }} className={(activeTab == "tickets") ? "active nav-link" : "nav-link"}>
+                    <NavLink exact activeClassName="active" to="/tickets" onlyActiveOnIndex>
+                      Tickets
+                    </NavLink>
+                  </li> : null)}
+
                 </ul>
               </div>
               <div className="clearfix"></div>
