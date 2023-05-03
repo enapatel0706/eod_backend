@@ -52,7 +52,7 @@ const addTicket = ((req, res) => {
         mysql.query(insertQuery, [req.body.req_date, req.body.title, req.body.description, req.body.status, req.body.hr_resolution, req.body.hr_resolution_date, req.body.emp_id, req.body.cat_id, req.body.sub_cat_id], (err, results) => {
             if (err) {
                 console.log(err);
-                res.status(500).json({ err: "Error When Fetching Data" })
+                res.status(500).json({ err: "Error When Fetching Data" });
             } else {
                 const ticketId = results.insertId;
                 const attachments = req.files;
