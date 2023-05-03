@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import pinimg from "../../Image/icon-pin.svg";
 import "./../../css/eod.css";
 import axios from "axios";
@@ -10,10 +10,10 @@ const RaiseTicket = () => {
   const [files, setFiles] = useState([]);
   const fileInputField = useRef(null);
   const [selectedCat, setSelectedCat] = useState([]);
-  const [selectedSubCat,setSelectedSubCat] = useState([])
+  const [selectedSubCat, setSelectedSubCat] = useState([])
   const [allcategories, setAllCategories] = useState([]);
   const [allsubcategories, setAllSubCategories] = useState([]);
- 
+
   useEffect(() => {
     setLoader(true);
     setTimeout(() => {
@@ -50,7 +50,7 @@ const RaiseTicket = () => {
   const formData = new FormData();
   const getRaiseTicketData = async (e) => {
     e.preventDefault();
-   
+
     if (
       selectedCat == "" ||
       selectedSubCat == "" ||
@@ -66,19 +66,15 @@ const RaiseTicket = () => {
         confirmButtonColor: "#06bdff",
       });
     } else {
-      formData.append("emp_id",getuserDetails().empId)
-      formData.append("cat_id",selectedCat)
-      formData.append("sub_cat_id",selectedSubCat)
-      formData.append("req_date",ticketDate);
+      formData.append("emp_id", getuserDetails().empId)
+      formData.append("cat_id", selectedCat)
+      formData.append("sub_cat_id", selectedSubCat)
+      formData.append("req_date", ticketDate);
       formData.append("title", raiseTicketData.title);
       formData.append("description", raiseTicketData.description);
       formData.append("status", "open");
       for (let i = 0; i < files.length; i++) {
         formData.append('attachments', files[i])
-      }
-
-      for (const value of formData.values()) {
-        console.log(value);
       }
 
       try {
@@ -118,7 +114,6 @@ const RaiseTicket = () => {
       }
     }
   };
-  
 
   const getCategories = async () => {
     setLoader(false);
@@ -157,29 +152,26 @@ const RaiseTicket = () => {
   };
   useEffect(() => {
     getCategories();
-    //getRaiseTicketData();
   }, []);
 
   //-----------------File Upload----------------------
 
-  // const handleClick=(e)=>{
-  //   e.target.Value=''
-  // }
-
   const uploadHandler = (e) => {
-    //console.log(e.target.value)
-  
     const file = e.target.files[0];
-    //e.target.value=''
-    //console.log(file)
     if (file?.size < 5 * 1024 * 1024) {
-      
-      setFiles(() => [...files, ...e.target.files]);
-      console.log(e.target.files)
-      console.log(file.name)
-      //setFiles((prevFiles) => [...prevFiles, file]);
+      if (files.some((f) => f.name === file.name)) {
+
+        Swal.fire({
+          type: "warning",
+          icon: "warning",
+          title: "File is already selected",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#06bdff",
+        });
+      } else {
+        setFiles(() => [...files, ...e.target.files]);
+      }
     } else {
-      console.log("File is too large - maximum size is 8MB");
       Swal.fire({
         type: "warning",
         icon: "warning",
@@ -188,28 +180,24 @@ const RaiseTicket = () => {
         confirmButtonColor: "#06bdff",
       });
     }
-    //setFiles(() => [...files, e.target.files[0]]);
-      // setFiles(() => {
-      //   return [...files, ...e.target.files];
-      // }); 
   };
 
-const navigate = useNavigate();
-const [key, setKey] = useState(0);
+  const navigate = useNavigate();
+  const [key, setKey] = useState(0);
 
-const handleCancel = () => {
-  navigate('/helpdesk');
-};
-const removeFile = (file) => {
-  let newFiles = [...files]
-  newFiles.splice(newFiles.indexOf(file),1)
-  //alert(files.indexOf(file))
-  setFiles(newFiles);
-  setKey(key + 1);
-}
+  const handleCancel = () => {
+    navigate('/helpdesk');
+  };
+  const removeFile = (file) => {
+    let newFiles = [...files]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    //alert(files.indexOf(file))
+    setFiles(newFiles);
+    setKey(key + 1);
+  }
   return (
     <>
-       {loader ? <div className="loadingPopup"></div> : null}
+      {loader ? <div className="loadingPopup"></div> : null}
       <div className="fixed-left">
         <div id="wrapper">
           <div className="content-page">
@@ -262,7 +250,7 @@ const removeFile = (file) => {
                                 getSubCategories(e.target.value);
                               }}
                             >
-                              <option  selected disabled >
+                              <option selected disabled >
                                 Select Categories
                               </option>
                               {allcategories.map((data) => {
@@ -300,10 +288,10 @@ const removeFile = (file) => {
                               </option>
                               {allsubcategories.map((data) => {
                                 return <option
-                                    key={data.sub_cat_id}
-                                    data-key={data.sub_cat_id}
-                                    value={data.sub_cat_id}
-                                    >{data.sub_cat_name}</option>;
+                                  key={data.sub_cat_id}
+                                  data-key={data.sub_cat_id}
+                                  value={data.sub_cat_id}
+                                >{data.sub_cat_name}</option>;
                               })}
                             </select>
                           </div>
@@ -361,21 +349,21 @@ const removeFile = (file) => {
                           <label className="form-label raise-ticket-label">
                             Attach File
                           </label>
-                          <img style={{marginLeft:'15px'}}
-                                    src={pinimg}
-                                    onClick={() =>
-                                      fileInputField.current.click()
-                                    }
-                                  ></img>
-                          <p style={{fontSize:'12px',fontWeight:'bold'}}>
-                          Note: <span style={{color:'red'}}>
-                                (Only .jpg, .png, .jpeg, .pdf files are allowed)
-                                </span></p>
-                          <p style={{fontSize:'12px',marginTop:'-14px',marginLeft:'34px',fontWeight:'bold'}}>
-                              <span style={{color:'red'}}>(Files size cannot be greater then 5MB)
-                              </span></p>
+                          <img style={{ marginLeft: '15px' }}
+                            src={pinimg}
+                            onClick={() =>
+                              fileInputField.current.click()
+                            }
+                          ></img>
+                          <p style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                            Note: <span style={{ color: 'red' }}>
+                              (Only .jpg, .png, .jpeg, .pdf files are allowed)
+                            </span></p>
+                          <p style={{ fontSize: '12px', marginTop: '-14px', marginLeft: '34px', fontWeight: 'bold' }}>
+                            <span style={{ color: 'red' }}>(Files size cannot be greater then 5MB)
+                            </span></p>
                           <div id="input-color">
-                          <input
+                            <input
                               id="input-file"
                               accept=".jpg,.pdf,.jpeg,.png"
                               className="d-none"
@@ -396,20 +384,20 @@ const removeFile = (file) => {
                           <ul>
                             {files.length > 0
                               ? files.map((file, index) => (
-                                  <li key={file.name} >
-                                    <div className="d-flex justify-content-between align-items-center">
-                                      <p>{file.name}</p>
-                                      <i className="fas fa-times close-icon" onClick={() =>removeFile(file)}></i>
-                                    </div>
-                                  </li>
-                                ))
+                                <li key={file.name} >
+                                  <div className="d-flex justify-content-between align-items-center">
+                                    <p>{file.name}</p>
+                                    <i className="fas fa-times close-icon" onClick={() => removeFile(file)}></i>
+                                  </div>
+                                </li>
+                              ))
                               : null}
                           </ul>
                         </div>
                       </div>
                       <div className="row mt-3">
                         <div className="col-12 d-flex justify-content-end">
-                        <button
+                          <button
                             type="submit"
                             className="px-4 py-2 add-button ms-1"
                             onClick={handleCancel}
