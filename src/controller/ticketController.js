@@ -56,23 +56,26 @@ const addTicket = ((req, res) => {
             } else {
                 const ticketId = results.insertId;
                 const attachments = req.files;
-                const attachmentInsertQuery = "INSERT INTO ATTACHEMENT(file_name, req_id, file_type) VALUES (?, ?, ?)";
-                attachments.forEach((attachment) => {
-                    const imagePath = attachment.path;
-                    const blob = fs.readFileSync(imagePath)
-                    console.log(blob);
-                    const fileType = path.extname(imagePath).substring(1);
-                    console.log(";;;;;;;;;;;", fileType);
-                    mysql.query(attachmentInsertQuery, [blob, ticketId, fileType], (err, results) => {
-                        if (err) {
-                            console.log(err);
-                            res.status(500).json({ err: "Error When Inserting Attachment Data" });
-                            return;
-                        } else {
-                            console.log("Data Inserted Successfully");
-                        }
-                    })
-                });
+                // Check if any attachments were uploaded
+                if (attachments && attachments.length > 0) {
+                    const attachmentInsertQuery = "INSERT INTO ATTACHEMENT(file_name, req_id, file_type) VALUES (?, ?, ?)";
+                    attachments.forEach((attachment) => {
+                        const imagePath = attachment.path;
+                        const blob = fs.readFileSync(imagePath)
+                        console.log(blob);
+                        const fileType = path.extname(imagePath).substring(1);
+                        console.log(";;;;;;;;;;;", fileType);
+                        mysql.query(attachmentInsertQuery, [blob, ticketId, fileType], (err, results) => {
+                            if (err) {
+                                console.log(err);
+                                res.status(500).json({ err: "Error When Inserting Attachment Data" });
+                                return;
+                            } else {
+                                console.log("Data Inserted Successfully");
+                            }
+                        })
+                    });
+                }
                 res.status(200).json({ msg: "Data inserted Successfully" });
             }
         })
@@ -80,6 +83,7 @@ const addTicket = ((req, res) => {
         res.status(500).json({ err: "Error When Fetching in Catch Data" });
     }
 })
+
 
 //GET API for showing all the tickets raised by an Employee (date)
 const getTicketByEmp = ((req, res) => {
@@ -248,6 +252,11 @@ const updateTickets = ((req, res) => {
             } else {
                 const attachments = req.files;
                 console.log("////", attachments);
+                if (attachments.length === 0) {
+                    // If no attachments were added, return success message
+                    res.status(200).json({ "msg": "Data updated successfully" });
+                    return;
+                }
                 const updateAttachmentQuery = `UPDATE ATTACHEMENT A 
                                                SET A.file_name = ?, A.file_type = ?
                                                WHERE A.req_id = ? AND A.id = ?`;
