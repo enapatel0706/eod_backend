@@ -62,9 +62,7 @@ const addTicket = ((req, res) => {
                     attachments.forEach((attachment) => {
                         const imagePath = attachment.path;
                         const blob = fs.readFileSync(imagePath)
-                        console.log(blob);
                         const fileType = path.extname(imagePath).substring(1);
-                        console.log(";;;;;;;;;;;", fileType);
                         mysql.query(attachmentInsertQuery, [blob, ticketId, fileType], (err, results) => {
                             if (err) {
                                 console.log(err);
@@ -181,9 +179,8 @@ const getTicketByDateRange = ((req, res) => {
 // GET API for showing single ticket data 
 const getTicketById = ((req, res) => {
     try {
-        console.log("======////", req);
         const selQuery = `SELECT R.*,A.file_name,A.file_type
-        FROM REQUEST R 
+        FROM REQUEST R
         LEFT JOIN ATTACHEMENT A ON R.req_id = A.req_id
         WHERE R.req_id = ?;`;
         mysql.query(selQuery, [req.query.req_id], (err, results) => {
@@ -192,12 +189,19 @@ const getTicketById = ((req, res) => {
                 res.status(500).json({ msg: "Error To Fetching Data" });
             } else {
                 if (results.length > 0) {
-                    console.log("////////", results);
-                    const images = [];
-                    const files = [];
+                    const data = {
+                        images: [],
+                        files: [],
+                    };
+                    const groups = {};
                     results.forEach((result) => {
-                        console.log("................", result);
-                        console.log("===========125==============", result.file_name);
+                        if (!groups[result.req_id]) {
+                            groups[result.req_id] = {
+                                finalres: { results: result },
+                                images: [],
+                                files: [],
+                            };
+                        }
                         if (result.file_name) {
                             const buf = Buffer.from(result.file_name).toString('base64');
                             if (
@@ -207,26 +211,28 @@ const getTicketById = ((req, res) => {
                                 result.file_type === "pdf"
                             ) {
                                 if (result.file_type === "pdf") {
-                                    files.push({
+                                    groups[result.req_id].files.push({
                                         filename: result.file_name,
                                         data: "data:application/pdf;base64," + buf,
                                     });
                                 } else {
-                                    images.push({
+                                    groups[result.req_id].images.push({
                                         image: "data:image/" + result.file_type + ";base64," + buf,
                                     });
                                 }
                             }
                         }
                     });
-                    const data = {
-                        results: results,
-                        images: images,
-                        files: files,
-                    };
-                    res.json(data);
+                    Object.values(groups).forEach((group) => {
+                        const finalRow = group.finalres.results;
+                        delete finalRow.file_name;
+                        delete finalRow.file_type;
+                        data.images.push(...group.images);
+                        data.files.push(...group.files);
+                        res.json({ finalres: finalRow, images: group.images, files: group.files });
+                    });
                 } else {
-                    res.status(204).json({ msg: "Data not found!" });
+                    res.status(200).json({ msg: "Data not found!" });
                 }
             }
         })
@@ -235,23 +241,23 @@ const getTicketById = ((req, res) => {
     }
 })
 
+
+
+
 //PATCH API for ticket update (different API for Attachment might be required.)
 const updateTickets = ((req, res) => {
     try {
-        console.log(req);
         const updateQuery = `UPDATE REQUEST R 
                              SET R.req_date = ?, R.title = ?, R.description = ?, R.emp_id = ?, R.cat_id = ?, R.sub_cat_id = ? 
                              WHERE R.req_id = ?`;
 
         mysql.query(updateQuery, [req.body.req_date, req.body.title, req.body.description, req.body.emp_id, req.body.cat_id, req.body.sub_cat_id, req.body.req_id, req.body.id], (err, results) => {
-            console.log("//////", results);
             if (err) {
                 console.log(err);
                 res.status(500).json({ "msg": "Updation Failed" });
                 return;
             } else {
                 const attachments = req.files;
-                console.log("////", attachments);
                 if (attachments.length === 0) {
                     // If no attachments were added, return success message
                     res.status(200).json({ "msg": "Data updated successfully" });
@@ -261,12 +267,10 @@ const updateTickets = ((req, res) => {
                                                SET A.file_name = ?, A.file_type = ?
                                                WHERE A.req_id = ? AND A.id = ?`;
                 const ticketId = req.body.req_id;
-                console.log("jxhx", ticketId);
                 attachments.forEach((attachment) => {
                     const imagePath = attachment.path;
                     const blob = fs.readFileSync(imagePath);
                     const fileType = path.extname(imagePath).substring(1);
-                    console.log(";;;;;;;;;;;", fileType);
                     mysql.query(updateAttachmentQuery, [blob, fileType, ticketId, req.body.id], (err, results) => {
                         if (err) {
                             console.log(err);
@@ -292,7 +296,6 @@ const updateHRTickets = ((req, res) => {
     set  R.status=?, R.hr_resolution=?,
     R.hr_resolution_date=? where R.req_id=?`;
         mysql.query(updateQuery, [req.body.status, req.body.hr_resolution, req.body.hr_resolution_date, req.body.req_id], (err, results) => {
-            console.log("rrrrrrrrrrrrrrr", results);
             if (err) {
                 console.log("//////", err);
                 res.status(500).json({ "msg": "Updation Failed" });
