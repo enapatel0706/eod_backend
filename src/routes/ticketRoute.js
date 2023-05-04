@@ -17,13 +17,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 router.get("/ticket/categories", getCategory)
 router.get("/ticket/subcategories", getSubCategory)
-router.get("/employee/ticket/ticketDetaiils", getTicketById)
-router.post('/ticket/addTicket', upload.array('attachments'), addTicket);
-router.patch("/employee/ticket/ticketDetaiils", upload.array('attachments'), updateTickets)
-router.patch("/ticket/hr/ticketDetails", upload.array('attachments'), updateHRTickets)
+router.get("/employee/ticket/ticketDetails", getTicketById)
+router.post('/employee/addTicket', upload.array('attachments'), addTicket);
+router.patch("/employee/ticket/ticketDetails", upload.array('attachments'), updateTickets)
+router.patch("/hr/ticket/ticketDetails", upload.array('attachments'), updateHRTickets)
 router.get("/employee/ticket/date", getTicketByEmp)
 router.get("/employee/ticket/daterange", getTicketEmpDateRange)
-router.get("/getallticket/date", getTicketByDate)
-router.get("/getallticket/daterange", getTicketByDateRange)
+router.get("hr/getallticket/date", getTicketByDate)
+router.get("hr/getallticket/daterange", getTicketByDateRange)
 
 module.exports = router;
