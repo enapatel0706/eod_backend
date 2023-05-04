@@ -23,7 +23,7 @@ router.patch("/employee/ticket/ticketDetails", upload.array('attachments'), upda
 router.patch("/hr/ticket/ticketDetails", upload.array('attachments'), updateHRTickets)
 router.get("/employee/ticket/date", getTicketByEmp)
 router.get("/employee/ticket/daterange", getTicketEmpDateRange)
-router.get("hr/getallticket/date", getTicketByDate)
-router.get("hr/getallticket/daterange", getTicketByDateRange)
+router.get("/hr/getallticket/date", getTicketByDate)
+router.get("/hr/getallticket/daterange", getTicketByDateRange)
 
 module.exports = router;
