@@ -56,14 +56,14 @@ const addTicket = ((req, res) => {
             } else {
                 const ticketId = results.insertId;
                 const attachments = req.files;
-                // Check if any attachments were uploaded
                 if (attachments && attachments.length > 0) {
-                    const attachmentInsertQuery = "INSERT INTO ATTACHEMENT(file_name, req_id, file_type) VALUES (?, ?, ?)";
+                    const attachmentInsertQuery = "INSERT INTO ATTACHEMENT(file_name, req_id, file_type,file) VALUES (?, ?, ?, ?)";
                     attachments.forEach((attachment) => {
                         const imagePath = attachment.path;
                         const blob = fs.readFileSync(imagePath)
                         const fileType = path.extname(imagePath).substring(1);
-                        mysql.query(attachmentInsertQuery, [blob, ticketId, fileType], (err, results) => {
+                        const file = attachment.originalname
+                        mysql.query(attachmentInsertQuery, [blob, ticketId, fileType, file], (err, results) => {
                             if (err) {
                                 console.log(err);
                                 res.status(500).json({ err: "Error When Inserting Attachment Data" });
@@ -179,7 +179,7 @@ const getTicketByDateRange = ((req, res) => {
 // GET API for showing single ticket data 
 const getTicketById = ((req, res) => {
     try {
-        const selQuery = `SELECT R.*,A.file_name,A.file_type
+        const selQuery = `SELECT R.*,A.*
         FROM REQUEST R
         LEFT JOIN ATTACHEMENT A ON R.req_id = A.req_id
         WHERE R.req_id = ?;`;
@@ -212,11 +212,12 @@ const getTicketById = ((req, res) => {
                             ) {
                                 if (result.file_type === "pdf") {
                                     groups[result.req_id].files.push({
-                                        filename: result.file_name,
+                                        filename: result.file,
                                         data: "data:application/pdf;base64," + buf,
                                     });
                                 } else {
                                     groups[result.req_id].images.push({
+                                        imagename: result.file,
                                         image: "data:image/" + result.file_type + ";base64," + buf,
                                     });
                                 }
@@ -230,6 +231,7 @@ const getTicketById = ((req, res) => {
                         data.images.push(...group.images);
                         data.files.push(...group.files);
                         res.json({ finalres: finalRow, images: group.images, files: group.files });
+
                     });
                 } else {
                     res.status(200).json({ msg: "Data not found!" });
@@ -240,9 +242,6 @@ const getTicketById = ((req, res) => {
         res.status(500).json({ err: "Error When Fetching in Catch Data" });
     }
 })
-
-
-
 
 //PATCH API for ticket update (different API for Attachment might be required.)
 const updateTickets = ((req, res) => {
@@ -264,14 +263,15 @@ const updateTickets = ((req, res) => {
                     return;
                 }
                 const updateAttachmentQuery = `UPDATE ATTACHEMENT A 
-                                               SET A.file_name = ?, A.file_type = ?
+                                               SET A.file_name = ?, A.file_type = ? , A.file=?
                                                WHERE A.req_id = ? AND A.id = ?`;
                 const ticketId = req.body.req_id;
                 attachments.forEach((attachment) => {
                     const imagePath = attachment.path;
                     const blob = fs.readFileSync(imagePath);
                     const fileType = path.extname(imagePath).substring(1);
-                    mysql.query(updateAttachmentQuery, [blob, fileType, ticketId, req.body.id], (err, results) => {
+                    const file = attachment.originalname
+                    mysql.query(updateAttachmentQuery, [blob, fileType, file, ticketId, req.body.id], (err, results) => {
                         if (err) {
                             console.log(err);
                             res.status(500).json({ "msg": "Updation Failed" });
