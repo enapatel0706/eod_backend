@@ -316,14 +316,7 @@ const updateHRTickets = ((req, res) => {
     }
 })
 
-process.on('SIGINT', () => {
-    mysql.end((err) => {
-        if (err) {
-            console.log(err);
-        }
-        process.exit();
-    });
-});
+
 module.exports = {
     getCategory, getSubCategory, addTicket, getTicketById, updateTickets, updateHRTickets, getTicketByEmp, getTicketEmpDateRange, getTicketByDate, getTicketByDateRange
 };
