@@ -132,12 +132,31 @@ const setEod = ((req, res) => {
                                     }
                                 });
 
-                                let eodTbl = underscore.template("<table style='font-family: arial,sans-serif;border-collapse:collapse;width: 100%;'> <tr> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Sr.no</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Project Name</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Task</th><th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Description</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Work Time</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Status</th> </tr> " + "<% _.forEach(obj, function(obj,index) " +
-                                    "{ %><tr> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%-index+1 %></td> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj['PROJECT NAME'] %></td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.task_title %></td> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.task_desc %></td> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.worktime %></td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.status %></td></tr><% }); %>" +
+                                // Calculate total working time
+                                let totalSeconds = 0;
+                                result.forEach(function (item) {
+                                    let timeComponents = item.worktime.split(":");
+                                    let hours = parseInt(timeComponents[0]);
+                                    let minutes = parseInt(timeComponents[1]);
+                                    let seconds = parseInt(timeComponents[2]);
+                                    totalSeconds += hours * 3600 + minutes * 60 + seconds;
+                                });
+
+                                let hours = Math.floor(totalSeconds / 3600);
+                                let minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+                                let seconds = totalSeconds - hours * 3600 - minutes * 60;
+                                let totalWorkTime = hours + ":" + (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+                                let eodTbl = underscore.template("<table style='font-family: arial,sans-serif;border-collapse:collapse;width: 100%;'> <tr> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Sr.no</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Project Name</th> <th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Task</th><th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Description</th><th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Status</th><th style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'>Work Time</th> </tr> " + "<% _.forEach(obj, function(obj,index) " +
+                                    "{ %><tr> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%-index+1 %></td> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj['PROJECT NAME'] %></td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.task_title %></td> <td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.task_desc %></td> </td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.status %></td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- obj.worktime %></tr><% }); %>" +
+                                    "<tr><td colspan='5' style=' border: 1px solid #dddddd;text-align:right;padding: 8px;'>Total Working Time:</td><td style=' border: 1px solid #dddddd;text-align:left;padding: 8px;'><%- totalWorkTime %></td><td></td></tr>" +
                                     "</table >"
                                 )({
-                                    obj: result
+                                    obj: result,
+                                    totalWorkTime: totalWorkTime
                                 })
+
+
 
                                 // filtering unique emails for to: & cc:
                                 const unique = (value, index, self) => {

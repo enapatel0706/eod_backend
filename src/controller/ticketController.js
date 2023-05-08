@@ -22,6 +22,9 @@ const getCategory = (req, res) => {
     } catch (err) {
         res.status(500).json({ err: "Error When Fetching Data" });
     }
+    // finally {
+    //     mysql.destroy()
+    // }
 };
 
 //GET API for Sub-Category (According to the selected Category)
@@ -43,6 +46,9 @@ const getSubCategory = ((req, res) => {
     } catch (err) {
         res.status(500).json({ err: "Error When Fetching Data" });
     }
+    // finally {
+    //     mysql.destroy()
+    // }
 })
 
 //POST API for 'raise ticket' feature
@@ -212,11 +218,13 @@ const getTicketById = ((req, res) => {
                             ) {
                                 if (result.file_type === "pdf") {
                                     groups[result.req_id].files.push({
+                                        file_id: result.id,
                                         filename: result.file,
                                         data: "data:application/pdf;base64," + buf,
                                     });
                                 } else {
                                     groups[result.req_id].images.push({
+                                        image_id: result.id,
                                         imagename: result.file,
                                         image: "data:image/" + result.file_type + ";base64," + buf,
                                     });
@@ -308,6 +316,14 @@ const updateHRTickets = ((req, res) => {
     }
 })
 
+process.on('SIGINT', () => {
+    mysql.end((err) => {
+        if (err) {
+            console.log(err);
+        }
+        process.exit();
+    });
+});
 module.exports = {
     getCategory, getSubCategory, addTicket, getTicketById, updateTickets, updateHRTickets, getTicketByEmp, getTicketEmpDateRange, getTicketByDate, getTicketByDateRange
 };
