@@ -155,15 +155,41 @@ const Tickets = () => {
       selector: (row) => row.status,
     },
     {
-      name:<th className="border-0"></th>,
-      selector:(row) =><tr>
-      <td className="border-0">
-      <img src={edit_emp} alt="" width={20}  height={20} 
-      // onClick={() => { editEmployee(row.emp_id);}}
-      />
-      </td></tr>,
-    },
+      selector: (row) => (
+        <tr>
+          <td className="border-0">
+            {row.req_id ? (
+              <>
+                <img
+                  src={edit_emp}
+                  alt=""
+                  width={20}
+                  height={20}
+                  onClick={() => {
+                    ShowTicket(
+                      row.req_id,
+                      row.emp_fname + " " + row.emp_lname,
+                      row.phoneno,
+                      row.email
+                    );
+                  }}
+                />
+              </>
+            ) : (
+              " "
+            )}
+          </td>
+        </tr>
+      ),
+    }  
   ];
+ 
+  const ShowTicket = (req_id, empName, phone, email) => {
+    navigate('/hr-update-ticket', {
+      state: { req_id, empName, phone, email }
+    });
+  };
+  
   const customStyles = {
     pagination: {
       style: {

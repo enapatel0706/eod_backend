@@ -28,6 +28,7 @@ import RaiseTicket from "./Component/Employee/RaiseTicket";
 import HelpDesk from "./Component/Employee/HelpDesk";
 import Tickets from "./Component/Hr/Tickets";
 import UpdateTicket from "./Component/Employee/UpdateTicket";
+import HrUpdateTicket from "./Component/Hr/HrUpdateTicket";
 export const MenuContext = createContext();
 
 
@@ -170,6 +171,7 @@ function App() {
 
           {/* Hr Routes */}
           <Route exact path="/tickets" element={<Tickets/>} />
+          <Route exact={true} path="/hr-update-ticket" element={<HrUpdateTicket/>} />
           {/* Admin Routes */}
           <Route exact={true} path="/admin/main" element={<Employee_list />} />
           <Route path="/admin/attendance" element={<Attendance />} exact />

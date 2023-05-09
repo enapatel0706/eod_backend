@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useLocation,useNavigate } from "react-router-dom";
 import pinimg from "../../Image/icon-pin.svg";
 import "./../../css/eod.css";
@@ -22,14 +22,15 @@ const UpdateTicket = () => {
     return today;
   };
   const [inputdate, setInputDate] = useState(todayDate());
+  const navigate = useNavigate();
+  
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const id = queryParams.get("req_id");
-  const navigate = useNavigate();
+  const reqid =  queryParams.get("req_id") ;
 
   const handleCancel = () => {
-    navigate('/helpdesk');
-  };
+     navigate("/helpdesk")  ; 
+  }; 
   return (
     <>
       <div className="fixed-left">
@@ -53,12 +54,11 @@ const UpdateTicket = () => {
                         </div>
                       </div>
                     </div>
-                    {/* </div> */}
-                    <div className="col-sm-4 col-12  d-flex flex-sm-row flex-column   justify-content-center mt-sm-4 mt-3">
-                      <h3 className="  raise-ticket-title  ">
-                        Ticket<span className="span-title"> {id}</span>
-                      </h3>
-                    </div>
+                          <div className="col-sm-4 col-12  d-flex flex-sm-row flex-column justify-content-center mt-sm-4 mt-3">
+                            <h3 className="  raise-ticket-title  ">
+                              Ticket<span className="span-title">{reqid} </span>
+                            </h3>
+                          </div>
                     <div className="col-sm-4 col-12  d-flex  flex-sm-row flex-column  justify-content-sm-end justify-content-center mb-xl-2 mb-2 mt-sm-4 mt-3">
                       <button
                         type="submit"
@@ -197,7 +197,7 @@ const UpdateTicket = () => {
                      <div className="row mt-3">
                         <div className="col-12 d-flex justify-content-end">
                         <button
-                            type="submit"
+                            type="cancel"
                             className="px-4 py-2 add-button ms-1"
                             onClick={handleCancel}
                           >
