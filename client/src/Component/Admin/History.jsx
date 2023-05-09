@@ -278,7 +278,7 @@ const customStyles ={
         <div id="wrapper">
           {/* <Sidebar /> */}
           <div className="content-page">
-            <div className="content">
+            <div className="content content-top">
               {/* <Header /> */}
               <div className="page-content-wrapper">
                 <div className="container-fluid">
@@ -308,7 +308,7 @@ const customStyles ={
                                   {props.phoneno}
                                 </p>
                               </div>
-                              <div className="col-12 col-md-4 fs-5 d-flex align-items-center justify-content-center mt-2 mt-md-0">
+                              <div className="col-12 col-md-4 col-sm-6 fs-5 d-flex align-items-center justify-content-center mt-2 mt-md-0">
                                 <i className="fas fa-envelope"></i>
                                 <p className="email mb-0 ms-1">{props.email}</p>
                               </div>
@@ -389,7 +389,7 @@ const customStyles ={
                             aria-labelledby="nav-history-tab"
                           >
                             <div className="row col-12 mx-0 px-0 my-3 text-center">
-                              <div className="col-10 col-sm-8 col-md-5 d-flex align-items-end">
+                              <div className="col-12 col-sm-8 col-md-6 col-lg-5 d-flex justify-content-center justify-content-sm-start align-items-end">
                                 <div className="col-10 me-2 date-1">
                                   <p className="date-report mb-0 text-white">
                                     End of Day Report of Date

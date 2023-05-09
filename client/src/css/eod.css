@@ -338,13 +338,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     -webkit-transition: all 0.4s ease-in-out;
     transition: all 0.4s ease-in-out;
 }
-
+/* 
 .content-page>.content {
     margin-top: 70px;
     margin-bottom: 63px;
     padding: 0 15px;
+} */
+.content-top{
+    margin-top: 70px;
+    margin-bottom: 63px;
+    padding: 0 15px;
 }
-
 @media (max-width: 768px) {
     .content-page {
         margin-left: 0 !important;
@@ -433,12 +437,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .input-group-date .form-control{
     width: auto !important;
 }
-.close-icon{
-    position: relative;
-    bottom: 27px;
-    right: 8px;
+.img-icon{
+    margin-right: 1.5rem;
+    margin-bottom: 5px ;
 }
-
+.close-icon{
+    font-size: 1rem !important;
+ }
 /* -----------------------data table style--------------------------- */
 .custm-paginator .gMliOo select{
 border: 1px solid #ced4da !important;

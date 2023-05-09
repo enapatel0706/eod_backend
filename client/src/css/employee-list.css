@@ -57,11 +57,11 @@
     transition: all 0.4s ease-in-out;
 }
 
-.content-page>.content {
+/* .content-page>.content {
     margin-top: 70px;
     margin-bottom: 63px;
     padding: 0 15px;
-}
+} */
 
 @media (max-width: 768px) {
     .content-page {
@@ -87,4 +87,24 @@
     .container-fluid {
         width: 100%;
     }
+}
+
+
+.sc-dmctIk{
+    border: 2px solid #dee2e6 !important;
+    margin-top: 1rem !important;
+}
+.sc-dmctIk th{
+    font-size: 15px !important;
+    font-weight: 700 !important;
+}
+.sc-dmctIk .rdt_Table  .rdt_TableBody .rdt_TableRow{
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    color: black !important;
+}
+.custm-paginator .lmSJmf{
+    font-size: 12px  !important;
+    font-weight: 700 !important;
+    color: black !important;
 }

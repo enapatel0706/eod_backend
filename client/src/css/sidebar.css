@@ -3,14 +3,14 @@
 }
 
 
-@media screen and (max-width : 991px) {
+/* @media screen and (max-width : 991px) {
     .res-img {
         height: 75px;
         line-height: 70px;
         width: 70%;
         margin: 0px auto;
     }
-}
+} */
 
 .left-button .nav-link.active a {
     background-image: linear-gradient(to bottom, white, #a1def4, #a1def4, #a1def4, white) !important;
@@ -145,7 +145,7 @@
 
 @media (max-width: 768px) {
     .side-menu.left {
-        margin-left: -100%;
+        /* margin-left: -100%; */
         top: 70px;
         z-index: 1000 !important;
         transition: all 0.5s ease-in-out;

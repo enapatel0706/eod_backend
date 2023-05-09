@@ -183,27 +183,31 @@ const HelpDesk = () => {
         <div id="wrapper">
           {/* <Sidebar /> */}
           <div className="content-page">
-            <div className="content">
+            <div className="content content-top">
               {/* <Navbar /> */}
               <div className="page-content-wrapper">
                 <div className="container-fluid">
                   <div className="row col-12 px-0 mx-0">
                     <div className="col-sm-12 px-0">
                       <div className="page-title-box">
-                        <div className="row col-12 mx-0 px-0 text-center border-bottom">
-                          <h3 className="text-uppercase">Tickets</h3>
+                        <div className="row col-12 mx-0 px-0 text-center border-bottom ">
+                        <div  className="col-sm-9 col-12 text-center  d-flex flex-sm-row flex-column   justify-content-center mt-sm-4 mt-3">
+                        <h3 className="text-uppercase raise-ticket-title">Tickets</h3>
                         </div>
-                        <div className="col-sm-4 col-12  d-flex  flex-sm-row flex-column  justify-content-sm-end justify-content-center mb-xl-2 mb-2 mt-sm-4 mt-3">
+                         
+                          <div className="col-sm-3 col-12  d-flex  flex-sm-row flex-column  justify-content-sm-end justify-content-center mb-xl-2 mb-2 mt-sm-4 mt-3">
                         <button
                           type="submit"
-                          className="px-4 py-2 add-button ms-1"
+                          className="px-2 py-2 add-button "
                           onClick={handleRaiseTicket}
                         >
                           Raise Ticket
                         </button>
                     </div>
+                        </div>
+                        
                     
-                        <div className="mt-3 d-flex justify-content-end">
+                        <div className="mt-1 d-flex justify-content-center justify-content-sm-end">
                           <nav
                             className="date-btn d-flex justify-content-between"
                             id="btn-top"
@@ -260,11 +264,11 @@ const HelpDesk = () => {
                             role="tabpanel"
                             aria-labelledby="nav-home-tab"
                           >
-                            <div className="row col-12 mx-0 px-0 my-3 text-center">
-                              <div className="col-10 col-sm-8 col-md-5 d-flex align-items-end">
-                                <div className="col-10 me-2 date-1">
+                            <div className="row col-12 mx-0 px-0  text-center border-bottom">
+                              <div className="col-12  col-sm-8 col-md-6 col-lg-5 d-flex justify-content-center justify-content-sm-start align-items-end mt-2">
+                                <div className="col-8 me-2 date-1">
                                   <p className="date-report mb-0 text-white">
-                                    End of Day Report Date
+                                  Date
                                   </p>
                                   <input
                                     type="date"

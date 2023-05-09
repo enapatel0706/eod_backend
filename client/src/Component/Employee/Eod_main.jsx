@@ -295,7 +295,7 @@ const Eod_main = () => {
             <div className="content">
               {/* <Navbar /> */}
               <div className="page-content-wrapper">
-                <div className="container-fluid">
+                <div className="container-fluid content-top">
                   <div className="row col-12 px-0 mx-0">
                     <div className="col-sm-12 px-0">
                       <div className="page-title-box" id="EOD-report">
