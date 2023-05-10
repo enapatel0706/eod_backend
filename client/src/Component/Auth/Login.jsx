@@ -221,7 +221,7 @@ const Login = () => {
 
                 <NavLink to="/">
                   <button
-                    type="button"
+                    type="submit"
                     className="btn btn-primary btn-block mb-3 px-5 py-1 fw-500 login"
                     onClick={handleSubmit}
                   >
@@ -229,6 +229,16 @@ const Login = () => {
                   </button>
 
                 </NavLink>
+
+                <a href={`${process.env.ZOHO_SIGN_IN_REDIRECT_URL}?response_type=${process.env.ZOHO_RESPONSE_TYPE}&client_id=${process.env.ZOHO_CLIENT_ID}&scope=${process.env.ZOHO_SCOPE}&redirect_uri=${process.env.ZOHO_REDIRECT_URL}`}>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block mb-3 px-5 py-1 fw-500 login"
+                  // onClick={handleSubmit}
+                  >
+                    Sign in with Zoho
+                  </button>
+                </a>
 
                 {(invalidLoginMsg && role == "employee" ? <div className="container text-center text-danger">
                   <p>Invalid Credentials</p>
@@ -292,6 +302,18 @@ const Login = () => {
                     Login
                   </button>
                 </NavLink>
+
+                <a href={`${process.env.ZOHO_SIGN_IN_REDIRECT_URL}`}>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-block mb-3 px-5 py-1 fw-500 login"
+                  // onClick={handleSubmit}
+                  >
+                    Sign in with Zoho
+                  </button>
+                </a>
+
+
                 <div className="container text-center text-danger">
                   {(invalidLoginMsg && role == "admin" ? <div className="container text-center text-danger">
                     <p>Invalid Credentials</p>

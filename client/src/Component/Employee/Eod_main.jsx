@@ -21,10 +21,50 @@ const Eod_main = () => {
     status: "",
     description: "",
   });
+  const [loader, setLoader] = useState(false)
+
+  //Extracting Params from URL in case of Zoho Sign in 
+  const extractZohoURLParams = async () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    console.log(queryParams);
+    if (queryParams.get("code")) {
+      const code = queryParams.get("code");
+      if (code) {
+        try {
+          let res = await axios.post(
+            `${process.env.ZOHO_TOKEN_URL}`,
+            {
+              params: {
+                client_id: process.env.ZOHO_CLIENT_ID,
+                client_secret: process.env.ZOHO_CLIENT_SECRET,
+                grant_type: process.env.ZOHO_GRANT_TYPE,
+                redirect_uri: process.env.ZOHO_REDIRECT_URL,
+                code: code
+              },
+            }
+          );
+          if (res.status == 200) {
+            // setTableData(res.data);
+            // setLoader(false);
+          }
+          // setAllAttendance(res.data);
+          setLoader(false);
+        } catch (error) {
+          // setTableData([]);
+          console.log(error);
+          setLoader(false);
+        }
+
+      }
+
+
+    }
+  }
+
 
 
   //------------ Loader Code Start------------
-  const [loader, setLoader] = useState(false)
+
 
   useEffect(() => {
     setLoader(true)
@@ -114,6 +154,7 @@ const Eod_main = () => {
   };
 
   useEffect(() => {
+    extractZohoURLParams();
     fetchProject();
     todayDate();
     setEod_date(todayDate());
@@ -281,9 +322,9 @@ const Eod_main = () => {
   };
 
   const handleTimeChange = (selectedTime) => {
-      setEodTaskData({ ...eodTaskData, workTime: selectedTime.format('HH:mm') });    
+    setEodTaskData({ ...eodTaskData, workTime: selectedTime.format('HH:mm') });
   };
-  
+
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -365,20 +406,20 @@ const Eod_main = () => {
                                 <div className="col-6 ms-0 ms-lg-3 me-3">
                                   <p className="mb-1">Total Working Time</p>
                                   <div className="cs-form">
-                                    <Tooltip id="time-tooltip" place="top" effect="solid" className="form-control" title="Enter the total time taken for the task.">      
+                                    <Tooltip id="time-tooltip" place="top" effect="solid" className="form-control" title="Enter the total time taken for the task.">
                                       <TimePicker
                                         placeholder="--:--"
                                         className="time-picker"
                                         showSecond={false}
                                         onChange={handleTimeChange}
-                                        disabledHours={() => [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}
+                                        disabledHours={() => [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]}
                                         showNow={false}
                                         hideDisabledOptions
                                         format="HH:mm"
                                         inputReadOnly={true}
                                         allowClear={true}
                                         popupClassName="custom-timepicker"
-                                        defaultOpenValue={moment('00:00', 'HH:mm')} 
+                                        defaultOpenValue={moment('00:00', 'HH:mm')}
                                         value={eodTaskData.workTime ? moment(eodTaskData.workTime, 'HH:mm') : null}
                                         onSelect={(value) => {
                                           const timeString = moment(value).format("HH:mm");
