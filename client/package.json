@@ -20,6 +20,8 @@
     "react-data-table-component": "^7.5.3",
     "react-data-table-component-extensions": "^1.6.0",
     "react-dom": "^18.2.0",
+    "react-modal-image": "^2.6.0",
+    "react-pdf": "^6.2.2",
     "react-router": "^6.4.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",

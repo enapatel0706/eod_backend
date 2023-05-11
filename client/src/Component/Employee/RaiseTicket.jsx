@@ -76,6 +76,9 @@ const RaiseTicket = () => {
       for (let i = 0; i < files.length; i++) {
         formData.append('attachments', files[i])
       }
+      for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i].name)
+      }
 
       try {
         const res = await axios.post(
@@ -180,6 +183,7 @@ const RaiseTicket = () => {
         confirmButtonColor: "#06bdff",
       });
     }
+    console.log(file.name)
   };
 
   const navigate = useNavigate();
@@ -253,7 +257,8 @@ const RaiseTicket = () => {
                               <option selected disabled >
                                 Select Categories
                               </option>
-                              {allcategories.map((data) => {
+                              {allcategories.length > 0 ?
+                                allcategories.map((data) => {
                                 return (
                                   <option
                                     key={data.cat_id}
@@ -263,7 +268,8 @@ const RaiseTicket = () => {
                                     {data.category_name}
                                   </option>
                                 );
-                              })}
+                              }):null
+                              }
                             </select>
                           </div>
                         </div>
@@ -286,13 +292,15 @@ const RaiseTicket = () => {
                               <option>
                                 Select subcategories
                               </option>
-                              {allsubcategories.map((data) => {
+                              {allsubcategories.length > 0 ?
+                                allsubcategories.map((data) => {
                                 return <option
                                   key={data.sub_cat_id}
                                   data-key={data.sub_cat_id}
                                   value={data.sub_cat_id}
                                 >{data.sub_cat_name}</option>;
-                              })}
+                              }):null
+                              }
                             </select>
                           </div>
                         </div>
