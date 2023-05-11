@@ -109,12 +109,17 @@
     transition: all 0.4s ease-in-out;
 }
 
-.content-page>.content {
+/* .content-page>.content {
+    margin-top: 70px;
+    margin-bottom: 63px;
+    padding: 0 15px;
+} */
+
+.content-top{
     margin-top: 70px;
     margin-bottom: 63px;
     padding: 0 15px;
 }
-
 @media (max-width: 768px) {
     .content-page {
         margin-left: 0 !important;

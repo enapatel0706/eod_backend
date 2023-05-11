@@ -5,15 +5,15 @@ import Swal from "sweetalert2";
 import "./../../css/eod.css";
 import { TimePicker, Tooltip } from 'antd';
 import moment from 'moment';
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Eod_main = () => {
   const { state, dispatch } = useContext(MenuContext);
   let [options, setOptions] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [eod_date, setEod_date] = useState("");
-
   const [taskStatus, setTaskStatus] = useState(0);
-
   const [userData, setData] = useState({
     project: "",
     task: "",
@@ -21,10 +21,93 @@ const Eod_main = () => {
     status: "",
     description: "",
   });
+  const [loader, setLoader] = useState(false)
+
+  const navigate = useNavigate();
+
+
+
+  const getUserData = async (userEmail) => {
+
+    try {
+      let res = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/user`,
+        {
+          params: {
+            email: userEmail,
+          },
+        }
+      );
+      if (res.status == 200) {
+        return res.data.data;
+      } else {
+        Swal.fire({
+          type: "error",
+          icon: "error",
+          title: "Unable to Login.",
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#06bdff',
+        })
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const setLocalStorageData = async (accessToken) => {
+
+    const decodedData = jwt_decode(accessToken);
+
+    const userData = await getUserData(decodedData.email);
+    userData.zohoAccessToken = accessToken;
+    console.log(userData);
+    localStorage.setItem("userData", JSON.stringify(userData));
+    dispatch({ type: "LOGIN", payload: true });
+    navigate("/eod")
+
+  }
+
+  //Extracting Params from URL in case of Zoho Sign in 
+  const extractZohoURLParams = async () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    if (queryParams.get("code")) {
+      const code = queryParams.get("code");
+      if (code) {
+        try {
+          let res = await axios.post(
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/zoho/token`,
+            { code: code }
+          );
+          if (res.status == 200) {
+
+            const tokenData = res.data.data;
+            if (tokenData.id_token) {
+              setLocalStorageData(tokenData.id_token);
+            }
+          } else {
+            Swal.fire({
+              type: "error",
+              icon: "error",
+              title: "Unable to Login.",
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#06bdff',
+            })
+
+            // TODO removing the side bar from Home Screen.
+            navigate('/');
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  }
+
 
 
   //------------ Loader Code Start------------
-  const [loader, setLoader] = useState(false)
+
 
   useEffect(() => {
     setLoader(true)
@@ -114,6 +197,7 @@ const Eod_main = () => {
   };
 
   useEffect(() => {
+    extractZohoURLParams();
     fetchProject();
     todayDate();
     setEod_date(todayDate());
@@ -281,9 +365,9 @@ const Eod_main = () => {
   };
 
   const handleTimeChange = (selectedTime) => {
-      setEodTaskData({ ...eodTaskData, workTime: selectedTime.format('HH:mm') });    
+    setEodTaskData({ ...eodTaskData, workTime: selectedTime.format('HH:mm') });
   };
-  
+
   return (
     <>
       {loader ? <div className="loadingPopup"></div> : null}
@@ -295,7 +379,7 @@ const Eod_main = () => {
             <div className="content">
               {/* <Navbar /> */}
               <div className="page-content-wrapper">
-                <div className="container-fluid">
+                <div className="container-fluid content-top">
                   <div className="row col-12 px-0 mx-0">
                     <div className="col-sm-12 px-0">
                       <div className="page-title-box" id="EOD-report">
@@ -365,20 +449,20 @@ const Eod_main = () => {
                                 <div className="col-6 ms-0 ms-lg-3 me-3">
                                   <p className="mb-1">Total Working Time</p>
                                   <div className="cs-form">
-                                    <Tooltip id="time-tooltip" place="top" effect="solid" className="form-control" title="Enter the total time taken for the task.">      
+                                    <Tooltip id="time-tooltip" place="top" effect="solid" className="form-control" title="Enter the total time taken for the task.">
                                       <TimePicker
                                         placeholder="--:--"
                                         className="time-picker"
                                         showSecond={false}
                                         onChange={handleTimeChange}
-                                        disabledHours={() => [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]}
+                                        disabledHours={() => [9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]}
                                         showNow={false}
                                         hideDisabledOptions
                                         format="HH:mm"
                                         inputReadOnly={true}
                                         allowClear={true}
                                         popupClassName="custom-timepicker"
-                                        defaultOpenValue={moment('00:00', 'HH:mm')} 
+                                        defaultOpenValue={moment('00:00', 'HH:mm')}
                                         value={eodTaskData.workTime ? moment(eodTaskData.workTime, 'HH:mm') : null}
                                         onSelect={(value) => {
                                           const timeString = moment(value).format("HH:mm");

@@ -1,11 +1,13 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import logo from "./../../Image/Logo.png";
 import _image_75 from "./../../Image/75.jpg";
 import { NavLink } from "react-router-dom";
 // import "./../../css/eod.scss";
 import "./../../css/header.css";
 import Menu from "../../Image/menu.svg";
+import jquery from "jquery";
+
 
 const Header = () => {
   const [isActive, setActive] = useState("false");
@@ -14,6 +16,27 @@ const Header = () => {
     let userData = JSON.parse(localStorage.getItem("userData"));
     return userData;
   };
+  useEffect(() => {
+    jquery('#toggle_sidebar').on('click', function (e) {
+      e.stopImmediatePropagation();
+      const element = document.getElementsByClassName('content-page');
+      const element2 = document.getElementsByClassName('container-fluid');
+      jquery(element).attr("id", "fullscreen");
+      jquery(element2).attr("id", "top_margin");
+      jquery('#sidebar_area').toggle();
+      console.log("clicked....")
+      if(!jquery(this).hasClass('sidebar-collapsed'))
+      {
+         jquery(`#fullscreen`).removeClass('content-page');
+         jquery('#top_margin').addClass('mainheding-2')
+         jquery(this).addClass('sidebar-collapsed');
+      }
+      else {
+          jquery(`#fullscreen`).addClass('content-page');
+          jquery(this).removeClass('sidebar-collapsed');
+      }
+    });  
+  });
 
   // const handleToggle = () => {
   //   setActive(!isActive);
@@ -22,13 +45,13 @@ const Header = () => {
     <>
 
       <div className="topbar">
-        <div className="topbar-left d-none d-md-block">
+        <div className="topbar-left ">
           <div
             className="text-center d-flex justify-content-center align-items-center"
             style={{ lineHeight: "70px" }}
           >
             <a href="index.html" className="logo">
-              <img src={logo} alt="" style={{ width: "100%" }} />
+              <img src={logo} alt="" style={{ width: "70%" }} />
             </a>
           </div>
         </div>

@@ -111,7 +111,7 @@ const Eod_history = () => {
         <div id="wrapper">
           {/* <Sidebar /> */}
           <div className="content-page">
-            <div className="content">
+            <div className="content content-top">
               {/* <Navbar /> */}
               <div className="page-content-wrapper">
                 <div className="container-fluid">

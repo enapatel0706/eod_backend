@@ -246,8 +246,8 @@ function convertArrayOfObjectsToCSV(array) {
         {loader ? <div className="loadingPopup"></div> : null}
         <div className="fixed-left">
           <div id="wrapper">
-            <div className="content-page">
-              <div className="content">
+            <div className="content-page ">
+              <div className="content content-top">
                 {/* <Header /> */}
                 <div className="page-content-wrapper">
                   <div className="container-fluid">
@@ -258,7 +258,7 @@ function convertArrayOfObjectsToCSV(array) {
                             <h3 className="text-uppercase">EMPLOYEE'S LIST</h3>
                           </div>
                           <div>
-                          <button onClick={() => downloadCSV(empData)} class="export-button">Export</button>
+                          <button onClick={() => downloadCSV(empData)} class="export-button mt-3">Export</button>
                           </div>
                           
                           <DataTable 

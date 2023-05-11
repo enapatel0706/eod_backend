@@ -124,7 +124,7 @@ const Configuration = () => {
         <div id="wrapper">
           {/* <Sidebar /> */}
           <div className="content-page">
-            <div className="content">
+            <div className="content content-top">
               {/* <Navbar /> */}
               <div className="page-content-wrapper">
                 <div className="container-fluid">
@@ -140,7 +140,7 @@ const Configuration = () => {
                             <label htmlFor="inputEmail" className="col-auto form-label mb-0">
                               Mentor1 E-mail Id
                             </label>
-                            <div className="col-4 d-flex px-0" style={{ position: "relative" }}>
+                            <div className="col-sm-6 col-12 d-flex px-0" style={{ position: "relative" }}>
                               <input
                                 type="email"
                                 className="form-control"
@@ -149,6 +149,7 @@ const Configuration = () => {
                                 value={mentor.email1}
                                 onChange={getInput}
                                 required
+                                // style={{marginRight:"4rem"}}
                               />
                               <i className="fas fa-pen icon"></i>
                             </div>

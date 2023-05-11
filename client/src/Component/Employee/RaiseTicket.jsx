@@ -205,7 +205,7 @@ const RaiseTicket = () => {
       <div className="fixed-left">
         <div id="wrapper">
           <div className="content-page">
-            <div className="content">
+            <div className="content content-top">
               <div className="page-content-wrapper">
                 <div className="container-fluid">
                   <div className="row col-12 border-bottom ">
@@ -273,7 +273,7 @@ const RaiseTicket = () => {
                             </select>
                           </div>
                         </div>
-                        <div className="col-12 col-sm-4  ">
+                        <div className="col-12 col-sm-4">
                           <label className="form-label raise-ticket-label">
                             Sub-Category List
                           </label>
@@ -389,12 +389,12 @@ const RaiseTicket = () => {
                       </div>
                       <div className="row mt-4  ms-sm-5 ms-0">
                         <div className="col-12 col-sm-6 d-sm-flex ">
-                          <ul>
+                          <ul className='list-unstyled'>
                             {files.length > 0
                               ? files.map((file, index) => (
                                 <li key={file.name} >
                                   <div className="d-flex justify-content-between align-items-center">
-                                    <p>{file.name}</p>
+                                    <p className="img-icon">{file.name}</p>
                                     <i className="fas fa-times close-icon" onClick={() => removeFile(file)}></i>
                                   </div>
                                 </li>
