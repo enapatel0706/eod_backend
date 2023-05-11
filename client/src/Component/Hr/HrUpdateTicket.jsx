@@ -153,6 +153,7 @@ const HrUpdateTicket = () => {
             status: ticketData.status,
             hr_resolution: ticketData.hr_resolution,
             hr_resolution_date: ticketData.hr_resolution_date,
+            updated_at:todayDate(),
             req_id: reqIdFromState,
           }
         );

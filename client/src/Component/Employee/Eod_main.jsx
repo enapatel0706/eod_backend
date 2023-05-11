@@ -279,7 +279,22 @@ const Eod_main = () => {
 
     try {
       const dateString = todayDate();
-
+      const validEmails = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/get/additional/valid_emails`, {
+        params: {
+          emp_id: getuserDetails().empId,
+        },
+      });
+      if (!validEmails.data || !validEmails.data.mentor1_email) {
+        Swal.fire({
+          icon: "error",
+          title: "Please enter at least 1 email in configuration",
+          text: "Please add the email address.",      
+          confirmButtonText: "OK",
+          confirmButtonColor: "#06bdff",
+        });
+        return;
+      }
+  
       Swal.fire({
         title: 'Do you want to submit the EOD report?',
         icon: 'warning',

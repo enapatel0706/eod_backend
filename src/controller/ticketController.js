@@ -302,8 +302,8 @@ const updateHRTickets = ((req, res) => {
     try {
         const updateQuery = `UPDATE REQUEST R 
     set  R.status=?, R.hr_resolution=?,
-    R.hr_resolution_date=? where R.req_id=?`;
-        mysql.query(updateQuery, [req.body.status, req.body.hr_resolution, req.body.hr_resolution_date, req.body.req_id], (err, results) => {
+    R.hr_resolution_date=?,R.updated_at=? where R.req_id=?`;
+        mysql.query(updateQuery, [req.body.status, req.body.hr_resolution, req.body.hr_resolution_date,req.body.updated_at, req.body.req_id], (err, results) => {
             if (err) {
                 console.log("//////", err);
                 res.status(500).json({ "msg": "Updation Failed" });

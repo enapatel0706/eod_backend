@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import Autosuggest from 'react-autosuggest';
 import "./../../css/configuration.scss";
 
 const Configuration = () => {
@@ -32,12 +32,9 @@ const Configuration = () => {
     return today;
   }
 
-  const [mentor, setMentor] = useState({
-    email1: null,
-    email2: null,
-    email3: null,
-  })
-
+  const [email1, setEmail1] = useState('');
+  const [email2, setEmail2] = useState('');
+  const [email3, setEmail3] = useState('');
   const getMentor = async () => {
     try {
       let res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/additional/mail`, {
@@ -46,22 +43,71 @@ const Configuration = () => {
         },
       });
       if (res.status == 200) {
-        setMentor({ ...mentor, email1: res.data[0].mentor1_email, email2: res.data[0].mentor2_email, email3: res.data[0].mentor3_email })
+        setEmail1(res.data[0].mentor1_email);
+        setEmail2(res.data[0].mentor2_email);
+        setEmail3(res.data[0].mentor3_email);
       }
     } catch (error) {
       msg("error", "error", "Something went wrong")
     }
   }
-
+  const [suggestions, setSuggestions] = useState([]);
+  
+  const getAllMail = async () => {
+    try {
+      const res = await axios.get(`${process.env.REACT_APP_BACKEND_BASE_URL}/get/all/mail`);
+      if (res.status === 200) {
+        return res.data;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  const getSuggestions = async (value) => {
+    const allMails = await getAllMail();
+    const inputValue = value.toLowerCase();
+    const inputLength = inputValue.length;
+    return inputLength === 0
+      ? []
+      : allMails.filter(
+          (email) =>
+            email.toLowerCase().startsWith(inputValue) &&
+            email !== email1 &&
+            email !== email2 &&
+            email !== email3 
+            
+        );
+  }; 
+  const onSuggestionsFetchRequested = async ({ value }) => {
+    const suggestions = await getSuggestions(value);
+    setSuggestions(suggestions);
+  };
+  
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+  
+  const onChange = (e, { newValue }) => {
+    setEmail1(newValue);
+  };
+  
+  const onChange2 = (e, { newValue }) => {
+    setEmail2(newValue);
+  };
+  
+  const onChange3 = (e, { newValue }) => {
+    setEmail3(newValue);
+  };
+  
+  const renderSuggestion = (suggestion) => {
+    return <div>{suggestion}</div>;
+  };
+  
   useEffect(() => {
     getMentor();
-  }, [])
-
-  const getInput = (e) => {
-    let name = e.target.name;
-    let value = e.target.value;
-    setMentor({ ...mentor, [name]: value });
-  };
+    getAllMail();
+  }, []);
 
   const msg = (type, icon, title) => {
     Swal.fire({
@@ -73,48 +119,80 @@ const Configuration = () => {
     })
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoader(true)
-    if (!mentor.email1) {
-      setLoader(false)
-      msg("warning", "warning", "Mentor 1 field is mandatory")
-    }
-    else if (mentor.email1 && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mentor.email1))) {
-      setLoader(false)
-      msg("warning", "warning", "Please enter valid email address for mentor 1")
-    }
-    else if (mentor.email2 && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mentor.email2))) {
-      setLoader(false)
-      msg("warning", "warning", "Please enter valid email address for mentor 2")
-    }
-    else if (mentor.email3 && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mentor.email3))) {
-      setLoader(false)
-      msg("warning", "warning", "Please enter valid email address for mentor 3")
-    }
-    else {
-      try {
-        const res = await axios.patch(`${process.env.REACT_APP_BACKEND_BASE_URL}/additional/mail`, {
-          emp_id: getuserDetails().empId,
-          email1: mentor.email1,
-          email2: mentor.email2,
-          email3: mentor.email3,
-          updated_at: todayDate()
-        });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoader(true);
 
-        if (res.status == 200) {
-          setLoader(false)
-          msg("success", "success", "Configuration done successfully")
-        } else {
-          setLoader(false)
-          msg("error", "error", "Something went wrong")
-        }
-      } catch (err) {
-        setLoader(false)
-        msg("error", "error", "Something went wrong")
-      }
+  const allMails = await getAllMail(); // Call the getAllMail function
+
+  let emailErrors = [];
+  let hasError = false;
+
+  // Check if the email1 field is valid
+  if (!email1) {
+    emailErrors.push("Mentor 1 field is mandatory");
+    hasError = true;
+  } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email1)) {
+    emailErrors.push("Please enter a valid email address for mentor 1");
+    hasError = true;
+  } else if (!allMails.includes(email1)) { // Check if the email1 field is already present in the API
+    emailErrors.push("Please enter a valid email address for mentor 1");
+    hasError = true;
+  }
+
+  // Check if the email2 field is valid
+  if (email2) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email2)) {
+      emailErrors.push("Please enter a valid email address for mentor 2");
+      hasError = true;
+    } else if (!allMails.includes(email2)) { 
+      emailErrors.push("Please enter a valid email address for mentor 2");
+      hasError = true;
     }
   }
+
+  // Check if the email3 field is valid
+  if (email3) {
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email3)) {
+      emailErrors.push("Please enter a valid email address for mentor 3");
+      hasError = true;
+    } else if (!allMails.includes(email3)) { 
+      emailErrors.push("Please enter a valid email address for mentor 3");
+      hasError = true;
+    }
+  }
+
+  if (hasError) {
+    setLoader(false);
+    if (emailErrors.length > 0) {
+      for (let i = 0; i < emailErrors.length; i++) {
+        msg("warning", "warning", emailErrors[i]);
+        break;
+      }
+    }
+  } else {
+    try {
+      const res = await axios.patch(`${process.env.REACT_APP_BACKEND_BASE_URL}/additional/mail`, {
+        emp_id: getuserDetails().empId,
+        email1: email1,
+        email2: email2,
+        email3: email3,
+        updated_at: todayDate()
+      });
+      if (res.status == 200) {
+        setLoader(false);
+        console.log("mentor1", email1);
+        msg("success", "success", "Configuration done successfully");
+      } else {
+        setLoader(false);
+        msg("error", "error", "Something went wrong");
+      }
+    } catch (err) {
+      setLoader(false);
+      msg("error", "error", "Something went wrong");
+    }
+  }
+};
 
 
   return (
@@ -141,16 +219,26 @@ const Configuration = () => {
                               Mentor1 E-mail Id
                             </label>
                             <div className="col-sm-6 col-12 d-flex px-0" style={{ position: "relative" }}>
-                              <input
-                                type="email"
-                                className="form-control"
-                                id="inputEmail"
-                                placeholder="Email" name="email1"
-                                value={mentor.email1}
-                                onChange={getInput}
-                                required
-                                // style={{marginRight:"4rem"}}
+                              <Autosuggest
+                                suggestions={suggestions}
+                                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                                onSuggestionSelected={(suggestionValue)=>suggestionValue}
+                                getSuggestionValue={(suggestion) => suggestion}
+                                renderSuggestion={renderSuggestion}
+                                inputProps={{
+                                  placeholder: 'Email',
+                                  type: 'email',
+                                  className: 'form-control',
+                                  id: 'inputEmail',
+                                  value: email1,
+                                  onChange: onChange,
+                                  name: 'email',
+                                  required: true,
+                                  style: { width: '585px' } 
+                                }}
                               />
+
                               <i className="fas fa-pen icon"></i>
                             </div>
                           </div>
@@ -159,13 +247,25 @@ const Configuration = () => {
                               Mentor2 E-mail Id
                             </label>
                             <div className="col-4 d-flex px-0" style={{ position: "relative" }}>
-                              <input
-                                type="email"
-                                className="form-control"
-                                id="inputEmail"
-                                placeholder="Email" name="email2"
-                                value={mentor.email2}
-                                onChange={getInput}
+                              <Autosuggest
+                                suggestions={suggestions}
+                                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                                onSuggestionSelected={(suggestionValue)=>suggestionValue}
+                                getSuggestionValue={(suggestion) => suggestion}
+                                renderSuggestion={renderSuggestion}
+                                inputProps={{
+                                  placeholder: 'Email',
+                                  type: 'email',
+                                  className: 'form-control',
+                                  id: 'inputEmail',
+                                  value: email2,
+                                  onChange: onChange2,
+                                  name: 'email',
+                                  required: true,
+                                  style: { width: '390px' } 
+                                }}
+
                               />
                               <i className="fas fa-pen icon"></i>
                             </div>
@@ -175,13 +275,25 @@ const Configuration = () => {
                               Other E-mail Id
                             </label>
                             <div className="col-4 d-flex px-0" style={{ position: "relative" }}>
-                              <input
-                                type="email"
-                                className="form-control"
-                                id="inputEmail"
-                                placeholder="Email" name="email3"
-                                value={mentor.email3}
-                                onChange={getInput}
+                              <Autosuggest
+                                suggestions={suggestions}
+                                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                                onSuggestionSelected={(suggestionValue)=>suggestionValue}
+                                getSuggestionValue={(suggestion) => suggestion}
+                                renderSuggestion={renderSuggestion}
+                                inputProps={{
+                                  placeholder: 'Email',
+                                  type: 'email',
+                                  className: 'form-control',
+                                  id: 'inputEmail',
+                                  value: email3,
+                                  onChange: onChange3,
+                                  name: 'email',
+                                  required: true,
+                                  style: { width: '390px' } 
+                                }}
+
                               />
                               <i className="fas fa-pen icon"></i>
                             </div>

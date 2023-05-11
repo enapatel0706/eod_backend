@@ -248,7 +248,26 @@ const getAdditionalMail = ((req, res) => {
         }
     })
 })
-
+const getAllMail = ((req, res) => {
+    try {
+        const selquery = "select email from EMPLOYEE;"
+        mysql.query(selquery, (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: "Error When Fetching Data" })
+            } else {
+                const emails = result.map(row => row.email);
+                if (emails.length > 0) {
+                    res.status(200).json(emails)
+                } else {
+                    res.status(204).json({ "msg": "Data not found!" });
+                }
+            }
+        })
+    } catch (err) {
+        res.status(500).json({ err: "Error When Fetching Data" });
+    }
+})
 const updateAdditionalMail = ((req, res) => {
 
     const selQuery = "SELECT * FROM EMPLOYEE_ADDITIONAL_MAIL WHERE emp_id=?;";
@@ -286,5 +305,25 @@ const updateAdditionalMail = ((req, res) => {
     })
 })
 
-
-module.exports = { getProjectEmp, getTaskEmp, setEod, setTask, getTaskEmpDateRange, getAdditionalMail, updateAdditionalMail };
+//for Submit when validate
+const getValidMail = ((req, res) => {
+    try {
+        const selquery = "SELECT mentor1_email FROM EMPLOYEE_ADDITIONAL_MAIL WHERE emp_id=?;"
+        mysql.query(selquery, [req.query.emp_id], (err, result) => {
+            if (err) {
+                console.log(err);
+                res.status(500).json({ error: "Error When Fetching Data" })
+            } else {
+                // const emails = result.map(row => row.email);
+                if (result.length > 0) {
+                    res.status(200).json(result[0])
+                } else {
+                    res.status(204).json({ "msg": "Data not found!" });
+                }
+            }
+        })
+    } catch (err) {
+        res.status(500).json({ err: "Error When Fetching Data" });
+    }
+})
+module.exports = { getProjectEmp, getTaskEmp, setEod, setTask, getTaskEmpDateRange, getAdditionalMail, updateAdditionalMail, getAllMail ,getValidMail};
