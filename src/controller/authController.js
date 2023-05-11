@@ -7,7 +7,9 @@ const jwt = require("jsonwebtoken");
 const { FROM_MAIL, FROM_MAIL_PASS } = require("../config/envConfig");
 const JWT_SECRET = 'Ordex Portal EOD Web App........'
 const bcrypt = require('bcryptjs');
-const { log } = require("console");
+const axios = require('axios');
+const { ZOHO_GRANT_TYPE, ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REDIRECT_URL, ZOHO_TOKEN_URL } = require("../config/envConfig");
+
 
 const login = ((req, res) => {
 
@@ -211,6 +213,61 @@ const getusertoken = ((req, res) => {
 });
 
 
+const getZohoToken = (async (req, res) => {
+
+    try {
+        const tokenPostData = {
+            grant_type: ZOHO_GRANT_TYPE,
+            client_id: ZOHO_CLIENT_ID,
+            client_secret: ZOHO_CLIENT_SECRET,
+            redirect_uri: ZOHO_REDIRECT_URL,
+            code: req.body.code
+        }
+
+        let result = await axios.post(
+            ZOHO_TOKEN_URL, null, {
+            params: tokenPostData
+        });
+        console.log(result.data)
+        if (result.status == 200) {
+            res.status(200).json({ "success": true, "data": result.data, "error": null });
+        } else {
+            res.status(400).json({ "success": false, "data": null, "error": null })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ "success": false, "data": null, "error": err })
+    }
+
+});
+
+const getDataByEmailId = (async (req, res) => {
+    try {
+        const selquery = "SELECT e.email, e.emp_fname, e.emp_id, e.emp_lname, er.emp_role_id, e.emp_type, u.pass_expire, e.post, er.role_name, u.user_id, u.username FROM USER AS u, EMPLOYEE AS e, EMPLOYEE_EMPROLE AS ee, EMPROLE AS er WHERE u.user_id=e.user_id AND e.email=? AND e.emp_id=ee.emp_id AND ee.emp_role_id=er.emp_role_id;"
+        mysql.query(selquery, [req.query.email], (err, results) => {
+            if (err) {
+                res.status(500).json({ err: "Error When Fetching Data" });
+            } else {
+
+                if (results.length > 0) {
+
+                    const userData = {
+                        "userId": results[0].user_id, "userName": results[0].username,
+                        "pass_expire": results[0].pass_expire, "empId": results[0].emp_id, "empFname": results[0].emp_fname, "empLname": results[0].emp_lname, "email": results[0].email, "empType": results[0].emp_type, "empRoleId": results[0].emp_role_id, "roleName": results[0].role_name, "post": results[0].post
+                    }
+
+                    res.status(200).json({ "success": true, "data": userData, "error": null, msg: null });
+                } else {
+                    res.status(200).json({ "success": true, "data": null, "error": null, msg: "No Data Found." });
+                }
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ "success": false, "data": null, "error": err, msg: "Error When Fetching Data" });
+
+    }
+
+})
 
 
-module.exports = { login, sendEmailForgot, forgotPassword, getusertoken };
+module.exports = { login, sendEmailForgot, forgotPassword, getusertoken, getZohoToken, getDataByEmailId };

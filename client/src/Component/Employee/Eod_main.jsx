@@ -5,15 +5,15 @@ import Swal from "sweetalert2";
 import "./../../css/eod.css";
 import { TimePicker, Tooltip } from 'antd';
 import moment from 'moment';
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Eod_main = () => {
   const { state, dispatch } = useContext(MenuContext);
   let [options, setOptions] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [eod_date, setEod_date] = useState("");
-
   const [taskStatus, setTaskStatus] = useState(0);
-
   const [userData, setData] = useState({
     project: "",
     task: "",
@@ -23,41 +23,84 @@ const Eod_main = () => {
   });
   const [loader, setLoader] = useState(false)
 
+  const navigate = useNavigate();
+
+
+
+  const getUserData = async (userEmail) => {
+
+    try {
+      let res = await axios.get(
+        `${process.env.REACT_APP_BACKEND_BASE_URL}/user`,
+        {
+          params: {
+            email: userEmail,
+          },
+        }
+      );
+      if (res.status == 200) {
+        return res.data.data;
+      } else {
+        Swal.fire({
+          type: "error",
+          icon: "error",
+          title: "Unable to Login.",
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#06bdff',
+        })
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const setLocalStorageData = async (accessToken) => {
+
+    const decodedData = jwt_decode(accessToken);
+
+    const userData = await getUserData(decodedData.email);
+    userData.zohoAccessToken = accessToken;
+    console.log(userData);
+    localStorage.setItem("userData", JSON.stringify(userData));
+    dispatch({ type: "LOGIN", payload: true });
+    navigate("/eod")
+
+  }
+
   //Extracting Params from URL in case of Zoho Sign in 
   const extractZohoURLParams = async () => {
     const queryParams = new URLSearchParams(window.location.search);
-    console.log(queryParams);
     if (queryParams.get("code")) {
       const code = queryParams.get("code");
       if (code) {
         try {
           let res = await axios.post(
-            `${process.env.ZOHO_TOKEN_URL}`,
-            {
-              params: {
-                client_id: process.env.ZOHO_CLIENT_ID,
-                client_secret: process.env.ZOHO_CLIENT_SECRET,
-                grant_type: process.env.ZOHO_GRANT_TYPE,
-                redirect_uri: process.env.ZOHO_REDIRECT_URL,
-                code: code
-              },
-            }
+            `${process.env.REACT_APP_BACKEND_BASE_URL}/zoho/token`,
+            { code: code }
           );
           if (res.status == 200) {
-            // setTableData(res.data);
-            // setLoader(false);
+
+            const tokenData = res.data.data;
+            if (tokenData.id_token) {
+              setLocalStorageData(tokenData.id_token);
+            }
+          } else {
+            Swal.fire({
+              type: "error",
+              icon: "error",
+              title: "Unable to Login.",
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#06bdff',
+            })
+
+            // TODO removing the side bar from Home Screen.
+            navigate('/');
           }
-          // setAllAttendance(res.data);
-          setLoader(false);
         } catch (error) {
-          // setTableData([]);
           console.log(error);
-          setLoader(false);
         }
-
       }
-
-
     }
   }
 

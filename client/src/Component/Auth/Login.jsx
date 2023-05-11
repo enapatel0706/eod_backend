@@ -230,7 +230,7 @@ const Login = () => {
 
                 </NavLink>
 
-                <a href={`${process.env.ZOHO_SIGN_IN_REDIRECT_URL}?response_type=${process.env.ZOHO_RESPONSE_TYPE}&client_id=${process.env.ZOHO_CLIENT_ID}&scope=${process.env.ZOHO_SCOPE}&redirect_uri=${process.env.ZOHO_REDIRECT_URL}`}>
+                <a href={`${process.env.REACT_APP_ZOHO_SIGN_IN_REDIRECT_URL}?response_type=${process.env.REACT_APP_ZOHO_RESPONSE_TYPE}&client_id=${process.env.REACT_APP_ZOHO_CLIENT_ID}&scope=${process.env.REACT_APP_ZOHO_SCOPE}&redirect_uri=${process.env.REACT_APP_ZOHO_REDIRECT_URL}`}>
                   <button
                     type="button"
                     className="btn btn-primary btn-block mb-3 px-5 py-1 fw-500 login"
@@ -303,7 +303,7 @@ const Login = () => {
                   </button>
                 </NavLink>
 
-                <a href={`${process.env.ZOHO_SIGN_IN_REDIRECT_URL}`}>
+                <a href={`${process.env.REACT_APP_ZOHO_SIGN_IN_REDIRECT_URL}`}>
                   <button
                     type="button"
                     className="btn btn-primary btn-block mb-3 px-5 py-1 fw-500 login"
